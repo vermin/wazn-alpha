@@ -140,7 +140,7 @@ VOLUME /root/.bitwazn
 # wazn-wallet-cli
 VOLUME /wallet
 
-EXPOSE 22022
-EXPOSE 22033
+EXPOSE 20786
+EXPOSE 30786
 
-ENTRYPOINT ["waznd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=20786", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=30786", "--non-interactive", "--confirm-external-bind"]
+ENTRYPOINT ["waznd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=22786", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=22787", "--non-interactive", "--confirm-external-bind"]

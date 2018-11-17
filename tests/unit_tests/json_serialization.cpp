@@ -214,4 +214,3 @@ TEST(JsonSerialization, BulletproofTransaction)
 
     EXPECT_EQ(tx_bytes, tx_copy_bytes);
 }
-

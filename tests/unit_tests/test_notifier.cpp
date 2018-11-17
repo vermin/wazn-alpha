@@ -1,5 +1,5 @@
 // Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2018, The Monero Project
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -25,33 +25,30 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
-#pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
-#include "crypto/crypto.h"
-#include "cryptonote_basic/cryptonote_basic.h"
-
-template<size_t bytes>
-class test_cn_fast_hash
+int main(int argc, char **argv)
 {
-public:
-  static const size_t loop_count = bytes < 256 ? 100000 : bytes < 4096 ? 10000 : 1000;
-
-  bool init()
+  if (argc < 3)
   {
-    crypto::rand(bytes, m_data.data());
-    return true;
+    fprintf(stderr, "usage: %s <filename> <hash>\n", argv[0]);
+    return 1;
   }
+  const char *filename = argv[1];
+  const char *hash = argv[2];
 
-  bool test()
+  FILE *f = fopen(filename, "a+");
+  if (!f)
   {
-    crypto::hash hash;
-    crypto::cn_fast_hash(&m_data, bytes, hash);
-    return true;
+    fprintf(stderr, "error opening file %s: %s\n", filename, strerror(errno));
+    return 1;
   }
+  fprintf(f, "%s", hash);
+  fclose(f);
 
-private:
-  std::array<uint8_t, bytes> m_data;
-};
+  return 0;
+}
