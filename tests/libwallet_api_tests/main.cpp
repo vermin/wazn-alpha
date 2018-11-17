@@ -1,6 +1,5 @@
 // Copyright (c) 2018, WAZN Project
 // Copyright (c) 2014-2018, The WAZN Project
-//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -246,7 +245,7 @@ TEST_F(WalletManagerTest, WalletMaxAmountAsString)
 
 TEST_F(WalletManagerTest, WalletAmountFromString)
 {
-    uint64_t amount = WAZN::Wallet::amountFromString("18446740");
+    uint64_t amount = WAZN::Wallet::amountFromString("100000000");
     ASSERT_TRUE(amount > 0);
     amount = WAZN::Wallet::amountFromString("11000000000000");
     ASSERT_FALSE(amount > 0);
@@ -553,12 +552,12 @@ TEST_F(WalletTest1, WalletRefresh)
 
 TEST_F(WalletTest1, WalletConvertsToString)
 {
-    std::string strAmount = WAZN::Wallet::displayAmount(AMOUNT_5XMR);
-    ASSERT_TRUE(AMOUNT_5XMR == WAZN::Wallet::amountFromString(strAmount));
+    std::string strAmount = WAZN::Wallet::displayAmount(AMOUNT_5WAZN);
+    ASSERT_TRUE(AMOUNT_5WAZN == WAZN::Wallet::amountFromString(strAmount));
 
-    ASSERT_TRUE(AMOUNT_5XMR == WAZN::Wallet::amountFromDouble(5.0));
-    ASSERT_TRUE(AMOUNT_10XMR == WAZN::Wallet::amountFromDouble(10.0));
-    ASSERT_TRUE(AMOUNT_1XMR == WAZN::Wallet::amountFromDouble(1.0));
+    ASSERT_TRUE(AMOUNT_5WAZN == WAZN::Wallet::amountFromDouble(5.0));
+    ASSERT_TRUE(AMOUNT_10WAZN == WAZN::Wallet::amountFromDouble(10.0));
+    ASSERT_TRUE(AMOUNT_1WAZN == WAZN::Wallet::amountFromDouble(1.0));
 
 }
 
@@ -580,7 +579,7 @@ TEST_F(WalletTest1, WalletTransaction)
 
     WAZN::PendingTransaction * transaction = wallet1->createTransaction(recepient_address,
                                                                              PAYMENT_ID_EMPTY,
-                                                                             AMOUNT_10XMR,
+                                                                             AMOUNT_10WAZN,
                                                                              MIXIN_COUNT,
                                                                              WAZN::PendingTransaction::Priority_Medium,
                                                                              0,
@@ -623,7 +622,7 @@ TEST_F(WalletTest1, WalletTransactionWithMixin)
         std::cerr << "Transaction mixin count: " << mixin << std::endl;
 
         WAZN::PendingTransaction * transaction = wallet1->createTransaction(
-                    recepient_address, payment_id, AMOUNT_5XMR, mixin, WAZN::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
+                    recepient_address, payment_id, AMOUNT_5WAZN, mixin, WAZN::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
 
         std::cerr << "Transaction status: " << transaction->status() << std::endl;
         std::cerr << "Transaction fee: " << WAZN::Wallet::displayAmount(transaction->fee()) << std::endl;
@@ -665,7 +664,7 @@ TEST_F(WalletTest1, WalletTransactionWithPriority)
         std::cerr << "Transaction priority: " << *it << std::endl;
 
         WAZN::PendingTransaction * transaction = wallet1->createTransaction(
-                    recepient_address, payment_id, AMOUNT_5XMR, mixin, *it, 0, std::set<uint32_t>{});
+                    recepient_address, payment_id, AMOUNT_5WAZN, mixin, *it, 0, std::set<uint32_t>{});
         std::cerr << "Transaction status: " << transaction->status() << std::endl;
         std::cerr << "Transaction fee: " << WAZN::Wallet::displayAmount(transaction->fee()) << std::endl;
         std::cerr << "Transaction error: " << transaction->errorString() << std::endl;
@@ -721,7 +720,7 @@ TEST_F(WalletTest1, WalletTransactionAndHistory)
 
     WAZN::PendingTransaction * tx = wallet_src->createTransaction(wallet4_addr,
                                                                        PAYMENT_ID_EMPTY,
-                                                                       AMOUNT_10XMR * 5, 1, WAZN::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
+                                                                       AMOUNT_10WAZN * 5, 1, WAZN::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
 
     ASSERT_TRUE(tx->status() == WAZN::PendingTransaction::Status_Ok);
     ASSERT_TRUE(tx->commit());
@@ -763,7 +762,7 @@ TEST_F(WalletTest1, WalletTransactionWithPaymentId)
 
     WAZN::PendingTransaction * tx = wallet_src->createTransaction(wallet4_addr,
                                                                        payment_id,
-                                                                       AMOUNT_1XMR, 1, WAZN::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
+                                                                       AMOUNT_1WAZN, 1, WAZN::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
 
     ASSERT_TRUE(tx->status() == WAZN::PendingTransaction::Status_Ok);
     ASSERT_TRUE(tx->commit());
@@ -930,7 +929,7 @@ TEST_F(WalletTest2, WalletCallbackSent)
     std::cout << "** Balance: " << wallet_src->displayAmount(wallet_src->balance(0)) <<  std::endl;
     WAZN::Wallet * wallet_dst = wmgr->openWallet(CURRENT_DST_WALLET, TESTNET_WALLET_PASS, WAZN::NetworkType::TESTNET);
 
-    uint64_t amount = AMOUNT_1XMR * 5;
+    uint64_t amount = AMOUNT_1WAZN * 5;
     std::cout << "** Sending " << WAZN::Wallet::displayAmount(amount) << " to " << wallet_dst->mainAddress();
 
 
@@ -973,7 +972,7 @@ TEST_F(WalletTest2, WalletCallbackReceived)
     std::cout << "** Balance dst1: " << wallet_dst->displayAmount(wallet_dst->balance(0)) <<  std::endl;
     std::unique_ptr<MyWalletListener> wallet_dst_listener (new MyWalletListener(wallet_dst));
 
-    uint64_t amount = AMOUNT_1XMR * 5;
+    uint64_t amount = AMOUNT_1WAZN * 5;
     std::cout << "** Sending " << WAZN::Wallet::displayAmount(amount) << " to " << wallet_dst->mainAddress();
     WAZN::PendingTransaction * tx = wallet_src->createTransaction(wallet_dst->mainAddress(),
                                                                        PAYMENT_ID_EMPTY,
