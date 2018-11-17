@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2018, WAZN Project
+# Copyright (c) 2018, WAZN Project
 #
 # All rights reserved.
 #
@@ -880,7 +880,7 @@ endif()
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 if(MINGW)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wa,-mbig-obj")
-  set(EXTRA_LIBRARIES mswsock;ws2_32;iphlpapi;crypt32)
+  set(EXTRA_LIBRARIES mswsock;ws2_32;iphlpapi;crypt32;bcrypt)
   if(DEPENDS)
     set(ICU_LIBRARIES ${Boost_LOCALE_LIBRARY} sicuio sicuin sicuuc sicudt sicutu iconv)
   else()
