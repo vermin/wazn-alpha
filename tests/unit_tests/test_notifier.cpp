@@ -1,5 +1,5 @@
 // Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2018, The Monero Project
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -25,50 +25,30 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-// Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
-#pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
-#include <atomic>
-#include <boost/filesystem.hpp>
-
-namespace unit_test
+int main(int argc, char **argv)
 {
-  extern boost::filesystem::path data_dir;
-
-  class call_counter
+  if (argc < 3)
   {
-  public:
-    call_counter()
-      : m_counter(0)
-    {
-    }
+    fprintf(stderr, "usage: %s <filename> <hash>\n", argv[0]);
+    return 1;
+  }
+  const char *filename = argv[1];
+  const char *hash = argv[2];
 
-    void inc() volatile
-    {
-      // memory_order_relaxed is enough for call counter
-      m_counter.fetch_add(1, std::memory_order_relaxed);
-    }
+  FILE *f = fopen(filename, "a+");
+  if (!f)
+  {
+    fprintf(stderr, "error opening file %s: %s\n", filename, strerror(errno));
+    return 1;
+  }
+  fprintf(f, "%s", hash);
+  fclose(f);
 
-    size_t get() volatile const
-    {
-      return m_counter.load(std::memory_order_relaxed);
-    }
-
-    void reset() volatile
-    {
-      m_counter.store(0, std::memory_order_relaxed);
-    }
-
-  private:
-    std::atomic<size_t> m_counter;
-  };
+  return 0;
 }
-
-# define ASSERT_EQ_MAP(val, map, key) \
-  do { \
-    auto found = map.find(key); \
-    ASSERT_TRUE(found != map.end()); \
-    ASSERT_EQ(val, found->second); \
-  } while (false)
