@@ -28,20 +28,30 @@
 
 #include "gtest/gtest.h"
 
-#include "crypto/crypto.h"
+#include <boost/filesystem.hpp>
 
-extern "C" {
-#include "crypto/crypto-ops.h"
-}
+#include "misc_language.h"
+#include "string_tools.h"
+#include "file_io_utils.h"
+#include "common/notify.h"
 
-TEST(random32_unbiased, less_than_order)
+TEST(notify, works)
 {
-  unsigned char tmp[32], tmp2[32];
-  for (int i = 0; i < 1000; ++i)
-  {
-    crypto::random32_unbiased(tmp);
-    memcpy(tmp2, tmp, 32);
-    sc_reduce32(tmp2);
-    ASSERT_EQ(memcmp(tmp, tmp2, 32), 0);
-  }
+  char name_template[] = "/tmp/monero-notify-unit-test-XXXXXX";
+  int fd = mkstemp(name_template);
+  ASSERT_TRUE(fd >= 0);
+  close(fd);
+
+  const std::string spec = epee::string_tools::get_current_module_folder() + "/test_notifier " + name_template + " %s";
+
+  tools::Notify notify(spec.c_str());
+  notify.notify("1111111111111111111111111111111111111111111111111111111111111111");
+
+  epee::misc_utils::sleep_no_w(100);
+
+  std::string s;
+  ASSERT_TRUE(epee::file_io_utils::load_file_to_string(name_template, s));
+  ASSERT_TRUE(s == "1111111111111111111111111111111111111111111111111111111111111111");
+
+  boost::filesystem::remove(name_template);
 }
