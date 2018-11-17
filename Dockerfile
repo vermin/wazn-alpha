@@ -143,4 +143,4 @@ VOLUME /wallet
 EXPOSE 22022
 EXPOSE 22033
 
-ENTRYPOINT ["waznd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=22022", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=22033", "--non-interactive", "--confirm-external-bind"]
+ENTRYPOINT ["waznd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=20786", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=30786", "--non-interactive", "--confirm-external-bind"]
