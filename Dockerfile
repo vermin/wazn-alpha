@@ -18,7 +18,9 @@ RUN set -ex && \
         libtool-bin \
         autoconf \
         automake \
-        bzip2
+        bzip2 \
+        xsltproc \
+        gperf
 
 WORKDIR /usr/local
 
@@ -109,6 +111,42 @@ RUN set -ex \
     && make check \
     && make install
 
+# Udev
+ARG UDEV_VERSION=v3.2.6
+ARG UDEV_HASH=0c35b136c08d64064efa55087c54364608e65ed6
+RUN set -ex \
+    && git clone https://github.com/gentoo/eudev -b ${UDEV_VERSION} \
+    && cd eudev \
+    && test `git rev-parse HEAD` = ${UDEV_HASH} || exit 1 \
+    && ./autogen.sh \
+    && CFLAGS="-fPIC" CXXFLAGS="-fPIC" ./configure --disable-gudev --disable-introspection --disable-hwdb --disable-manpages --disable-shared \
+    && make \
+    && make install
+
+# Libusb
+ARG USB_VERSION=v1.0.22
+ARG USB_HASH=0034b2afdcdb1614e78edaa2a9e22d5936aeae5d
+RUN set -ex \
+    && git clone https://github.com/libusb/libusb.git -b ${USB_VERSION} \
+    && cd libusb \
+    && test `git rev-parse HEAD` = ${USB_HASH} || exit 1 \
+    && ./autogen.sh \
+    && CFLAGS="-fPIC" CXXFLAGS="-fPIC" ./configure --disable-shared \
+    && make \
+    && make install
+
+# Hidapi
+ARG HIDAPI_VERSION=hidapi-0.8.0-rc1
+ARG HIDAPI_HASH=40cf516139b5b61e30d9403a48db23d8f915f52c
+RUN set -ex \
+    && git clone https://github.com/signal11/hidapi -b ${HIDAPI_VERSION} \
+    && cd hidapi \
+    && test `git rev-parse HEAD` = ${HIDAPI_HASH} || exit 1 \
+    && ./bootstrap \
+    && CFLAGS="-fPIC" CXXFLAGS="-fPIC" ./configure --enable-static --disable-shared \
+    && make \
+    && make install
+
 WORKDIR /src
 COPY . .
 
@@ -133,14 +171,15 @@ RUN set -ex && \
 COPY --from=builder /src/build/release/bin /usr/local/bin/
 
 # Contains the blockchain
-VOLUME /root/.bitwazn
+VOLUME /root/.bitmonero
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
-# wazn-wallet-cli
+# monero-wallet-cli
 VOLUME /wallet
 
-EXPOSE 20786
-EXPOSE 30786
+EXPOSE 18080
+EXPOSE 18081
 
-ENTRYPOINT ["waznd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=22786", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=22787", "--non-interactive", "--confirm-external-bind"]
+ENTRYPOINT ["monerod", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18080", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18081", "--non-interactive", "--confirm-external-bind"]
+
