@@ -3,7 +3,7 @@ WAZN daemon internationalization
 
 WAZN command line tools can be translated in various languages. If you wish to contribute and need help/support, feel free to contact us.
 
-In order to use the same translation workflow as the [WAZN](https://github.com/vermin/WAZN), they use Qt Linguist translation files.
+In order to use the same translation workflow as the [WAZN](https://github.com/Project-WAZN/WAZN) use Qt Linguist translation files.
 
 ### Tools for translators
 
