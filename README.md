@@ -10,6 +10,9 @@ Copyright (c) 2012-2013 The Cryptonote developers
 
 
 
+
+
+
 [TODO BEFORE BINARIES ARE PACKED FOR V1]
 ---check /contrib & /src folders
 ---currency birth settings brainstorming with society
