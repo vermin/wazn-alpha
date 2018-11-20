@@ -1,3 +1,7 @@
+/// @file
+/// @author rfree (current maintainer in monero.cc project)
+/// @brief base for connection, contains e.g. the ratelimit hooks
+
 // ! This file might contain variable names same as in template class connection<>
 // ! from files contrib/epee/include/net/abstract_tcp_server2.*
 // ! I am not a lawyer; afaik APIs, var names etc are not copyrightable ;)
@@ -6,7 +10,6 @@
 
 // Copyright (c) 2014-2018, WAZN Project
 // Copyright (c) 2014-2018, The Monero Project
-//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
