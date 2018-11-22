@@ -1,6 +1,5 @@
 // Copyright (c) 2018, WAZN Project
 // Copyright (c) 2014-2018, The Monero Project
-//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -142,7 +141,7 @@ namespace wallet_args
       if (command_line::get_arg(vm, command_line::arg_help))
       {
         Print(print) << "WAZN '" << WAZN_RELEASE_NAME << "' (v" << WAZN_VERSION_FULL << ")" << ENDL;
-        Print(print) << wallet_args::tr("This is the command line WAZN wallet. It needs to connect to a WAZN\n"
+        Print(print) << wallet_args::tr("This is the command line WAZN wallet. It needs to connect to WAZN\n"
 												  "daemon to work correctly.") << ENDL;
         Print(print) << wallet_args::tr("Usage:") << ENDL << "  " << usage;
         Print(print) << desc_all;

@@ -1,6 +1,5 @@
 // Copyright (c) 2018, WAZN Project
 // Copyright (c) 2014-2018, The Monero Project
-//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -392,10 +391,7 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("212.83.175.67:22786");
-      full_addrs.insert("5.9.100.248:22786");
-      full_addrs.insert("163.172.182.165:22786");
-      full_addrs.insert("195.154.123.123:22786");
+      full_addrs.insert("31.15.160.146:22786");
     }
     else if (nettype == cryptonote::STAGENET)
     {
@@ -407,10 +403,7 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("107.152.130.98:11786");
-      full_addrs.insert("212.83.175.67:11786");
-      full_addrs.insert("5.9.100.248:11786");
-      full_addrs.insert("163.172.182.165:11786");
+      full_addrs.insert("31.15.160.146:11786");
     }
     return full_addrs;
   }
