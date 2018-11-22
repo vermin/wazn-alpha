@@ -81,9 +81,9 @@ const char * TESTNET_WALLET_PASS = "";
 std::string CURRENT_SRC_WALLET;
 std::string CURRENT_DST_WALLET;
 
-const uint64_t AMOUNT_10XMR =  10000000000000L;
-const uint64_t AMOUNT_5XMR  =  5000000000000L;
-const uint64_t AMOUNT_1XMR  =  1000000000000L;
+const uint64_t AMOUNT_10WAZN =  10000000L;
+const uint64_t AMOUNT_5WAZN  =  5000000L;
+const uint64_t AMOUNT_1WAZN  =  1000000L;
 
 const std::string PAYMENT_ID_EMPTY = "";
 
@@ -588,7 +588,7 @@ TEST_F(WalletTest1, WalletTransaction)
     wallet1->refresh();
 
     ASSERT_TRUE(wallet1->balance(0) == balance);
-    ASSERT_TRUE(transaction->amount() == AMOUNT_10XMR);
+    ASSERT_TRUE(transaction->amount() == AMOUNT_10WAZN);
     ASSERT_TRUE(transaction->commit());
     ASSERT_FALSE(wallet1->balance(0) == balance);
     ASSERT_TRUE(wmgr->closeWallet(wallet1));

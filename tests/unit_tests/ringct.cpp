@@ -56,7 +56,7 @@ TEST(ringct, Borromean)
         bits indi;
 
         for (j = 0 ; j < N ; j++) {
-            indi[j] = (int)randXmrAmount(2);
+            indi[j] = (int)randWaznAmount(2);
 
             xv[j] = skGen();
             if ( (int)indi[j] == 0 ) {
@@ -152,7 +152,7 @@ TEST(ringct, range_proofs)
         tie(sctmp, pctmp) = ctskpkGen(7000);
         sc.push_back(sctmp);
         pc.push_back(pctmp);
-        vector<xmr_amount >amounts;
+        vector<wazn_amount >amounts;
         rct::keyV amount_keys;
         key mask;
 
@@ -213,7 +213,7 @@ TEST(ringct, range_proofs_with_fee)
         tie(sctmp, pctmp) = ctskpkGen(7000);
         sc.push_back(sctmp);
         pc.push_back(pctmp);
-        vector<xmr_amount >amounts;
+        vector<wazn_amount >amounts;
         keyV amount_keys;
         key mask;
 
@@ -267,9 +267,9 @@ TEST(ringct, simple)
         ctkeyV sc, pc;
         ctkey sctmp, pctmp;
         //this vector corresponds to output amounts
-        vector<xmr_amount>outamounts;
+        vector<wazn_amount>outamounts;
        //this vector corresponds to input amounts
-        vector<xmr_amount>inamounts;
+        vector<wazn_amount>inamounts;
         //this keyV corresponds to destination pubkeys
         keyV destinations;
         keyV amount_keys;
@@ -309,7 +309,7 @@ TEST(ringct, simple)
         key message = skGen(); //real message later (hash of txn..)
 
         //compute sig with mixin 2
-        xmr_amount txnfee = 1;
+        wazn_amount txnfee = 1;
 
         rctSig s = genRctSimple(message, sc, pc, destinations,inamounts, outamounts, amount_keys, NULL, NULL, txnfee, 2, hw::get_device("default"));
 
@@ -324,7 +324,7 @@ static rct::rctSig make_sample_rct_sig(int n_inputs, const uint64_t input_amount
 {
     ctkeyV sc, pc;
     ctkey sctmp, pctmp;
-    vector<xmr_amount >amounts;
+    vector<wazn_amount >amounts;
     keyV destinations;
     keyV amount_keys;
     key Sk, Pk;
@@ -352,7 +352,7 @@ static rct::rctSig make_sample_simple_rct_sig(int n_inputs, const uint64_t input
 {
     ctkeyV sc, pc;
     ctkey sctmp, pctmp;
-    vector<xmr_amount> inamounts, outamounts;
+    vector<wazn_amount> inamounts, outamounts;
     keyV destinations;
     keyV amount_keys;
     key Sk, Pk;
@@ -822,7 +822,7 @@ TEST(ringct, HPow2)
   }
 }
 
-static const xmr_amount test_amounts[]={0, 1, 2, 3, 4, 5, 10000, 10000000000000000000ull, 10203040506070809000ull, 123456789123456789};
+static const wazn_amount test_amounts[]={0, 1, 2, 3, 4, 5, 10000, 10000000000000000000ull, 10203040506070809000ull, 123456789123456789};
 
 TEST(ringct, ecdh_roundtrip)
 {
