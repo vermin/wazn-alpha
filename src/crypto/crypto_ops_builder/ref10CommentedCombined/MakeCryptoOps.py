@@ -121,10 +121,10 @@ ge_comments = textwrap.dedent("""\
     */
     """)
 
-xmr_comments = textwrap.dedent("""\
+wazn_comments = textwrap.dedent("""\
     /*
      *
-     * xmr specific code
+     * WAZN specific code
      *
      *
     This code is from the original CryptoNote.
@@ -172,7 +172,7 @@ if a == "m":
         os.system("cp "+g+" "+g.replace("fe", "fe.wazn."))
     qhasmToC("fe_pow22523.c", "pow22523.h", "fe.wazn._pow22523.c")
     qhasmToC("fe_invert.c", "pow225521.h", "fe.wazn._invert.c")
-    os.system("rm fe.wazn._isnonzero.c") #since it's modified, it's in xmrSpecificOld
+    os.system("rm fe.wazn._isnonzero.c") #since it's modified, it's in WaznSpecificOld
     os.system("cat fe.wazn.*.c | grep -v '^#include' > fe.wazn.c")
 
     #sc things
@@ -181,7 +181,7 @@ if a == "m":
     #so you don't get multiple "loads"
     os.system("tail -n +24 sc_reduce.c > sc.wazn._reduce.c") #also good on linux
     os.system("tail -n +24 sc_muladd.c > sc.wazn._muladd.c")
-    os.system("tail -n +31 sc_sub.xmr.c > sc.wazn._sub.xmr.c") #careful with the tails if you change these files!
+    os.system("tail -n +31 sc_sub.wazn.c > sc.wazn._sub.wazn.c") #careful with the tails if you change these files!
     os.system("cat sc.wazn.*.c | grep -v '^#include' > sc.wazn.c")
 
     #ge stuff
@@ -224,9 +224,9 @@ if a == "m":
             text_file.write(ge_comments)
     with open("sc.wazn.comments", "w") as text_file:
             text_file.write(sc_comments)
-    with open("xmr.wazn.comments", "w") as text_file:
-            text_file.write(xmr_comments)
-    with open("xmr.wazn.predeclarations", "w") as text_file:
+    with open("wazn.wazn.comments", "w") as text_file:
+            text_file.write(wazn_comments)
+    with open("wazn.wazn.predeclarations", "w") as text_file:
             text_file.write(predeclarations)
 
 
@@ -239,7 +239,7 @@ if a == "m":
         text_file.write(crypto_ops_includes)
 
     #note you may have duplicates of load_3, load_4 and possibly some other functions ...
-    os.system("cat wazn.license crypto-ops.wazn.includes xmr.wazn.predeclarations fe.wazn.comments fe.wazn.c sc.wazn.comments sc.wazn.c ge.wazn.comments ge.wazn.c xmr.wazn.comments xmrSpecificOld.c > crypto-ops.c")
+    os.system("cat wazn.license crypto-ops.wazn.includes wazn.wazn.predeclarations fe.wazn.comments fe.wazn.c sc.wazn.comments sc.wazn.c ge.wazn.comments ge.wazn.c wazn.wazn.comments waznSpecificOld.c > crypto-ops.c")
 
     #WAZN specific header files
     #print("making crypto-ops-tmp.h")

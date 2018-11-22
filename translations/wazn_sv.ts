@@ -3809,8 +3809,8 @@ daemon för att fungera korrekt.</translation>
     </message>
     <message>
         <location filename="../src/wallet/wallet2.cpp" line="117"/>
-        <source>Use daemon instance at port &lt;arg&gt; instead of 18081</source>
-        <translation>Använd daemonen på port &lt;arg&gt; istället för 18081</translation>
+        <source>Use daemon instance at port &lt;arg&gt; instead of 11787</source>
+        <translation>Använd daemonen på port &lt;arg&gt; istället för 11787</translation>
     </message>
     <message>
         <location filename="../src/wallet/wallet2.cpp" line="119"/>

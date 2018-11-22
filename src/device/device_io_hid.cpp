@@ -1,5 +1,4 @@
 // Copyright (c) 2018, WAZN Project
-//
 // All rights reserved.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY

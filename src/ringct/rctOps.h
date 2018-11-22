@@ -3,7 +3,6 @@
 // Copyright (c) 2016, Monero Research Labs
 //
 // Author: Shen Noether <shen.noether@gmx.com>
-//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -101,17 +100,17 @@ namespace rct {
     void skpkGen(key &sk, key &pk);
     std::tuple<key, key> skpkGen();
     //generates a <secret , public> / Pedersen commitment to the amount
-    std::tuple<ctkey, ctkey> ctskpkGen(xmr_amount amount);
+    std::tuple<ctkey, ctkey> ctskpkGen(wazn_amount amount);
     //generates C =aG + bH from b, a is random
-    void genC(key & C, const key & a, xmr_amount amount);
+    void genC(key & C, const key & a, wazn_amount amount);
     //this one is mainly for testing, can take arbitrary amounts..
     std::tuple<ctkey, ctkey> ctskpkGen(const key &bH);
     // make a pedersen commitment with given key
-    key commit(xmr_amount amount, const key &mask);
+    key commit(wazn_amount amount, const key &mask);
     // make a pedersen commitment with zero key
-    key zeroCommit(xmr_amount amount);
+    key zeroCommit(wazn_amount amount);
     //generates a random uint long long
-    xmr_amount randXmrAmount(xmr_amount upperlimit);
+    wazn_amount randWaznAmount(wazn_amount upperlimit);
 
     //Scalar multiplications of curve points
 

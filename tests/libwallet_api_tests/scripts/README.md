@@ -2,7 +2,7 @@
 
 ## Environment for the tests
 * Running WAZN node, linked to private/public testnet.
-  By default, tests expect daemon running at ```localhost:33787```,
+  By default, tests expect daemon running at ```localhost:22786```,
   can be overridden with environment variable ```TESTNET_DAEMON_ADDRESS=<your_daemon_address>```
 
 * Directory with pre-generated wallets

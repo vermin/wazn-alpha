@@ -2,7 +2,6 @@
 // Copyright (c) 2016, Monero Research Labs
 //
 // Author: Shen Noether <shen.noether@gmx.com>
-//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -136,7 +135,7 @@ namespace rct {
     };
 
     //containers for representing amounts
-    typedef uint64_t xmr_amount;
+    typedef uint64_t wazn_amount;
     typedef unsigned int bits[ATOMS];
     typedef key key64[64];
 
@@ -241,7 +240,7 @@ namespace rct {
         keyV pseudoOuts; //C - for simple rct
         std::vector<ecdhTuple> ecdhInfo;
         ctkeyV outPk;
-        xmr_amount txnFee; // contains b
+        wazn_amount txnFee; // contains b
 
         template<bool W, template <bool> class Archive>
         bool serialize_rctsig_base(Archive<W> &ar, size_t inputs, size_t outputs)
@@ -506,7 +505,7 @@ namespace rct {
     void dp(const char * a, int l);
     void dp(keyV a);
     void dp(keyM a);
-    void dp(xmr_amount vali);
+    void dp(wazn_amount vali);
     void dp(int vali);
     void dp(bits amountb);
     void dp(const char * st);
@@ -514,20 +513,20 @@ namespace rct {
     //various conversions
 
     //uint long long to 32 byte key
-    void d2h(key & amounth, xmr_amount val);
-    key d2h(xmr_amount val);
+    void d2h(key & amounth, wazn_amount val);
+    key d2h(wazn_amount val);
     //uint long long to int[64]
-    void d2b(bits  amountb, xmr_amount val);
+    void d2b(bits  amountb, wazn_amount val);
     //32 byte key to uint long long
     // if the key holds a value > 2^64
     // then the value in the first 8 bytes is returned
-    xmr_amount h2d(const key &test);
+    wazn_amount h2d(const key &test);
     //32 byte key to int[64]
     void h2b(bits  amountb2, const key & test);
     //int[64] to 32 byte key
     void b2h(key  & amountdh, bits amountb2);
     //int[64] to uint long long
-    xmr_amount b2d(bits amountb);
+    wazn_amount b2d(bits amountb);
 
     bool is_rct_simple(int type);
     bool is_rct_bulletproof(int type);
