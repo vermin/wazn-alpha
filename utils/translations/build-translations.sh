@@ -13,4 +13,3 @@ fi
 
 echo "using $lrelease"
 "$lrelease" translations/*.ts
-
