@@ -5,7 +5,7 @@ function send_funds {
     local dest=$(cat "$2.address.txt")
 
     wazn-wallet-cli --wallet-file wallet_m --password "" \
-        --testnet --trusted-daemon --daemon-address localhost:33787  --log-file wallet_m.log \
+        --testnet --trusted-daemon --daemon-address localhost:22786  --log-file wallet_m.log \
         --command transfer $dest $amount
 }
 

@@ -1,5 +1,6 @@
 // Copyright (c) 2018, WAZN Project
 // Copyright (c) 2014-2018, The WAZN Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -81,14 +82,14 @@ const char * TESTNET_WALLET_PASS = "";
 std::string CURRENT_SRC_WALLET;
 std::string CURRENT_DST_WALLET;
 
-const uint64_t AMOUNT_10WAZN =  10000000L;
-const uint64_t AMOUNT_5WAZN  =  5000000L;
-const uint64_t AMOUNT_1WAZN  =  1000000L;
+const uint64_t AMOUNT_10WAZN =  10000000000000L;
+const uint64_t AMOUNT_5WAZN  =  5000000000000L;
+const uint64_t AMOUNT_1WAZN  =  1000000000000L;
 
 const std::string PAYMENT_ID_EMPTY = "";
 
-std::string TESTNET_DAEMON_ADDRESS = "localhost:22787";
-std::string MAINNET_DAEMON_ADDRESS = "localhost:11787";
+std::string TESTNET_DAEMON_ADDRESS = "localhost:22786";
+std::string MAINNET_DAEMON_ADDRESS = "localhost:11786";
 
 
 }
@@ -245,7 +246,7 @@ TEST_F(WalletManagerTest, WalletMaxAmountAsString)
 
 TEST_F(WalletManagerTest, WalletAmountFromString)
 {
-    uint64_t amount = WAZN::Wallet::amountFromString("100000000");
+    uint64_t amount = WAZN::Wallet::amountFromString("18446740");
     ASSERT_TRUE(amount > 0);
     amount = WAZN::Wallet::amountFromString("11000000000000");
     ASSERT_FALSE(amount > 0);
