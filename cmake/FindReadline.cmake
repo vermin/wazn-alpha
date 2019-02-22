@@ -16,7 +16,7 @@
 #  READLINE_FOUND            System has readline, include and lib dirs found
 #  GNU_READLINE_FOUND        Version of readline found is GNU readline, not libedit!
 #  LIBEDIT_FOUND             Version of readline found is libedit, not GNU readline!
-#  Readline_INCLUDE_DIR      The readline include directories. 
+#  Readline_INCLUDE_DIR      The readline include directories.
 #  Readline_LIBRARY          The readline library.
 #  GNU_READLINE_LIBRARY      The GNU readline library or empty string.
 #  LIBEDIT_LIBRARY           The libedit library or empty string.
@@ -86,4 +86,3 @@ elseif(READLINE_FOUND AND NOT HAVE_COPY_TEXT)
   set(LIBEDIT_FOUND TRUE)
   set(LIBEDIT_LIBRARY ${Readline_LIBRARY})
 endif(HAVE_COMPLETION_FUNCTION AND HAVE_COPY_TEXT)
-
