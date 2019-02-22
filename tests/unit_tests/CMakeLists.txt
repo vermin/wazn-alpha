@@ -1,5 +1,6 @@
 # Copyright (c) 2018, WAZN Project
 # Copyright (c) 2014-2018, The Monero Project
+#
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are
@@ -61,7 +62,6 @@ set(unit_tests_sources
   mul_div.cpp
   multiexp.cpp
   multisig.cpp
-  notify.cpp
   parse_amount.cpp
   random.cpp
   serialization.cpp
@@ -124,7 +124,3 @@ SET_PROPERTY(SOURCE memwipe.cpp PROPERTY COMPILE_FLAGS -Ofast)
 add_test(
   NAME    unit_tests
   COMMAND unit_tests --data-dir "${TEST_DATA_DIR}")
-
-  add_executable(test_notifier test_notifier.cpp)
-target_link_libraries(test_notifier ${EXTRA_LIBRARIES})
-set_property(TARGET test_notifier PROPERTY FOLDER "tests")
