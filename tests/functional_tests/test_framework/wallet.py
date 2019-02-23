@@ -1,5 +1,6 @@
 # Copyright (c) 2018, WAZN Project
 # Copyright (c) 2014-2018, The Monero Project
+#
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are
@@ -32,7 +33,7 @@ from .rpc import JSONRPC
 
 class Wallet(object):
 
-    def __init__(self, protocol='http', host='127.0.0.1', port=18083, path='/json_rpc'):
+    def __init__(self, protocol='http', host='127.0.0.1', port=11789, path='/json_rpc'):
         self.rpc = JSONRPC('{protocol}://{host}:{port}{path}'.format(protocol=protocol, host=host, port=port, path=path))
 
     def make_uniform_destinations(self, address, transfer_amount, transfer_number_of_destinations=1):
