@@ -1,4 +1,5 @@
-# Copyright (c) 2018, WAZN Project
+# Copyright (c) 2019 WAZN Project
+# Copyright (c) 2018-2019 uPlexa Team
 #
 # All rights reserved.
 #
@@ -517,8 +518,10 @@ if(MSVC)
   include_directories(SYSTEM src/platform/msc)
 else()
   include(TestCXXAcceptsFlag)
-  if (NOT ARCH)
-    set(ARCH native CACHE STRING "CPU to build for: -march value or 'default' to not pass -march at all")
+  if (NOT ARM6)
+    if(NOT DEPENDS OR DEPENDS AND NOT ARM)
+      set(ARCH native CACHE STRING "CPU to build for: -march value or 'default' to not pass -march at all")
+    endif()
   endif()
   message(STATUS "Building on ${CMAKE_SYSTEM_PROCESSOR} for ${ARCH}")
   if(ARCH STREQUAL "default")
