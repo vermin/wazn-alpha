@@ -1,11 +1,13 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2017-2018, The Monero Project
-// Copyright (c) 2013, Sergey Lyubka
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018-2019 uPlexa Team
+// Copyright (c) 2017-2018 The Monero Project
+// Copyright (c) 2013 Sergey Lyubka
 // All rights reserved.
 // Released under the MIT license.
 
 // This program takes a list of files as an input, and produces C++ code that
 // contains the contents of all these files as a collection of strings.
+//
 // Usage:
 //   1. Compile this file:
 //      cc -o generate-translations-header generate-translations-header.c
