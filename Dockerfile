@@ -133,7 +133,7 @@ RUN set -ex && \
 COPY --from=builder /src/build/release/bin /usr/local/bin/
 
 # Contains the blockchain
-VOLUME /root/.bitwazn
+VOLUME /root/.wazn
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
