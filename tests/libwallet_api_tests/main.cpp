@@ -1,5 +1,6 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The WAZN Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018-2019 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
 //
@@ -1166,7 +1167,6 @@ int main(int argc, char** argv)
     TESTNET_WALLET3_NAME = WALLETS_ROOT_DIR + "/wallet_03.bin";
     TESTNET_WALLET4_NAME = WALLETS_ROOT_DIR + "/wallet_04.bin";
     TESTNET_WALLET5_NAME = WALLETS_ROOT_DIR + "/wallet_05.bin";
-    TESTNET_WALLET6_NAME = WALLETS_ROOT_DIR + "/wallet_06.bin";
 
     CURRENT_SRC_WALLET = TESTNET_WALLET5_NAME;
     CURRENT_DST_WALLET = TESTNET_WALLET1_NAME;
