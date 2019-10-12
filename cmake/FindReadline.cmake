@@ -1,4 +1,4 @@
-# - Try to find readline include dirs and libraries 
+# - Try to find readline include dirs and libraries
 #
 # Usage of this module as follows:
 #
