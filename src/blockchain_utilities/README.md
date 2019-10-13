@@ -1,6 +1,7 @@
 # WAZN Blockchain Utilities
 
-Copyright (c) 2014-2018, The WAZN Project
+Copyright (c) 2019 WAZN Project
+Copyright (c) 2018 uPlexa Team
 
 ## Introduction
 
