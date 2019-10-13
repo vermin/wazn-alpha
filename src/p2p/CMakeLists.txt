@@ -1,5 +1,7 @@
-# Copyright (c) 2018, WAZN Project
-# Copyright (c) 2014-2018, The Monero Project
+# Copyright (c) 2019 WAZN Project
+# Copyright (c) 2018 uPlexa Team
+# Copyright (c) 2014-2018 The Monero Project
+#
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are
@@ -27,7 +29,7 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 cmake_minimum_required (VERSION 2.6)
-project (WAZN CXX)
+project (wazn CXX)
 
 file(GLOB P2P *)
 source_group(p2p FILES ${P2P})

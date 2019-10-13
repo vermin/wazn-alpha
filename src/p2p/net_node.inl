@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -395,8 +397,7 @@ namespace nodetool
     }
     else if (nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert("162.210.173.150:33786");
-      full_addrs.insert("162.210.173.151:33786");
+      full_addrs.insert("31.15.160.146:33786");
     }
     else if (nettype == cryptonote::FAKECHAIN)
     {
@@ -926,7 +927,7 @@ namespace nodetool
     bool res = m_net_server.connect(epee::string_tools::get_ip_string_from_int32(ipv4.ip()),
       epee::string_tools::num_to_string_fast(ipv4.port()),
       m_config.m_net_config.connection_timeout,
-      con);
+      con, m_bind_ip.empty() ? "0.0.0.0" : m_bind_ip);
 
     if(!res)
     {
@@ -991,7 +992,7 @@ namespace nodetool
     bool res = m_net_server.connect(epee::string_tools::get_ip_string_from_int32(ipv4.ip()),
                                     epee::string_tools::num_to_string_fast(ipv4.port()),
                                     m_config.m_net_config.connection_timeout,
-                                    con);
+                                    con, m_bind_ip.empty() ? "0.0.0.0" : m_bind_ip);
 
     if (!res) {
       bool is_priority = is_priority_node(na);
@@ -1606,7 +1607,7 @@ namespace nodetool
         return false;
       }
       return true;
-    });
+    }, m_bind_ip.empty() ? "0.0.0.0" : m_bind_ip);
     if(!r)
     {
       LOG_WARNING_CC(context, "Failed to call connect_async, network error.");
