@@ -26,7 +26,7 @@ index 117dfe8..465f0b9 100644
 +#endif
 +              )
          RL_CHECK_SIGNALS ();
- 
+
        if (rl_signal_event_hook)
 diff --git a/signals.c b/signals.c
 index 61f02f9..7c921d6 100644
@@ -34,7 +34,7 @@ index 61f02f9..7c921d6 100644
 +++ b/signals.c
 @@ -216,7 +216,9 @@ _rl_handle_signal (sig)
        /* FALLTHROUGH */
- 
+
      case SIGTERM:
 +#if defined (SIGHUP)
      case SIGHUP:
@@ -43,7 +43,7 @@ index 61f02f9..7c921d6 100644
      case SIGTSTP:
      case SIGTTOU:
 @@ -426,7 +428,9 @@ rl_set_signals ()
- 
+
        rl_maybe_set_sighandler (SIGINT, rl_signal_handler, &old_int);
        rl_maybe_set_sighandler (SIGTERM, rl_signal_handler, &old_term);
 +#if defined (SIGHUP)
@@ -62,7 +62,7 @@ index 61f02f9..7c921d6 100644
  #if defined (SIGQUIT)
        rl_maybe_restore_sighandler (SIGQUIT, &old_quit);
  #endif
--- 
+--
 1.8.3.2
 
 
@@ -78,7 +78,7 @@ index 89d9035..ec19844 100644
 @@ -152,14 +152,22 @@ _rl_print_color_indicator (char *f)
          {
            colored_filetype = C_FILE;
- 
+
 +#if defined (S_ISUID)
            if ((mode & S_ISUID) != 0 && is_colored (C_SETUID))
              colored_filetype = C_SETUID;
@@ -117,61 +117,61 @@ index fc926e5..e62edd0 100644
 +++ b/colors.h
 @@ -96,7 +96,7 @@ enum indicator_no
    };
- 
- 
+
+
 -#if !S_IXUGO
 +#if !S_IXUGO && defined(S_IXUSR) && defined(S_IXGRP) && defined(S_IXOTH)
  # define S_IXUGO (S_IXUSR | S_IXGRP | S_IXOTH)
  #endif
- 
+
 diff --git a/posixstat.h b/posixstat.h
 index 3eb7f29..854a2c9 100644
 --- a/posixstat.h
 +++ b/posixstat.h
 @@ -78,30 +78,44 @@
- 
+
  #if defined (S_IFBLK) && !defined (S_ISBLK)
  #define	S_ISBLK(m)	(((m)&S_IFMT) == S_IFBLK)	/* block device */
 +#elif !defined (S_IFBLK)
 +#define S_ISBLK(m)	0
  #endif
- 
+
  #if defined (S_IFCHR) && !defined (S_ISCHR)
  #define	S_ISCHR(m)	(((m)&S_IFMT) == S_IFCHR)	/* character device */
 +#elif !defined (S_IFCHR)
 +#define S_ISCHR(m)	0
  #endif
- 
+
  #if defined (S_IFDIR) && !defined (S_ISDIR)
  #define	S_ISDIR(m)	(((m)&S_IFMT) == S_IFDIR)	/* directory */
 +#elif !defined (S_IFDIR)
 +#define S_ISDIR(m)	0
  #endif
- 
+
  #if defined (S_IFREG) && !defined (S_ISREG)
  #define	S_ISREG(m)	(((m)&S_IFMT) == S_IFREG)	/* file */
 +#elif !defined (S_IFREG)
 +#define S_ISREG(m)	0
  #endif
- 
+
  #if defined (S_IFIFO) && !defined (S_ISFIFO)
  #define	S_ISFIFO(m)	(((m)&S_IFMT) == S_IFIFO)	/* fifo - named pipe */
 +#elif !defined (S_IFIFO)
 +#define S_ISFIFO(m)	0
  #endif
- 
+
  #if defined (S_IFLNK) && !defined (S_ISLNK)
  #define	S_ISLNK(m)	(((m)&S_IFMT) == S_IFLNK)	/* symbolic link */
 +#elif !defined (S_IFLNK)
 +#define S_ISLNK(m)	0
  #endif
- 
+
  #if defined (S_IFSOCK) && !defined (S_ISSOCK)
  #define	S_ISSOCK(m)	(((m)&S_IFMT) == S_IFSOCK)	/* socket */
 +#elif !defined (S_IFSOCK)
 +#define S_ISSOCK(m)	0
  #endif
- 
+
  /*
 @@ -137,6 +151,8 @@
  /* These are non-standard, but are used in builtins.c$symbolic_umask() */
@@ -180,8 +180,7 @@ index 3eb7f29..854a2c9 100644
 +#if defined(S_IXUSR) && defined(S_IXGRP) && defined(S_IXOTH)
  #define S_IXUGO		(S_IXUSR | S_IXGRP | S_IXOTH)
 +#endif
- 
- #endif /* _POSIXSTAT_H_ */
--- 
-1.8.3.2
 
+ #endif /* _POSIXSTAT_H_ */
+--
+1.8.3.2
