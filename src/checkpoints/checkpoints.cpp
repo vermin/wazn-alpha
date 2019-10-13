@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -163,12 +165,33 @@ namespace cryptonote
   {
     if (nettype == TESTNET)
     {
+      //ADD_CHECKPOINT(height, hash);
       return true;
     }
     if (nettype == STAGENET)
     {
+      //ADD_CHECKPOINT(height, hash);
       return true;
     }
+    //ADD_CHECKPOINT(height, hash);
+    ADD_CHECKPOINT(1, "8cae81b0e99be88b02edc0367b24177b0fd4638ba35ecd7a78b0b6232001acbf");
+    ADD_CHECKPOINT(2, "43b9e15444125c11f4dbd8890ec26e0a577f3f869d2e35cfc75b6c9aed8a3381");
+    ADD_CHECKPOINT(100, "4f602391e8895ae4d0149064cd0884a2e859ea99c424903a5b18f5b6617bd749");
+    ADD_CHECKPOINT(1000, "da5b0d7391614a015c0cdc554f9df168dd0bf89e300a5ac80820d452e27bb1bb");
+    ADD_CHECKPOINT(10000, "381d3ae51ff6806612e3fda2b6300705339fed17420ea798018a61013c2d69f8");
+    ADD_CHECKPOINT(20000, "6010bb562ed39db9d7e9618e9e24be045863fd8c1a2888f5eecf64ef99258bff");
+    ADD_CHECKPOINT(30000, "ccd3cca662bb613c038f5533df0a9f543f0c94ebb1a4b9235cac2e4cf4066896");
+    ADD_CHECKPOINT(40000, "35c899f54611156e7655a828bf1c25960ab01a77f66cecc219d1b44e16107429");
+    ADD_CHECKPOINT(48000, "4c176418847d1a2520e7076ed5e608f0094cb913931acd2e7f46487ce390a71d");
+    ADD_CHECKPOINT(65000, "0d59e7e528d056a3506c4b057106f5968f95565cc210e5bb15a19e8efe835025");
+    ADD_CHECKPOINT(80000, "6430683d9c963c2ddaf7ae741f0e833e33790be10e03e5b33e8dacb44925cc3e");
+    ADD_CHECKPOINT(100000, "83d0d466ab3c7d2edcaf93d821ae3dfffe599a17178fdff3d3d708e609406d61");
+    ADD_CHECKPOINT(120000, "b8b33042d451e55f640441cba9994f18bb4719242879fc6bef80ea497eefbb5b");
+    ADD_CHECKPOINT(140000, "9feed93420498408ab80546f700429d14c4fd39f7f72fa20b6bea8b76546ad39");
+    ADD_CHECKPOINT(150000, "f3a442e1f8bde3a774906f18ed94dee973ae0e9b32f7a2cb3bdf0797b6b7ed9e");
+    return true;
+  }
+
   bool checkpoints::load_checkpoints_from_json(const std::string &json_hashfile_fullpath)
   {
     boost::system::error_code errcode;
@@ -209,23 +232,14 @@ namespace cryptonote
   {
     std::vector<std::string> records;
 
-    // All four WAZNPulse domains have DNSSEC on and valid
-    static const std::vector<std::string> dns_urls = { "checkpoints.waznpulse.se"
-						     , "checkpoints.waznpulse.org"
-						     , "checkpoints.waznpulse.net"
-						     , "checkpoints.waznpulse.co"
+    // All four WAZNPulse domains have DNSSEC on and valid - Removed pulse checkpoints
+    static const std::vector<std::string> dns_urls = { ""
     };
 
-    static const std::vector<std::string> testnet_dns_urls = { "testpoints.waznpulse.se"
-							     , "testpoints.waznpulse.org"
-							     , "testpoints.waznpulse.net"
-							     , "testpoints.waznpulse.co"
+    static const std::vector<std::string> testnet_dns_urls = { ""
     };
 
-    static const std::vector<std::string> stagenet_dns_urls = { "stagenetpoints.waznpulse.se"
-                   , "stagenetpoints.waznpulse.org"
-                   , "stagenetpoints.waznpulse.net"
-                   , "stagenetpoints.waznpulse.co"
+    static const std::vector<std::string> stagenet_dns_urls = { ""
     };
 
     if (!tools::dns_utils::load_txt_records_from_dns(records, nettype == TESTNET ? testnet_dns_urls : nettype == STAGENET ? stagenet_dns_urls : dns_urls))
