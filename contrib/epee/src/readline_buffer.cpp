@@ -220,4 +220,3 @@ static void remove_line_handler()
   rl_redisplay();
   rl_callback_handler_remove();
 }
-

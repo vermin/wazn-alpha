@@ -1,6 +1,6 @@
 // Copyright (c) 2006-2013, Andrey N. Sabelnikov, www.sabelnikov.net
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
 // * Neither the name of the Andrey N. Sabelnikov nor the
 // names of its contributors may be used to endorse or promote products
 // derived from this software without specific prior written permission.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -22,15 +22,15 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 
 
 
-#pragma once 
+#pragma once
 
 #include <algorithm>
 
-namespace epee 
+namespace epee
 {
 namespace misc_utils
 {
@@ -75,7 +75,7 @@ namespace misc_utils
       return res;
     }
     /*
-      
+
       \b  Backspace (ascii code 08)
       \f  Form feed (ascii code 0C)
       \n  New line
@@ -132,10 +132,10 @@ namespace misc_utils
           }else if(*it == '\\')
           {
             escape_mode = true;
-          }          
+          }
           else
           {
-            val.push_back(*it); 
+            val.push_back(*it);
           }
         }
         ASSERT_MES_AND_THROW("Failed to match string in json entry: " << std::string(star_end_string, buf_end));
@@ -163,7 +163,7 @@ namespace misc_utils
           {
             if(!val.size() &&  *it == '-')
               is_signed_val = true;
-            if(*it == '.' ) 
+            if(*it == '.' )
               is_float_val = true;
             val.push_back(*it);
           }
@@ -174,7 +174,7 @@ namespace misc_utils
               star_end_string = --it;
               return;
             }
-            else 
+            else
               ASSERT_MES_AND_THROW("wrong number in json entry: " << std::string(star_end_string, buf_end));
           }
         }
@@ -206,7 +206,7 @@ namespace misc_utils
             {
               star_end_string = --it;
               return;
-            }else 
+            }else
               ASSERT_MES_AND_THROW("failed to match word number in json entry: " << std::string(star_end_string, buf_end));
           }
         }
@@ -237,7 +237,7 @@ namespace misc_utils
             {
               star_end_string = --it;
               return true;
-            }else 
+            }else
               return false;
           }
         }
@@ -254,7 +254,7 @@ namespace misc_utils
 
             continue;
           }else if( *it == '=' )
-          {            
+          {
             star_end_string = it;
             word_end = it;
             return true;

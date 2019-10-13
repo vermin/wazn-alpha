@@ -1,5 +1,7 @@
-// Copyright (c) 2014-2018, WAZN Project
-// Copyright (c) 2017-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018-2019 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -47,7 +49,7 @@ static size_t query_page_size()
     MERROR("Failed to determine page size");
     return 0;
   }
-  MINFO("Page size: " << ret);
+  //MINFO("Page size: " << ret);
   return ret;
 #else
 #warning Missing query_page_size implementation
@@ -84,13 +86,13 @@ namespace epee
 
   boost::mutex &mlocker::mutex()
   {
-    static boost::mutex vmutex;
-    return vmutex;
+    static boost::mutex *vmutex = new boost::mutex();
+    return *vmutex;
   }
   std::map<size_t, unsigned int> &mlocker::map()
   {
-    static std::map<size_t, unsigned int> vmap;
-    return vmap;
+    static std::map<size_t, unsigned int> *vmap = new std::map<size_t, unsigned int>();
+    return *vmap;
   }
 
   size_t mlocker::get_page_size()
