@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2017-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -51,8 +53,16 @@ threadpool::threadpool(unsigned int max_threads) : running(true), active(0) {
 }
 
 threadpool::~threadpool() {
+  try
   {
     const boost::unique_lock<boost::mutex> lock(mutex);
+    running = false;
+    has_work.notify_all();
+  }
+  catch (...)
+  {
+    // if the lock throws, we're just do it without a lock and hope,
+    // since the alternative is terminate
     running = false;
     has_work.notify_all();
   }
@@ -91,6 +101,7 @@ unsigned int threadpool::get_max_concurrency() const {
 
 threadpool::waiter::~waiter()
 {
+  try
   {
     boost::unique_lock<boost::mutex> lock(mt);
     if (num)

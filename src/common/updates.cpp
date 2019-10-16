@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2017-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -46,10 +48,7 @@ namespace tools
 
     // All four WAZNPulse domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
-        "updates.waznpulse.org",
-        "updates.waznpulse.net",
-        "updates.waznpulse.co",
-        "updates.waznpulse.se"
+        ""
     };
 
     if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls))

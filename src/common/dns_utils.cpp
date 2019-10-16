@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2017-2018 uPlexa Team
+// Copyright (c) 2017-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -45,12 +47,7 @@ namespace bf = boost::filesystem;
 
 static const char *DEFAULT_DNS_PUBLIC_ADDR[] =
 {
-  "194.150.168.168",    // CCC (Germany)
-  "80.67.169.40",       // FDN (France)
-  "89.233.43.71",       // http://censurfridns.dk (Denmark)
-  "109.69.8.51",        // punCAT (Spain)
-  "77.109.148.137",     // Xiala.net (Switzerland)
-  "193.58.251.251",     // SkyDNS (Russia)
+  "127.0.0.1",    //
 };
 
 static boost::mutex instance_lock;
@@ -369,13 +366,13 @@ std::string address_from_txt_record(const std::string& s)
   if (pos2 != std::string::npos)
   {
     // length of address == 95, we can at least validate that much here
-    if (pos2 - pos == 95)
+    if (pos2 - pos == 98)
     {
-      return s.substr(pos, 95);
+      return s.substr(pos, 98);
     }
-    else if (pos2 - pos == 106) // length of address == 106 --> integrated address
+    else if (pos2 - pos == 109) // length of address == 106 --> integrated address
     {
-      return s.substr(pos, 106);
+      return s.substr(pos, 109);
     }
   }
   return {};

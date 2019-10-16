@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -60,6 +62,7 @@ namespace
 
     DWORD mode_old;
     ::GetConsoleMode(h_cin, &mode_old);
+    //DWORD mode_new = mode_old & ~((hide_input ? ENABLE_ECHO_INPUT : 0) | ENABLE_LINE_INPUT);
     DWORD mode_new = mode_old & ~(hide_input ? ENABLE_ECHO_INPUT : 0);
     ::SetConsoleMode(h_cin, mode_new);
 
