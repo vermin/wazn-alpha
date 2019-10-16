@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -56,7 +58,7 @@ using namespace cryptonote;
 #undef WAZN_DEFAULT_LOG_CATEGORY
 #define WAZN_DEFAULT_LOG_CATEGORY "WalletAPI"
 
-namespace WAZN {
+namespace Wazn {
 
 namespace {
     // copy-pasted from simplewallet
@@ -72,7 +74,7 @@ namespace {
     std::string get_default_ringdb_path(cryptonote::network_type nettype)
     {
       boost::filesystem::path dir = tools::get_default_data_dir();
-      // remove .bitWAZN, replace with .shared-ringdb
+      // remove .bitwazn, replace with .shared-ringdb
       dir = dir.remove_filename();
       dir /= ".shared-ringdb";
       if (nettype == cryptonote::TESTNET)
@@ -2298,4 +2300,4 @@ bool WalletImpl::isKeysFileLocked()
 }
 } // namespace
 
-namespace BitWAZN = WAZN;
+namespace Bitwazn = Wazn;

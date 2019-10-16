@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2017-2018 uPlexa Team
+// Copyright (c) 2017-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are

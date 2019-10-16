@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -47,7 +49,7 @@ namespace epee {
     unsigned int g_test_dbg_lock_sleep = 0;
 }
 
-namespace WAZN {
+namespace Wazn {
 
 Wallet *WalletManagerImpl::createWallet(const std::string &path, const std::string &password,
                                     const std::string &language, NetworkType nettype, uint64_t kdf_rounds)
@@ -384,4 +386,4 @@ void WalletManagerFactory::setLogCategories(const std::string &categories)
 
 }
 
-namespace BitWAZN = WAZN;
+namespace Bitwazn = Wazn;
