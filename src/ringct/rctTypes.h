@@ -1,5 +1,6 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2016, Monero Research Labs
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2017-2018 uPlexa Team
+// Copyright (c) 2017-2018 The Monero Project
 //
 // Author: Shen Noether <shen.noether@gmx.com>
 // All rights reserved.
