@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -55,6 +57,7 @@
 
 namespace po = boost::program_options;
 namespace bf = boost::filesystem;
+
 
 int main(int argc, char const * argv[])
 {
@@ -181,7 +184,7 @@ int main(int argc, char const * argv[])
     }
 
     // data_dir
-    //   default: e.g. ~/.bitwazn/ or ~/.bitwazn/testnet
+    //   default: e.g. ~/.wazn/ or ~/.wazn/testnet
     //   if data-dir argument given:
     //     absolute path
     //     relative path: relative to cwd
