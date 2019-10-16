@@ -21,8 +21,10 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-// Code surrounding the word list is Copyright (c) 2018, WAZN Project and
-// 2014-2018, The Monero Project - All rights reserved.
+// Code surrounding the word list is Copyright (c) 2019 WAZN Project,
+// 2018 uPlexa Team and 2014-2018 The Monero Project
+//
+// All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
 // permitted provided that the following conditions are met:
