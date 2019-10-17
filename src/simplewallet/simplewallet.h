@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -51,8 +53,8 @@
 
 #undef WAZN_DEFAULT_LOG_CATEGORY
 #define WAZN_DEFAULT_LOG_CATEGORY "wallet.simplewallet"
-// Hardcode WAZN's donation address (see #1447)
-constexpr const char WAZN_DONATION_ADDR[] = "44AFFq5kSiGBoZ4NMDwYtN18obc8AemS33DBLWs3H7otXft3XjrpDtQGv7SqSsaBYBb98uNbr2VBBEt7f2wfn3RVGQBEP3A";
+// Hardcode WAZN's donation address
+constexpr const char WAZN_DONATION_ADDR[] = "WaznsxmBgsEB8D9URhFnZYQnaFAuo9QF16kSGnhDBcbyWtxcDoU6UxLY3wGTsHUEEj8C9ZKHqqmDh5WWpgwjHJHn6krEKtFNqw";
 
 /*!
  * \namespace cryptonote
@@ -281,7 +283,7 @@ namespace cryptonote
       void update(uint64_t height, bool force = false)
       {
         auto current_time = std::chrono::system_clock::now();
-        const auto node_update_threshold = std::chrono::seconds(DIFFICULTY_TARGET / 2); // use min of it
+        const auto node_update_threshold = std::chrono::seconds(DIFFICULTY_TARGET_V1 / 2); // use min of V1/V2
         if (node_update_threshold < current_time - m_blockchain_height_update_time || m_blockchain_height <= height)
         {
           update_blockchain_height();
