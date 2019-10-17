@@ -696,7 +696,7 @@ void slow_hash_free_state(void)
  * @param length the length in bytes of the data
  * @param hash a pointer to a buffer in which the final 256 bit hash will be stored
  */
-void cn_slow_hash(const void *data, size_t length, char *hash, int upxtwo, int variant, int prehashed)
+void cn_slow_hash(const void *data, size_t length, char *hash, int wazn, int variant, int prehashed)
 {
     RDATA_ALIGN16 uint8_t expandedKey[240];  /* These buffers are aligned to use later with SSE functions */
 
@@ -1065,7 +1065,7 @@ STATIC INLINE void aligned_free(void *ptr)
 }
 #endif /* FORCE_USE_HEAP */
 
-void cn_slow_hash(const void *data, size_t length, char *hash, int upxtwo, int variant, int prehashed)
+void cn_slow_hash(const void *data, size_t length, char *hash, int waznone, int variant, int prehashed)
 {
     RDATA_ALIGN16 uint8_t expandedKey[240];
 
@@ -1280,7 +1280,7 @@ STATIC INLINE void xor_blocks(uint8_t* a, const uint8_t* b)
   U64(a)[1] ^= U64(b)[1];
 }
 
-void cn_slow_hash(const void *data, size_t length, char *hash, int upxtwo, int variant, int prehashed)
+void cn_slow_hash(const void *data, size_t length, char *hash, int waznone, int variant, int prehashed)
 {
     uint8_t text[INIT_SIZE_BYTE];
     uint8_t a[AES_BLOCK_SIZE];
@@ -1481,7 +1481,7 @@ union cn_slow_hash_state {
 };
 #pragma pack(pop)
 
-void cn_slow_hash(const void *data, size_t length, char *hash, int upxtwo, int variant, int prehashed) {
+void cn_slow_hash(const void *data, size_t length, char *hash, int waznone, int variant, int prehashed) {
 #ifndef FORCE_USE_HEAP
   uint8_t long_state[MEMORY];
 #else
