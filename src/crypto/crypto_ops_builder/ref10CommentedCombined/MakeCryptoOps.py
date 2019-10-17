@@ -1,7 +1,7 @@
 #assumes you have gnu sed, osx sed might need slight syntax changeo
 #c.f. https://unix.stackexchange.com/questions/112023/how-can-i-replace-a-string-in-a-files
 
-#written by shen-noether WAZN research labs
+#written by shen-noether monero research labs
 
 import os #for copying and sed etc.
 import glob #for copy files
@@ -15,8 +15,9 @@ print("maybe someone smart can replace the sed with perl..")
 a = ""
 
 license = textwrap.dedent("""\
-    // Copyright (c) 2018, WAZN Project
-    // Copyright (c) 2014-2018, The Monero Project
+    // Copyright (c) 2019 WAZN Project
+    // Copyright (c) 2018 uPlexa Team
+    // Copyright (c) 2014-2018 The Monero Project
     //
     // All rights reserved.
     //
