@@ -487,7 +487,7 @@ namespace cryptonote
           }
 
           // hijacking m_requested objects in connection context to patch up
-          // a possible DOS vector pointed out by @monero-moo where peers keep
+          // a possible DOS vector pointed out by @wazn-moo where peers keep
           // sending (0...n-1) transactions.
           // If requested objects is not empty, then we must have asked for
           // some missing transacionts, make sure that they're all there.
