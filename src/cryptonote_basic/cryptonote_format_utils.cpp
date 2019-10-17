@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -196,6 +198,16 @@ namespace cryptonote
     bool r = tx.serialize_base(ba);
     CHECK_AND_ASSERT_MES(r, false, "Failed to parse transaction from blob");
     CHECK_AND_ASSERT_MES(expand_transaction_1(tx, true), false, "Failed to expand transaction data");
+    return true;
+  }
+  //---------------------------------------------------------------
+  bool parse_and_validate_tx_prefix_from_blob(const blobdata& tx_blob, transaction_prefix& tx)
+  {
+    std::stringstream ss;
+    ss << tx_blob;
+    binary_archive<false> ba(ss);
+    bool r = ::serialization::serialize_noeof(ba, tx);
+    CHECK_AND_ASSERT_MES(r, false, "Failed to parse transaction prefix from blob");
     return true;
   }
   //---------------------------------------------------------------
@@ -767,7 +779,12 @@ namespace cryptonote
   {
     switch (decimal_point)
     {
+      case 12:
+      case 9:
       case 6:
+      case 3:
+      case 2:
+      case 0:
         default_decimal_point = decimal_point;
         break;
       default:
@@ -1018,7 +1035,11 @@ namespace cryptonote
   {
     blobdata bd = get_block_hashing_blob(b);
     const int cn_variant = b.major_version >= 7 ? b.major_version - 6 : 0;
-    crypto::cn_slow_hash(bd.data(), bd.size(), res, cn_variant);
+    // Opting out of CNv2 PoW Change due to decreased efficiency on lower-end CPU devices.
+    //const int cn_miner_variant = 1;
+    const int cn_miner_variant = b.major_version >= 11 ? 2 : 1;
+    const int upxtwo = b.major_version >= 11 ? 2 : b.major_version >= 2;
+    crypto::cn_slow_hash(bd.data(), bd.size(), res, upxtwo, cn_miner_variant);
     return true;
   }
   //---------------------------------------------------------------
