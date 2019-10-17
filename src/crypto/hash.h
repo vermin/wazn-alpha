@@ -1,5 +1,7 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2014-2018, The Monero Project
+// Copyright (c) 2019 WAZN Project
+// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2014-2018 The Monero Project
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -71,12 +73,12 @@ namespace crypto {
     return h;
   }
 
-  inline void cn_slow_hash(const void *data, std::size_t length, hash &hash, int variant = 0) {
-    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), variant, 0/*prehashed*/);
+  inline void cn_slow_hash(const void *data, std::size_t length, hash &hash, int upxtwo = 0, int variant = 0) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), upxtwo, variant, 0/*prehashed*/);
   }
 
-  inline void cn_slow_hash_prehashed(const void *data, std::size_t length, hash &hash, int variant = 0) {
-    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), variant, 1/*prehashed*/);
+  inline void cn_slow_hash_prehashed(const void *data, std::size_t length, hash &hash, int upxtwo = 0, int variant = 0) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), upxtwo, variant, 1/*prehashed*/);
   }
 
   inline void tree_hash(const hash *hashes, std::size_t count, hash &root_hash) {
