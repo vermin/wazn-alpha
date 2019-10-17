@@ -1,6 +1,7 @@
 # WAZN
 
-Copyright (c) 2014-2018, The WAZN Project
+Copyright (c) 2019 The WAZN Project
+Copyright (c) 2018 uPlexa Team
 
 ## Crypto Ops Builder
 
