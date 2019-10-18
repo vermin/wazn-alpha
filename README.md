@@ -60,7 +60,7 @@ application.
 
 * Change to the cloned directory, run:
 
-        cd uplexa
+        cd WAZN
 
 * If you would like a specific [version/tag](https://github.com/uPlexa/uplexa/tags), do a git checkout for that version. eg. 'v0.2.1.0'. If you dont care about the version and just want binaries from master, skip this step:
 
