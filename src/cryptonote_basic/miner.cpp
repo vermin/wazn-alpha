@@ -638,6 +638,9 @@ namespace cryptonote
       {
         boost::tribool battery_powered(on_battery_power());
         if(!indeterminate( battery_powered ))
+        {
+          on_ac_power = !(bool)battery_powered;
+        }
       }
 
       if( m_is_background_mining_started )
