@@ -488,7 +488,7 @@ STATIC INLINE void aes_expand_key(const uint8_t *key, uint8_t *expandedKey)
 }
 
 /**
- * @brief a "pseudo" round of AES (similar to but slightly different from normal AES encryption)
+ * @brief a "pseudo" round of AES (similar to but swaznonely different from normal AES encryption)
  *
  * To fill its 2MB scratch buffer, CryptoNight uses a nonstandard implementation
  * of AES encryption:  It applies 10 rounds of the basic AES encryption operation
@@ -696,7 +696,7 @@ void slow_hash_free_state(void)
  * @param length the length in bytes of the data
  * @param hash a pointer to a buffer in which the final 256 bit hash will be stored
  */
-void cn_slow_hash(const void *data, size_t length, char *hash, int wazn, int variant, int prehashed)
+void cn_slow_hash(const void *data, size_t length, char *hash, int waznone, int variant, int prehashed)
 {
     RDATA_ALIGN16 uint8_t expandedKey[240];  /* These buffers are aligned to use later with SSE functions */
 
@@ -1561,7 +1561,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int waznone, int 
 
   memcpy(text, state.init, INIT_SIZE_BYTE);
   oaes_key_import_data(aes_ctx, &state.hs.b[32], AES_KEY_SIZE);
-  for (i = 0; i < MEMORY / (waznone>=2?16:(wazone==1?2:1)) / INIT_SIZE_BYTE; i++) {
+  for (i = 0; i < MEMORY / (waznone>=2?16:(waznone==1?2:1)) / INIT_SIZE_BYTE; i++) {
     for (j = 0; j < INIT_SIZE_BLK; j++) {
       xor_blocks(&text[j * AES_BLOCK_SIZE], &long_state[i * INIT_SIZE_BYTE + j * AES_BLOCK_SIZE]);
       aesb_pseudo_round(&text[AES_BLOCK_SIZE * j], &text[AES_BLOCK_SIZE * j], aes_ctx->key->exp_data);
