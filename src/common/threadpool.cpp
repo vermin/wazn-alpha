@@ -107,6 +107,7 @@ threadpool::waiter::~waiter()
     if (num)
       MERROR("wait should have been called before waiter dtor - waiting now");
   }
+  catch (...) { /* ignore */ }
   try
   {
     wait(NULL);
