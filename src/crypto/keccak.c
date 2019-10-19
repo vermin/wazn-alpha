@@ -208,6 +208,6 @@ void keccak_finish(KECCAK_CTX * ctx, uint8_t *md){
 
     static_assert(KECCAK_BLOCKLEN > KECCAK_DIGESTSIZE, "");
     if (md) {
-        memcpy(md, ctx->hash, KECCAK_DIGESTSIZE);
+        memcpy_swap64le(md, ctx->hash, KECCAK_DIGESTSIZE / sizeof(uint64_t));
     }
 }
