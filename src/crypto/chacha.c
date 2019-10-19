@@ -11,7 +11,7 @@ Public domain.
 #endif
 
 #include "chacha.h"
-#include "int-util.h"
+#include "common/int-util.h"
 #include "warnings.h"
 
 /*
