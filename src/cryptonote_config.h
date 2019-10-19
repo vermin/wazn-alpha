@@ -69,6 +69,7 @@
 
 #define FEE_PER_KB_OLD                                  ((uint64_t)(COIN)/100) // pow(10, 8)
 #define FEE_PER_KB                                      ((uint64_t)2  *  (COIN) / 1000) // 2 * pow(10, 7)
+#define FEE_PER_BYTE                                    ((uint64_t)2  *  (COIN) / 1000000) // 2 * pow(10, 7)
 #define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)2  *  (COIN) / 1000) // 2 * pow(10, 7)
 #define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)10 *  (COIN) ) // 10 * pow(10,10)
 #define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)2  *  (COIN) / 1000) // 2 * pow(10, 7)
