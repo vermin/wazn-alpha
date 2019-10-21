@@ -67,12 +67,12 @@
 // COIN - number of smallest units in one coin
 #define COIN                                            ((uint64_t)1000000000000) // pow(10, 12)
 
-#define FEE_PER_KB_OLD                                  ((uint64_t)(COIN)/100) // pow(10, 8)
-#define FEE_PER_KB                                      ((uint64_t)2  *  (COIN) / 1000) // 2 * pow(10, 7)
-#define FEE_PER_BYTE                                    ((uint64_t)2  *  (COIN) / 1000000) // 2 * pow(10, 7)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)2  *  (COIN) / 1000) // 2 * pow(10, 7)
-#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)10 *  (COIN) ) // 10 * pow(10,10)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)2  *  (COIN) / 1000) // 2 * pow(10, 7)
+#define FEE_PER_KB_OLD                                  ((uint64_t)100000) // pow(10, 10)
+#define FEE_PER_KB                                      ((uint64_t)20000) // 2 * pow(10,9)
+#define FEE_PER_BYTE                                    ((uint64_t)30000)
+#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)2000000000) // 2 * pow(10,9)
+#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)1000000000000) // 10 * pow(10,12)
+#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)20000) // 2 * pow(10,9)
 #define DYNAMIC_FEE_REFERENCE_TRANSACTION_WEIGHT        ((uint64_t)2000)
 
 #define ORPHANED_BLOCKS_MAX_COUNT                       100
@@ -163,7 +163,7 @@ namespace config
   uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000000); // pow(10, 8)
   std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
-  uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x137130;                // starts with "Wazn"
+  uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x137130;              // starts with "Wazn"
   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x3e2d;     // starts with "W2"
   uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x582d;             // starts with "W3"
   uint16_t const P2P_DEFAULT_PORT = 11786;
