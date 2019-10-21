@@ -393,18 +393,20 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("");
+      full_addrs.insert("31.15.160.146:21786");
     }
     else if (nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert("");
+      full_addrs.insert("31.15.160.146:33786");
     }
     else if (nettype == cryptonote::FAKECHAIN)
     {
     }
     else
     {
-      full_addrs.insert("");
+      full_addrs.insert("31.15.160.146:11786");
+      full_addrs.insert("192.168.0.113:11786");
+      full_addrs.insert("192.168.0.119:11786");
     }
     return full_addrs;
   }
@@ -645,10 +647,14 @@ namespace nodetool
   {
     kill();
     m_peerlist.deinit();
+
+    if (!m_offline)
+    {
     m_net_server.deinit_server();
     // remove UPnP port mapping
     if(!m_no_igd)
       delete_upnp_port_mapping(m_listening_port);
+    }
     return store_config();
   }
   //-----------------------------------------------------------------------------------
@@ -2032,7 +2038,7 @@ namespace nodetool
     char lanAddress[64];
     result = UPNP_GetValidIGD(deviceList, &urls, &igdData, lanAddress, sizeof lanAddress);
     freeUPNPDevlist(deviceList);
-    if (result != 0) {
+    if (result > 0) {
       if (result == 1) {
         std::ostringstream portString;
         portString << port;
@@ -2078,7 +2084,7 @@ namespace nodetool
     char lanAddress[64];
     result = UPNP_GetValidIGD(deviceList, &urls, &igdData, lanAddress, sizeof lanAddress);
     freeUPNPDevlist(deviceList);
-    if (result != 0) {
+    if (result > 0) {
       if (result == 1) {
         std::ostringstream portString;
         portString << port;
