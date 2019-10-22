@@ -404,7 +404,7 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("");
+      full_addrs.insert("localhost:11786");
     }
     return full_addrs;
   }
