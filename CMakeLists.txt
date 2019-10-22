@@ -134,7 +134,7 @@ endif()
 if (ARM_ID STREQUAL "aarch64" OR ARM_ID STREQUAL "arm64" OR ARM_ID STREQUAL "armv8-a")
   set(ARM 1)
   set(ARM8 1)
-  set(ARCH "armv8-a")
+  set(ARCH "armv7")
 endif()
 
 if(ARCH_ID STREQUAL "ppc64le")
@@ -199,7 +199,7 @@ set(CMAKE_C_FLAGS_RELEASE "-DNDEBUG ${OPT_FLAGS_RELEASE}")
 set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG ${OPT_FLAGS_RELEASE}")
 
 # set this to 0 if per-block checkpoint needs to be disabled
-set(PER_BLOCK_CHECKPOINT 1)
+set(PER_BLOCK_CHECKPOINT 0)
 
 if(PER_BLOCK_CHECKPOINT)
   add_definitions("-DPER_BLOCK_CHECKPOINT")
