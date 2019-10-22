@@ -437,7 +437,7 @@ if (CMAKE_SYSTEM_NAME MATCHES "(SunOS|Solaris)")
 endif ()
 
 if (APPLE AND NOT IOS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=armv8 -fvisibility=default")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -fvisibility=default")
   if (NOT OpenSSL_DIR)
       EXECUTE_PROCESS(COMMAND brew --prefix openssl
         OUTPUT_VARIABLE OPENSSL_ROOT_DIR
@@ -534,7 +534,7 @@ else()
     set(ARCH_FLAG "-mcpu=7400")
   elseif(IOS AND ARCH STREQUAL "arm64")
     message(STATUS "IOS: Changing arch from arm64 to armv8")
-    set(ARCH_FLAG "-march=armv8")
+    set(ARCH_FLAG "-march=native")
   else()
     set(ARCH_FLAG "-march=${ARCH}")
     if(ARCH STREQUAL "native")
