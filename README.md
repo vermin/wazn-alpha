@@ -9,6 +9,7 @@ Copyright (c) 2014-2018 The Monero Project
 Copyright (c) 2012-2013 The Cryptonote developers
 
 
+
 #### On Windows:
 
 Binaries for Windows are built on Windows using the MinGW toolchain within
