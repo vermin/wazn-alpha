@@ -8,10 +8,6 @@ Copyright (c) 2014-2018 The Monero Project
 
 Copyright (c) 2012-2013 The Cryptonote developers
 
-[TODO BEFORE BINARIES ARE PACKED FOR V0.9]
-
----testing and see where we are...
-
 
 #### On Windows:
 
@@ -62,7 +58,7 @@ application.
 
         cd WAZN
 
-* If you would like a specific [version/tag](https://github.com/uPlexa/uplexa/tags), do a git checkout for that version. eg. 'v0.2.1.0'. If you dont care about the version and just want binaries from master, skip this step:
+* If you would like a specific [version/tag](https://github.com/Project-WAZN/WAZN/tags), do a git checkout for that version. eg. 'v1.0.1'. If you don't care about the version and just want binaries from master, skip this step:
 
         git checkout stable
 
