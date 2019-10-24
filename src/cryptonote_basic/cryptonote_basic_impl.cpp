@@ -95,12 +95,6 @@ namespace cryptonote {
 
     uint64_t full_reward_zone = get_min_block_weight(version);
 
-    const uint64_t premine = 73500000000U;
-    if (median_weight > 0 && already_generated_coins < premine && version>=9) {
-      reward = premine;
-      return true;
-    }
-
     uint64_t base_reward = (MONEY_SUPPLY - already_generated_coins) >> emission_speed_factor;
     if (base_reward < FINAL_SUBSIDY_PER_MINUTE*target_minutes)
     {
