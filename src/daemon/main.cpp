@@ -91,7 +91,6 @@ int main(int argc, char const * argv[])
       command_line::add_arg(core_settings, daemon_args::arg_max_concurrency);
       command_line::add_arg(core_settings, daemon_args::arg_zmq_rpc_bind_ip);
       command_line::add_arg(core_settings, daemon_args::arg_zmq_rpc_bind_port);
-      command_line::add_arg(core_settings, daemon_args::arg_print_genesis_tx);
 
       daemonizer::init_options(hidden_options, visible_options);
       daemonize::t_executor::init_options(core_settings);
@@ -134,16 +133,6 @@ int main(int argc, char const * argv[])
     {
       std::cout << "WAZN '" << WAZN_RELEASE_NAME << "' (v" << WAZN_VERSION_FULL << ")" << ENDL;
       return 0;
-    }
-
-    // PRINT GENESIS TX
-    if (command_line::get_arg(vm, daemon_args::arg_print_genesis_tx)) {
-      cryptonote::transaction tx;
-      cryptonote::account_public_address ac = boost::value_initialized<cryptonote::account_public_address>();
-      construct_miner_tx(0, 0, 0, 0, 0, ac, tx); // zero fee in genesis
-      std::string hex_tx_represent = string_tools::buff_to_hex_nodelimer(tx_to_blob(tx));
-      std::cout << hex_tx_represent << std::endl;
-      return false;
     }
 
     // OS
