@@ -204,7 +204,7 @@ pacman -S mingw-w64-i686-toolchain make mingw-w64-i686-cmake mingw-w64-i686-boos
 
 * The resulting executables can be found in `build/debug/bin`
 
-### On Linux for Android (using docker):
+#### On Linux for Android (using docker):
 
         # Build image (for ARM 32-bit)
         docker build -f utils/build_scripts/android32.Dockerfile -t uplexa-android .
