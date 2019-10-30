@@ -20,7 +20,7 @@ Win-x64
 
 - Web: [wazn.io](https://wazn.io)
 - Mail: [dev@wazn.io](mailto:dev@wazn.io)
-- GitHub: [https://github.com/Project-WAZN/WAZN](https://github.com/Project-WAZN/WAZN)
+- GitHub: [github.com/Project-WAZN/WAZN](https://github.com/Project-WAZN/WAZN)
 
 ## Introduction
 
@@ -62,7 +62,7 @@ packages often include only shared library binaries (`.so`) but not static
 library archives (`.a`).
 
 [1] On Debian/Ubuntu `libgtest-dev` only includes sources and headers. You must
-build the library binary manually. This can be done with the following command ```sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake . && sudo make && sudo mv libg* /usr/lib/ ```
+build the library binary manually. This can be done with the following command ```sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake . && sudo make && sudo mv libg* /usr/lib/ ```  
 [2] libnorm-dev is needed if your zmq library was built with libnorm, and not needed otherwise
 
 Debian / Ubuntu one liner for all dependencies:  
@@ -206,14 +206,14 @@ pacman -S mingw-w64-i686-toolchain make mingw-w64-i686-cmake mingw-w64-i686-boos
 
 ### On Linux for Android (using docker):
 
-# Build image (for ARM 32-bit)
-docker build -f utils/build_scripts/android32.Dockerfile -t wazn-android .
-# Build image (for ARM 64-bit)
-docker build -f utils/build_scripts/android64.Dockerfile -t wazn-android .
-# Create container
-docker create -it --name wazn-android wazn-android bash
-# Get binaries
-docker cp wazn-android:/src/build/release/bin .
+        # Build image (for ARM 32-bit)
+        docker build -f utils/build_scripts/android32.Dockerfile -t uplexa-android .
+        # Build image (for ARM 64-bit)
+        docker build -f utils/build_scripts/android64.Dockerfile -t uplexa-android .
+        # Create container
+        docker create -it --name uplexa-android uplexa-android bash
+        # Get binaries
+        docker cp uplexa-android:/src/build/release/bin .
 
 ### Building portable statically linked binaries (Cross Compiling)
 
