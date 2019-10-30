@@ -1,12 +1,29 @@
 # WAZN
 
 Copyright (c) 2019 WAZN Project
-
 Copyright (c) 2018-2019 uPlexa
-
 Copyright (c) 2014-2018 The Monero Project
-
 Copyright (c) 2012-2013 The Cryptonote developers
+
+## Development resources
+
+- Web: [wazn.io](https://wazn.io)
+- Mail: [dev@wazn.io](mailto:dev@wazn.io)
+- GitHub: [https://github.com/Project-WAZN/WAZN](https://github.com/Project-WAZN/WAZN)
+
+## Announcements
+
+- Subscribe to our Reddit for important announcements regarding WAZN (https://www.reddit.com/r/WAZN/)
+
+
+## Coverage
+
+| Type      | Status |
+|-----------|--------|
+| License   | [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](https://opensource.org/licenses/GPL-3.0)
+
+
+
 
 
 
