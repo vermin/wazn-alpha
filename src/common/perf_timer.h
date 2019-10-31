@@ -69,7 +69,7 @@ protected:
 class LoggingPerformanceTimer: public PerformanceTimer
 {
 public:
-  LoggingPerformanceTimer(const std::string &s, uint64_t unit, el::Level l = el::Level::Debug);
+  LoggingPerformanceTimer(const std::string &s, const std::string &cat, uint64_t unit, el::Level l = el::Level::Info);
   ~LoggingPerformanceTimer();
 
 private:
