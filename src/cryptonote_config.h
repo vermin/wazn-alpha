@@ -32,9 +32,12 @@
 
 #pragma once
 
+#include <stdexcept>
 #include <string>
 #include <boost/uuid/uuid.hpp>
 
+
+#define HARDFORK_1_HEIGHT                               1
 #define CRYPTONOTE_DNS_TIMEOUT_MS                       20000
 
 #define CRYPTONOTE_MAX_BLOCK_NUMBER                     500000000
