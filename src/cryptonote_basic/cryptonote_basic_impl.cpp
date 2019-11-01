@@ -99,6 +99,7 @@ namespace cryptonote {
       base_reward = FINAL_SUBSIDY_PER_MINUTE*target_minutes;
     }
 
+    uint64_t full_reward_zone = get_min_block_weight(version);
 
     //make it soft
     if (median_weight < full_reward_zone) {
