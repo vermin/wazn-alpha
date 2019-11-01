@@ -233,14 +233,23 @@ namespace cryptonote
   {
     std::vector<std::string> records;
 
-    // All four WAZNPulse domains have DNSSEC on and valid - Removed pulse checkpoints
-    static const std::vector<std::string> dns_urls = { ""
+    // Both WAZNPulse domains have DNSSEC on and valid
+    static const std::vector<std::string> dns_urls = {
+        "checkpoints.wazn.io",
+        "checkpoints.s4nka.com",
+        "checkpoints.tehnika.mk"
     };
 
-    static const std::vector<std::string> testnet_dns_urls = { ""
+    static const std::vector<std::string> testnet_dns_urls = {
+        "testpoints.wazn.io",
+        "testpoints.s4nka.com",
+        "testpoints.tehnika.mk"
     };
 
-    static const std::vector<std::string> stagenet_dns_urls = { ""
+    static const std::vector<std::string> stagenet_dns_urls = {
+        "stagenetpoints.wazn.io",
+        "stagenetpoints.s4nka.com",
+        "stagenetpoints.tehnika.mk"
     };
 
     if (!tools::dns_utils::load_txt_records_from_dns(records, nettype == TESTNET ? testnet_dns_urls : nettype == STAGENET ? stagenet_dns_urls : dns_urls))

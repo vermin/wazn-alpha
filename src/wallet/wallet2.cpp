@@ -11633,13 +11633,14 @@ uint64_t wallet2::get_segregation_fork_height() const
   if (m_segregation_height > 0)
     return m_segregation_height;
 
-  static const bool use_dns = true;
-  if (use_dns)
+  if (m_use_dns && !m_offline)
   {
     // All four WAZNPulse domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
-        ""
-    };
+      "segheights.wazn.io",
+      "segheights.s4nka.com",
+      "segheights.tehnika.mk"
+  };
 
     const uint64_t current_height = get_blockchain_current_height();
     uint64_t best_diff = std::numeric_limits<uint64_t>::max(), best_height = 0;
