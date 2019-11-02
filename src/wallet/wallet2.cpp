@@ -11633,8 +11633,8 @@ uint64_t wallet2::get_segregation_fork_height() const
   if (m_segregation_height > 0)
     return m_segregation_height;
 
-    static const bool use_dns = true;
-    if (use_dns)
+  static const bool use_dns = true;
+  if (use_dns)
   {
     // All four WAZNPulse domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
