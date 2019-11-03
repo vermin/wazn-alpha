@@ -443,11 +443,9 @@ namespace cryptonote
       std::vector<blobdata> have_tx;
 
       // Instead of requesting missing transactions by hash like BTC,
-      // we do it by index (thanks to a suggestion from moneromooo) because
-      // we're way cooler .. and also because they're smaller than hashes.
-      //
-      // Also, remember to pepper some whitespace changes around to bother
-      // moneromooo ... only because I <3 him.
+      // we do it by index because we're way cooler
+      // and also because they're smaller than hashes.
+
       std::vector<uint64_t> need_tx_indices;
 
       transaction tx;

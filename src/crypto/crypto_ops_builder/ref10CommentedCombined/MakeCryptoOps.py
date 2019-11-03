@@ -1,7 +1,7 @@
 #assumes you have gnu sed, osx sed might need slight syntax changeo
 #c.f. https://unix.stackexchange.com/questions/112023/how-can-i-replace-a-string-in-a-files
 
-#written by shen-noether monero research labs
+#written by shen-noether The Monero Project
 
 import os #for copying and sed etc.
 import glob #for copy files
