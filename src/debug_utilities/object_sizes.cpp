@@ -111,12 +111,12 @@ int main(int argc, char* argv[])
   SL(tools::wallet2::unsigned_tx_set);
   SL(tools::wallet2::signed_tx_set);
 
-  SL(WAZN::WalletImpl);
-  SL(WAZN::AddressBookRow);
-  SL(WAZN::TransactionInfoImpl);
-  SL(WAZN::TransactionHistoryImpl);
-  SL(WAZN::PendingTransactionImpl);
-  SL(WAZN::UnsignedTransactionImpl);
+  SL(Wazn::WalletImpl);
+  SL(Wazn::AddressBookRow);
+  SL(Wazn::TransactionInfoImpl);
+  SL(Wazn::TransactionHistoryImpl);
+  SL(Wazn::PendingTransactionImpl);
+  SL(Wazn::UnsignedTransactionImpl);
 
   return 0;
 }

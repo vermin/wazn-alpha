@@ -41,7 +41,7 @@
 #include <iostream>
 
 //  Public interface for libwallet library
-namespace WAZN {
+namespace Wazn {
 
 enum NetworkType : uint8_t {
     MAINNET = 0,
@@ -1199,4 +1199,4 @@ struct WalletManagerFactory
 
 }
 
-namespace WAZN = WAZN;
+namespace WAZN = Wazn;

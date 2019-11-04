@@ -20,7 +20,7 @@ Win-x64
 
 - Web: [wazn.io](https://wazn.io)
 - Mail: [dev@wazn.io](mailto:dev@wazn.io)
-- GitHub: [github.com/Project-WAZN/WAZN](https://github.com/Project-WAZN/WAZN)
+- GitHub: [github.com/Project-WAZN/wazn](https://github.com/Project-WAZN/wazn)
 
 ## Introduction
 
@@ -72,7 +72,7 @@ Debian / Ubuntu one liner for all dependencies:
 
 Clone recursively to pull-in needed submodule(s):
 
-`$ git clone --recursive https://github.com/Project-WAZN/WAZN`
+`$ git clone --recursive https://github.com/Project-WAZN/wazn`
 
 If you already have a repo cloned, initialize and update:
 
@@ -108,9 +108,9 @@ encouraged. If you would like to checkout the most stable branch, please use ```
 
 * The resulting executables can be found in `build/release/bin`
 
-* Add `PATH="$PATH:$HOME/WAZN/build/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/wazn/build/release/bin"` to `.profile`
 
-* Run WAZN with `WAZNd --detach`
+* Run WAZN with `waznd --detach`
 
 * **Optional**: build and run the test suite to verify the binaries:
 
@@ -172,7 +172,7 @@ To build for 32-bit Windows:
 
 * To git clone, run:
 
-        git clone --recursive https://github.com/Project-WAZN/WAZN
+        git clone --recursive https://github.com/Project-WAZN/wazn
 
 **Building**
 
@@ -180,7 +180,7 @@ To build for 32-bit Windows:
 
         cd WAZN
 
-* If you would like a specific [version/tag](https://github.com/Project-WAZN/WAZN/tags), do a git checkout for that version. eg. 'v1.0.1'. If you don't care about the version and just want binaries from master, skip this step:
+* If you would like a specific [version/tag](https://github.com/Project-WAZN/wazn/tags), do a git checkout for that version. eg. 'v1.0.1'. If you don't care about the version and just want binaries from master, skip this step:
 
         git checkout stable
 
