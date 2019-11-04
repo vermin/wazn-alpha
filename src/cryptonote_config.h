@@ -166,9 +166,9 @@ namespace config
   uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000000); // pow(10, 8)
   std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
-  uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x137130;              // starts with "Wazn"
-  uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x3e2d;     // starts with "W2"
-  uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x582d;             // starts with "W3"
+  uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x137130;                // starts with "Wazn"
+  uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x3bab30;     // starts with "WaZn"
+  uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x2fab30;             // starts with "WaZN"
   uint16_t const P2P_DEFAULT_PORT = 11786;
   uint16_t const RPC_DEFAULT_PORT = 11787;
   uint16_t const ZMQ_RPC_DEFAULT_PORT = 11788;
@@ -180,9 +180,9 @@ namespace config
 
   namespace testnet
   {
-    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x6136;              // starts with "XZ"
-    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x3bb3;   // starts with "X2"
-    uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x5533;           // starts with "X3"
+    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x9dd32;               // starts with "Wtst"
+    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x5d32;     // starts with "Wts"
+    uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x5eb2;             // starts with "Wt"
     uint16_t const P2P_DEFAULT_PORT = 22786;
     uint16_t const RPC_DEFAULT_PORT = 22787;
     uint16_t const ZMQ_RPC_DEFAULT_PORT = 22788;
@@ -195,9 +195,9 @@ namespace config
 
   namespace stagenet
   {
-    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x5ebc;              // starts with "YZ"
-    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x38b9;   // starts with "Y2"
-    uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x52b9;           // starts with "Y3"
+    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x81032;               // starts with "Wstg"
+    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x5032;     // starts with "Wst"
+    uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x51b2;             // starts with "Ws"
     uint16_t const P2P_DEFAULT_PORT = 33786;
     uint16_t const RPC_DEFAULT_PORT = 33787;
     uint16_t const ZMQ_RPC_DEFAULT_PORT = 33788;
