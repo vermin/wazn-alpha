@@ -58,4 +58,4 @@ private:
 
 }
 
-namespace Bitwazn = Wazn;
+namespace WAZN = Wazn;

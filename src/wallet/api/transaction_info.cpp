@@ -142,4 +142,4 @@ uint64_t TransactionInfoImpl::unlockTime() const
 
 } // namespace
 
-namespace Bitwazn = Wazn;
+namespace WAZN = Wazn;

@@ -63,4 +63,4 @@ void onStartup()
 
 } // namespace
 
-namespace Bitwazn = Wazn;
+namespace WAZN = Wazn;

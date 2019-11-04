@@ -2300,4 +2300,4 @@ bool WalletImpl::isKeysFileLocked()
 }
 } // namespace
 
-namespace Bitwazn = Wazn;
+namespace WAZN = Wazn;

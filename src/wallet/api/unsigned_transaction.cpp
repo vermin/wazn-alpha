@@ -319,4 +319,4 @@ uint64_t UnsignedTransactionImpl::minMixinCount() const
 
 } // namespace
 
-namespace Bitwazn = Wazn;
+namespace WAZN = Wazn;

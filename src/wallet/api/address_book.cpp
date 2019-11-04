@@ -180,4 +180,4 @@ AddressBookImpl::~AddressBookImpl()
 
 } // namespace
 
-namespace Bitwazn = Wazn;
+namespace WAZN = Wazn;
