@@ -63,4 +63,4 @@ void onStartup()
 
 } // namespace
 
-namespace WAZN = Wazn;
+namespace wazn = Wazn;

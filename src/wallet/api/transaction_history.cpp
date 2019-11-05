@@ -247,4 +247,4 @@ void TransactionHistoryImpl::refresh()
 
 } // namespace
 
-namespace WAZN = Wazn;
+namespace wazn = Wazn;

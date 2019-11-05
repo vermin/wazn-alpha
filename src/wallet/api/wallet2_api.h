@@ -1199,4 +1199,4 @@ struct WalletManagerFactory
 
 }
 
-namespace WAZN = Wazn;
+namespace wazn = Wazn;

@@ -386,4 +386,4 @@ void WalletManagerFactory::setLogCategories(const std::string &categories)
 
 }
 
-namespace WAZN = Wazn;
+namespace wazn = Wazn;

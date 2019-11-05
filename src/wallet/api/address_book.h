@@ -68,4 +68,4 @@ private:
 
 }
 
-namespace WAZN = Wazn;
+namespace wazn = Wazn;

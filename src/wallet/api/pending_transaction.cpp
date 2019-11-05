@@ -249,4 +249,4 @@ std::vector<std::string> PendingTransactionImpl::signersKeys() const {
 
 }
 
-namespace WAZN = Wazn;
+namespace wazn = Wazn;
