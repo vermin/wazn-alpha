@@ -64,7 +64,7 @@ Debian / Ubuntu one liner for all dependencies:
 
 Clone recursively to pull-in needed submodule(s):
 
-`$ git clone --recursive https://github.com/Project-WAZN/wazn`
+`$ git clone --recursive https://github.com/project-wazn/wazn`
 
 If you already have a repo cloned, initialize and update:
 
@@ -164,7 +164,7 @@ To build for 32-bit Windows:
 
 * To git clone, run:
 
-        git clone --recursive https://github.com/Project-WAZN/wazn
+        git clone --recursive https://github.com/project-wazn/wazn
 
 **Building**
 
@@ -172,7 +172,7 @@ To build for 32-bit Windows:
 
         cd wazn
 
-* If you would like a specific [version/tag](https://github.com/Project-WAZN/wazn/tags), do a git checkout for that version. eg. 'v1.0.1'. If you don't care about the version and just want binaries from master, skip this step:
+* If you would like a specific [version/tag](https://github.com/project-wazn/wazn/tags), do a git checkout for that version. eg. 'v1.0.1'. If you don't care about the version and just want binaries from master, skip this step:
 
         git checkout stable
 
