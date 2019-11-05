@@ -13,14 +13,14 @@ Copyright (c) 2012-2013 The Cryptonote developers
 
 ## Builds
 
-Ubuntu-x64
+Ubuntu-x64  
 Win-x64
 
 ## Development resources
 
 - Web: [wazn.io](https://wazn.io)
 - Mail: [dev@wazn.io](mailto:dev@wazn.io)
-- GitHub: [github.com/Project-WAZN/wazn](https://github.com/Project-WAZN/wazn)
+- GitHub: [github.com/vermin/wazn](https://github.com/vermin/wazn)
 
 ## Introduction
 
@@ -52,17 +52,9 @@ If you want to help out, see [CONTRIBUTING](CONTRIBUTING.md) for a set of guidel
 
 ### Dependencies
 
-The following table summarizes the tools and libraries required to build. A
-few of the libraries are also included in this repository (marked as
-"Vendored"). By default, the build uses the library installed on the system,
-and ignores the vendored sources. However, if no library is found installed on
-the system, then the vendored source will be built and used. The vendored
-sources are also used for statically-linked builds because distribution
-packages often include only shared library binaries (`.so`) but not static
-library archives (`.a`).
+The following table summarizes the tools and libraries required to build. A few of the libraries are also included in this repository (marked as "Vendored"). By default, the build uses the library installed on the system, and ignores the vendored sources. However, if no library is found installed on the system, then the vendored source will be built and used. The vendored sources are also used for statically-linked builds because distribution packages often include only shared library binaries (`.so`) but not static library archives (`.a`).
 
-[1] On Debian/Ubuntu `libgtest-dev` only includes sources and headers. You must
-build the library binary manually. This can be done with the following command ```sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake . && sudo make && sudo mv libg* /usr/lib/ ```  
+[1] On Debian/Ubuntu `libgtest-dev` only includes sources and headers. You must build the library binary manually. This can be done with the following command ```sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake . && sudo make && sudo mv libg* /usr/lib/```  
 [2] libnorm-dev is needed if your zmq library was built with libnorm, and not needed otherwise
 
 Debian / Ubuntu one liner for all dependencies:  
@@ -76,7 +68,7 @@ Clone recursively to pull-in needed submodule(s):
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd WAZN && git submodule init && git submodule update`
+`$ cd wazn && git submodule init && git submodule update`
 
 ### Build instructions
 
@@ -88,7 +80,7 @@ invokes cmake commands as needed.
 * Install the dependencies
 * Change to the root of the source code directory, change to the most recent release branch, and build:
 
-        cd WAZN
+        cd wazn
         git checkout stable
         make release
 
@@ -178,7 +170,7 @@ To build for 32-bit Windows:
 
 * Change to the cloned directory, run:
 
-        cd WAZN
+        cd wazn
 
 * If you would like a specific [version/tag](https://github.com/Project-WAZN/wazn/tags), do a git checkout for that version. eg. 'v1.0.1'. If you don't care about the version and just want binaries from master, skip this step:
 
@@ -308,6 +300,6 @@ TAILS ships with a very restrictive set of firewall rules. Therefore, you need
 to add a rule to allow this connection too, in addition to telling torsocks to
 allow inbound connections. Full example:
 
-    sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 18081 -j ACCEPT
+    sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 11787 -j ACCEPT
     DNS_PUBLIC=tcp torsocks ./uplexad --p2p-bind-ip 127.0.0.1 --no-igd --rpc-bind-ip 127.0.0.1 \
         --data-dir /home/amnesia/Persistent/your/directory/to/the/blockchain
