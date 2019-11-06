@@ -900,6 +900,7 @@ POP_WARNINGS
       try
       {
         io_service_.run();
+        return true;
       }
       catch(const std::exception& ex)
       {
