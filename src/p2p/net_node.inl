@@ -395,8 +395,6 @@ namespace nodetool
     {
       full_addrs.insert("95.179.152.61:22786");
       full_addrs.insert("155.138.135.129:22786");
-      full_addrs.insert("31.15.138.153:22786");
-
     }
     else if (nettype == cryptonote::STAGENET)
     {
@@ -409,7 +407,6 @@ namespace nodetool
     {
       full_addrs.insert("95.179.152.61:11786");
       full_addrs.insert("155.138.135.129:11786");
-      full_addrs.insert("31.15.138.153:11786");
     }
     return full_addrs;
   }
