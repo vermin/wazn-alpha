@@ -37,6 +37,12 @@
 #include <gnu/libc-version.h>
 #endif
 
+
+#ifdef __GLIBC__
+  #include <sstream>
+  #include <sys/sysmacros.h>
+  #include <fstream>
+#endif
 #include "unbound.h"
 
 #include "include_base_utils.h"
