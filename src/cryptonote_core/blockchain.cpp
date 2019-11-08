@@ -90,8 +90,8 @@ static const struct {
   time_t time;
 } mainnet_hard_forks[] = {
   // version 1 from the start of the blockchain
-  { 1, 1, 0, 1573210800 },
-  { 10, 2, 0, 1573232400 },
+  { 1, 1, 0, 1569690000 },
+  { 10, 2, 0, 1573200000 },
 };
 static const uint64_t mainnet_hard_fork_version_1_till = 1;
 
@@ -102,8 +102,8 @@ static const struct {
   time_t time;
 } testnet_hard_forks[] = {
   // version 1 from the start of the blockchain
-  { 1, 1, 0, 1573210800 },
-  { 10, 2, 0, 1573232400 },
+  { 1, 1, 0, 1569690000 },
+  { 10, 2, 0, 1573200000 },
 };
 static const uint64_t testnet_hard_fork_version_1_till = 1;
 
@@ -114,8 +114,8 @@ static const struct {
   time_t time;
 } stagenet_hard_forks[] = {
   // version 1 from the start of the blockchain
-  { 1, 1, 0, 1573210800 },
-  { 10, 2, 0, 1573232400 },
+  { 1, 1, 0, 1569690000 },
+  { 10, 2, 0, 1573200000 },
 };
 
 //------------------------------------------------------------------
@@ -387,7 +387,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
 
   // genesis block has no timestamp, could probably change it to have timestamp of 1341378000...
   if(!top_block_timestamp)
-    timestamp_diff = time(NULL) - 1572616800;
+    timestamp_diff = time(NULL) - 1569690000;
 
   // create general purpose async service queue
 

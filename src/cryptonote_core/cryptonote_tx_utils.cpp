@@ -112,7 +112,7 @@ namespace cryptonote
     if (hard_fork_version >= 2 && hard_fork_version < 4) {
       block_reward = block_reward - block_reward % ::config::BASE_REWARD_CLAMP_THRESHOLD;
     }
-    if (hard_fork_version >= 10) {
+    if (hard_fork_version >= 9) {
       block_reward = block_reward / 2;
     }
 
