@@ -138,6 +138,7 @@ DISABLE_VS_WARNINGS(4244 4345)
   void account_base::set_null()
   {
     m_keys = account_keys();
+    m_creation_timestamp = 0;
   }
   //-----------------------------------------------------------------
   void account_base::forget_spend_key()
@@ -157,9 +158,9 @@ DISABLE_VS_WARNINGS(4244 4345)
     generate_keys(m_keys.m_account_address.m_view_public_key, m_keys.m_view_secret_key, second, two_random ? false : true);
 
     struct tm timestamp = {0};
-    timestamp.tm_year = 2018 - 1900;  // year 2018
-    timestamp.tm_mon = 10 - 1;  // month october
-    timestamp.tm_mday = 23;  // 23rd of october
+    timestamp.tm_year = 2019 - 1900;  // year 2019
+    timestamp.tm_mon = 11 - 1;  // month November
+    timestamp.tm_mday = 8;     // 8th of the month
     timestamp.tm_hour = 0;
     timestamp.tm_min = 0;
     timestamp.tm_sec = 0;
@@ -184,9 +185,9 @@ DISABLE_VS_WARNINGS(4244 4345)
     m_keys.m_view_secret_key = viewkey;
 
     struct tm timestamp = {0};
-    timestamp.tm_year = 2018 - 1900;  // year 2018
-    timestamp.tm_mon = 10 - 1;  // month october
-    timestamp.tm_mday = 23;  // 23rd of october
+    timestamp.tm_year = 2019 - 1900;  // year 2019
+    timestamp.tm_mon = 11 - 1;  // month November
+    timestamp.tm_mday = 8;     // 8th of the month
     timestamp.tm_hour = 0;
     timestamp.tm_min = 0;
     timestamp.tm_sec = 0;
@@ -213,9 +214,9 @@ DISABLE_VS_WARNINGS(4244 4345)
     hwdev.get_public_address(m_keys.m_account_address);
     hwdev.get_secret_keys(m_keys.m_view_secret_key, m_keys.m_spend_secret_key);
     struct tm timestamp = {0};
-    timestamp.tm_year = 2018 - 1900;  // year 2018
-    timestamp.tm_mon = 10 - 1;  // month october
-    timestamp.tm_mday = 23;  // 23rd of october
+    timestamp.tm_year = 2019 - 1900;  // year 2019
+    timestamp.tm_mon = 11 - 1;  // month November
+    timestamp.tm_mday = 8;     // 8th of the month
     timestamp.tm_hour = 0;
     timestamp.tm_min = 0;
     timestamp.tm_sec = 0;
