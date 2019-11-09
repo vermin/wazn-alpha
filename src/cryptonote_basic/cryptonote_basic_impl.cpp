@@ -93,13 +93,13 @@ namespace cryptonote {
     const int target_minutes = target / 60;
     const int emission_speed_factor = EMISSION_SPEED_FACTOR_PER_MINUTE - int_log2(target_minutes);
 
+    uint64_t full_reward_zone = get_min_block_weight(version);
+
     uint64_t base_reward = (MONEY_SUPPLY - already_generated_coins) >> emission_speed_factor;
     if (base_reward < FINAL_SUBSIDY_PER_MINUTE*target_minutes)
     {
       base_reward = FINAL_SUBSIDY_PER_MINUTE*target_minutes;
     }
-
-    uint64_t full_reward_zone = get_min_block_weight(version);
 
     //make it soft
     if (median_weight < full_reward_zone) {
