@@ -297,7 +297,8 @@ allow inbound connections. Full example:
     sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 11787 -j ACCEPT
     DNS_PUBLIC=tcp torsocks ./uplexad --p2p-bind-ip 127.0.0.1 --no-igd --rpc-bind-ip 127.0.0.1 \
         --data-dir /home/amnesia/Persistent/your/directory/to/the/blockchain
-        
+       
+       
 ## License
 ```
 Licensed under the GPL-3.0
