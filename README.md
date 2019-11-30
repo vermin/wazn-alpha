@@ -1,5 +1,6 @@
 # WAZN
 
+
 | Type      | Status |
 |-----------|--------|
 | License   | [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](https://opensource.org/licenses/GPL-3.0)
