@@ -74,12 +74,12 @@ If you want to help out, see [CONTRIBUTING](CONTRIBUTING.md) for a set of guidel
 WAZN uses a fixed-schedule software upgrade (hard fork) mechanism to implement new features. This means that end users and service providers of WAZN should run current versions and upgrade their software on a regular schedule. Regular software upgrades are planned up to 2 times a year and they should take place in March or September. Nonessential or surface software revisions will be available as they are through testing process. The required software for these upgrades will be available prior to the scheduled date. Please check WAZN official repository before this date for appropriate software version.  
 Below is the projected schedule for the next upgrade. Dates are provided in YYYY-MM-DD format.
 
-|   WAZN upgrade  |   Date & Time    |   Minimum    | Recommended  |          Modification           |
-|   block height  |       GMT**      | WAZN version | WAZN version |            details              |
-|-----------------|------------------|-----------------------------|---------------------------------|
-|       1 -> v10  | 2019-11-09 23:16 |    v1.0.0    |    v1.0.1    |       cn-wazn 128KB algo        |
-|  15 000 -> v11  | 2019-12-07 15:33 |    v1.1.0    |    v1.1.0    |       TX Fee minimization       |
-|  XX XXX ->  XX  | XXXX-XX-XX XX:XX |     X.X.X    |     X.X.X    |             XXXXXX              |
+|   WAZN upgrade  |   Date & Time    |   Minimum    | Recommended  |          Modification           |  
+|   block height  |       GMT**      | WAZN version | WAZN version |            details              |  
+|-----------------|------------------|-----------------------------|---------------------------------|  
+|       1 -> v10  | 2019-11-09 23:16 |    v1.0.0    |    v1.0.1    |       cn-wazn 128KB algo        |  
+|  15 000 -> v11  | 2019-12-07 15:33 |    v1.1.0    |    v1.1.0    |       TX Fee minimization       |  
+|  XX XXX ->  XX  | XXXX-XX-XX XX:XX |     X.X.X    |     X.X.X    |             XXXXXX              |  
 
 XXs indicate that these details have not been determined as of commit date.
 ** indicates estimate time of anticipated WAZN block mined to complete the upgrade process.
