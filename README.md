@@ -5,6 +5,7 @@ WAZN
 
 ## Table of Contents
 
+  - [Development resources](#development-resources)
   - [Announcements](#announcements)
   - [Introduction](#introduction)
   - [Build Status](#build-status)
@@ -19,8 +20,13 @@ WAZN
   - [Internationalization](#internationalization)
   - [Using Tor](#using-tor)
   - [Known issues](#known-issues)
-  - [Development resources](#development-resources)
   - [License](#license)
+
+## Development resources
+
+- GitHub: [github.com/vermin/wazn](https://github.com/vermin/wazn)
+- Mail: [dev@wazn.io](mailto:dev@wazn.io)
+- Web: [wazn.io](https://wazn.io)
 
 ## Announcements
 
@@ -328,12 +334,6 @@ Because of the nature of the socket-based protocols that drive WAZN blockchain, 
 Certain blockchain "features" can be considered "bugs" if misused correctly. Consequently, please consider the following:
 
 - When receiving WAZN, be aware that it may be locked for an arbitrary time if the sender elected to, preventing you from spending that WAZN until the lock time expires. You may want to hold off acting upon such a transaction until the unlock time lapses. To get a sense of that time, you can consider the remaining block time until unlock as seen in the `show_transfers` command.
-
-## Development resources
-
-- Web: [wazn.io](https://wazn.io)
-- Mail: [dev@wazn.io](mailto:dev@wazn.io)
-- GitHub: [github.com/vermin/wazn](https://github.com/vermin/wazn)
 
 ## License
 ```
