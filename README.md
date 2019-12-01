@@ -41,8 +41,8 @@ WAZN is a private, secure, untraceable, decentralized digital currency. You are 
 These builds are from latest release branch and available for download:
 
 **v1.0.1 | Sweet Chestnut CLI**  
-* [wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)  
-* [wazn-v1.0.1-win64.zip](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-win64.zip)
+[wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)  
+[wazn-v1.0.1-win64.zip](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-win64.zip)
 
 | Operating System      | Processor | Status |
 |-----------------------|-----------|--------|
