@@ -74,28 +74,14 @@ If you want to help out, see [CONTRIBUTING](CONTRIBUTING.md) for a set of guidel
 WAZN uses a fixed-schedule software upgrade (hard fork) mechanism to implement new features. This means that end users and service providers of WAZN should run current versions and upgrade their software on a regular schedule. Regular software upgrades are planned up to 2 times a year and they should take place in March or September. Nonessential or surface software revisions will be available as they are through testing process. The required software for these upgrades will be available prior to the scheduled date. Please check WAZN official repository before this date for appropriate software version.  
 Below is the projected schedule for the next upgrade. Dates are provided in YYYY-MM-DD format.
 
-|   WAZN upgrade height  |   Date & Time    |   Minimum    | Recommended  |          Modification details          |  
-|   block height  |       GMT**      | WAZN version | WAZN version |                          |  
-| --------------- | ---------------- | --------------------------- | ------------------------------- |  
-|       1 -> v10  | 2019-11-09 23:16 |    v1.0.0    |    v1.0.1    |       cn-wazn 128KB algo        |  
-|  15 000 -> v11  | 2019-12-07 15:33 |    v1.1.0    |    v1.1.0    |       TX Fee minimization       |  
-|  XX XXX ->  XX  | XXXX-XX-XX XX:XX |     X.X.X    |     X.X.X    |             XXXXXX              |  
-
-
-| Software block upgrade height | Date & Time GMT**    | Recommended App version | Minimum App version | Modification details   |  
+| Software block upgrade height | Date & Time GMT***    | Recommended App version | Minimum App version | Modification details   |
 | ----------------------------- | -------------------- | ----------------------- | ------------------- | ---------------------- |
 | v10 -> 1                      | 2019-11-09 23:16     | v1.0.1                  | v0.9.4              | cn-wazn 128KB algo     |
 | v11 -> 15 000                 | 2019-12-07 15:33     | v1.1.0                  | v0.10.0             | TX Fee minimization    |
 | vXX -> XX XXX                 | XXXX-XX-XX XX:XX     | vX.X.X                  | vX.X.X              |  XXXXXX                |
 
-| WAZN upgrade block height | Date & Time**    | BEST App version | MIN App version | Modification details     |  
-| ----------------------------- | ---------------- | ---------------- | --------------- | ------------------------ |
-| v10 -> 1                      | 2019-11-09 23:16 | v1.0.1           | v0.9.4          | cn-wazn 128KB algo      |
-| v11 -> 15 000                 | 2019-12-07 15:33 | v1.1.0           | v0.10.0         | TX Fee minimization  |
-| vXX -> XX XXX                 | XXXX-XX-XX XX:XX | vX.X.X           | vX.X.X          |   XXXXXX              |
-
-XXs indicate that these details have not been determined as of commit date.
-** indicates approximate time of anticipated WAZN block mined to complete the upgrade process.
+* XXs indicate that these details have not been determined as of commit date.
+* *** indicates approximate time of anticipated WAZN block mined to complete the upgrade process.
 
 ## Release staging schedule and protocol
 
