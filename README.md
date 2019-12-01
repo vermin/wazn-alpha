@@ -3,12 +3,6 @@ WAZN
 
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](https://opensource.org/licenses/GPL-3.0)
 
-## Builds
-
-**v1.0.1 | Sweet Chestnut CLI**  
-* [wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)  
-* [wazn-v1.0.1-win64.zip](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-win64.zip)
-
 ## Table of Contents
 
   - [Announcements](#announcements)
@@ -46,10 +40,14 @@ WAZN is a private, secure, untraceable, decentralized digital currency. You are 
 
 These builds are from latest release branch and available for download:
 
+**v1.0.1 | Sweet Chestnut CLI**  
+* [wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)  
+* [wazn-v1.0.1-win64.zip](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-win64.zip)
+
 | Operating System      | Processor | Status |
 |-----------------------|-----------|--------|
-| Win 10 (MSYS2/MinGW)  |    amd64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
-| Win 10 (MSYS2/MinGW)  |    IA-32    | [![Build](https://img.shields.io/badge/failed-red)](https://github.com/project-wazn/wazn/releases)
+| Win10 (MSYS2/MinGW)   |    amd64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
+| Win10 (MSYS2/MinGW)   |    IA-32    | [![Build](https://img.shields.io/badge/failed-red)](https://github.com/project-wazn/wazn/releases)
 | macOS 10.13           |    amd64    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
 | macOS 10.14           |    IA-32    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
 | Ubuntu 18.04          |    amd64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
@@ -73,18 +71,18 @@ If you want to help out, see [CONTRIBUTING](CONTRIBUTING.md) for a set of guidel
 
 WAZN uses a fixed-schedule software upgrade (hard fork) mechanism to implement new features. This means that end users and service providers of WAZN should run current versions and upgrade their software on a regular schedule. Regular software upgrades are planned up to 2 times a year and they should take place in March or September. Nonessential or surface software revisions will be available as they are through testing process. The required software for these upgrades will be available prior to the scheduled date. Please check WAZN official repository before this date for appropriate software version. Below is the projected schedule for the next upgrade. Dates are provided in YYYY-MM-DD format.
 
-| Software block upgrade height | Date & Time GMT***    | Recommended App version | Minimum App version | Modification details   |
+| Software block upgrade height | Date & Time GMT***   | Recommended App version | Minimum App version | Modification details   |
 | ----------------------------- | -------------------- | ----------------------- | ------------------- | ---------------------- |
-| v10 -> 1                      | 2019-11-09 23:16     | v1.0.1                  | v0.9.4              | cn-wazn 128KB algo     |
-| v11 -> 15 000                 | 2019-12-07 15:33     | v1.1.0                  | v0.10.0             | TX Fee minimization    |
-| vXX -> XX XXX                 | XXXX-XX-XX XX:XX     | vX.X.X                  | vX.X.X              |  XXXXXX                |
+| v10 -> 1                      | 2019-11-09 23:16     | v1.0.1                  | v1.0.0              | cn-wazn 128KB          |
+| **v11 -> 15 000**             | **2019-12-07 15:33** | v1.1.0                  | v1.1.0              | TX Fee minimization    |
+| v12 -> XX XXX                 | 2020-XX-XX           | vX.X.X                  | vX.X.X              | XXXXXX                 |
 
 * XXs indicate that these details have not been determined as of commit date.
 * *** indicates approximate time of anticipated WAZN block mined to complete the upgrade process.
 
 ## Release staging schedule and protocol
 
-Approximately 8 weeks before a scheduled software upgrade, a branch from **dev** [github.com/vermin/wazn](https://github.com/vermin/wazn) will be created with the new release version tag. Pull requests that address bugs should then be made to both, the Dev and the **new release branch**. Pull requests that require extensive review and testing (generally, optimizations and new features) should *not* be made to the release branch. New version will pushed to [github.com/project-wazn/wazn](https://github.com/project-wazn/wazn) **master** branch, release created and binaries accessible to public.
+Approximately 8 weeks before a scheduled software upgrade, a branch from **dev** [github.com/vermin/wazn](https://github.com/vermin/wazn) will be created with the new release version tag. Pull requests that address bugs should then be made to both, the Dev and the **new release branch**. Pull requests that require extensive review and testing (generally, optimizations and new features) should *not* be made to the release branch. New version will pushed to [github.com/project-wazn/wazn](https://github.com/project-wazn/wazn) **master** branch, release created and binaries will be made available to public.
 
 ## Compiling WAZN from source
 
