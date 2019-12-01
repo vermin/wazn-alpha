@@ -5,8 +5,8 @@ WAZN
 
 ## Builds
 
-**v1.0.1 | Sweet Chestnut CLI**
-[wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)
+**v1.0.1 | Sweet Chestnut CLI**  
+[wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)  
 [wazn-v1.0.1-win64.zip](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-win64.zip)
 
 ## Table of Contents
@@ -48,11 +48,11 @@ These builds are from latest release branch and available for download:
 
 | Operating System      | Processor | Status |
 |-----------------------|-----------|--------|
-| Win 10 (MSYS2/MinGW)  |    AMD64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
+| Win 10 (MSYS2/MinGW)  |    amd64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
 | Win 10 (MSYS2/MinGW)  |    IA-32    | [![Build](https://img.shields.io/badge/failed-red)](https://github.com/project-wazn/wazn/releases)
-| macOS 10.13           |    AMD64    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
+| macOS 10.13           |    amd64    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
 | macOS 10.14           |    IA-32    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
-| Ubuntu 18.04          |    AMD64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
+| Ubuntu 18.04          |    amd64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
 | Ubuntu 18.04          |    IA-32    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
 | Ubuntu 18.04          |  ARMv8 x64  | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
 | Raspbian 9 Stretch    |  ARMv8 x64  | [![Build](https://img.shields.io/badge/failed-red)](https://github.com/project-wazn/wazn/releases)
@@ -71,8 +71,7 @@ If you want to help out, see [CONTRIBUTING](CONTRIBUTING.md) for a set of guidel
 
 ## Scheduled software upgrades
 
-WAZN uses a fixed-schedule software upgrade (hard fork) mechanism to implement new features. This means that end users and service providers of WAZN should run current versions and upgrade their software on a regular schedule. Regular software upgrades are planned up to 2 times a year and they should take place in March or September. Nonessential or surface software revisions will be available as they are through testing process. The required software for these upgrades will be available prior to the scheduled date. Please check WAZN official repository before this date for appropriate software version.  
-Below is the projected schedule for the next upgrade. Dates are provided in YYYY-MM-DD format.
+WAZN uses a fixed-schedule software upgrade (hard fork) mechanism to implement new features. This means that end users and service providers of WAZN should run current versions and upgrade their software on a regular schedule. Regular software upgrades are planned up to 2 times a year and they should take place in March or September. Nonessential or surface software revisions will be available as they are through testing process. The required software for these upgrades will be available prior to the scheduled date. Please check WAZN official repository before this date for appropriate software version. Below is the projected schedule for the next upgrade. Dates are provided in YYYY-MM-DD format.
 
 | Software block upgrade height | Date & Time GMT***    | Recommended App version | Minimum App version | Modification details   |
 | ----------------------------- | -------------------- | ----------------------- | ------------------- | ---------------------- |
