@@ -40,9 +40,8 @@ WAZN is a private, secure, untraceable, decentralized digital currency. You are 
 
 These builds are from latest release branch and available for download:
 
-**v1.0.1 | Sweet Chestnut CLI**  
-[wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)  
-[wazn-v1.0.1-win64.zip](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-win64.zip)
+* **Sweet Chestnut CLI** [wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)  
+* **Sweet Chestnut CLI** [wazn-v1.0.1-win64.zip](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-win64.zip)
 
 | Operating System      | Processor | Status |
 |-----------------------|-----------|--------|
@@ -74,7 +73,7 @@ WAZN uses a fixed-schedule software upgrade (hard fork) mechanism to implement n
 | Software block upgrade height | Date & Time GMT***   | Recommended App version | Minimum App version | Modification details   |
 | ----------------------------- | -------------------- | ----------------------- | ------------------- | ---------------------- |
 | v10 -> 1                      | 2019-11-09 23:16     | v1.0.1                  | v1.0.0              | cn-wazn 128KB          |
-| **v11 -> 15 000**             | **2019-12-07 15:33** | v1.1.0                  | v1.1.0              | TX Fee minimization    |
+| **v11 -> 15 000**             | **2019-12-07 15:33** | **v1.1.0**              | **v1.1.0**          | **TX Fee amount reduction** |
 | v12 -> XX XXX                 | 2020-XX-XX           | vX.X.X                  | vX.X.X              | XXXXXX                 |
 
 * XXs indicate that these details have not been determined as of commit date.
