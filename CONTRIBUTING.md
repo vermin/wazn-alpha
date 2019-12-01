@@ -42,9 +42,9 @@ the previous paragraph is here.
 
 ## License
 
-Copyright (c) 2009-2015 Pieter Hintjens
+Copyright (c) 2009-2015 Pieter Hintjens  
 Copyright (c) 2017-2018 The Monero Project
-Copyright (c) 2018-2019 uPlexa
+Copyright (c) 2018-2019 uPlexa  
 Copyright (c) 2019 WAZN Project
 
 This Specification is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
@@ -58,7 +58,7 @@ You should have received a copy of the GNU General Public License along with thi
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
 
 The "WAZN Coders" as maintainers are defined in this document as following users:
-- vermin
+- [vermin](https://github.com/vermin)
 
 ### Preliminaries
 
