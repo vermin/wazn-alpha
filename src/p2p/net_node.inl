@@ -394,8 +394,7 @@ namespace nodetool
     if (nettype == cryptonote::TESTNET)
     {
       full_addrs.insert("217.69.4.65:22786");
-      full_addrs.insert("45.76.193.160:22786");
-      full_addrs.insert("155.138.135.129:22786");
+      full_addrs.insert("95.179.152.61:22786");
       full_addrs.insert("45.32.157.118:22786");
       full_addrs.insert("31.15.138.153:22786");
     }
@@ -414,7 +413,6 @@ namespace nodetool
       full_addrs.insert("155.138.135.129:11786");
       full_addrs.insert("45.32.157.118:11786");
       full_addrs.insert("95.179.152.61:11786");
-      full_addrs.insert("31.15.138.153:11786");
     }
     return full_addrs;
   }
