@@ -63,7 +63,7 @@ HardFork::HardFork(cryptonote::BlockchainDB &db, uint8_t original_version, uint6
   forked_time(forked_time),
   update_time(update_time),
   window_size(window_size),
-  default_threshold_percent(default_threshold_percent),
+  default_threshold_percent(default_threshold_percent)
 {
   if (window_size == 0)
     throw "window_size needs to be strictly positive";
