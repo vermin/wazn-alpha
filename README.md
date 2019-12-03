@@ -79,7 +79,7 @@ WAZN uses a fixed-schedule software upgrade (hard fork) mechanism to implement n
 | Software block upgrade height | Date & Time GMT***   | Recommended App version | Minimum App version | Modification details   |
 | ----------------------------- | -------------------- | ----------------------- | ------------------- | ---------------------- |
 | v10 -> 1                      | 2019-11-09 23:16     | v1.0.1                  | v1.0.0              | cn-wazn 128KB          |
-| **v11 -> 15 000**             | **2019-12-07 15:33** | **v1.1.0**              | **v1.1.0**          | **TX Fee amount reduction** |
+| **v11 -> 17 000**             | **2019-12-07 18:06** | **v1.1.0**              | **v1.1.0**          | **TX Fee amount reduction** |
 | v12 -> XX XXX                 | 2020-XX-XX           | vX.X.X                  | vX.X.X              | XXXXXX                 |
 
 * XXs indicate that these details have not been determined as of commit date.

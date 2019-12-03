@@ -92,6 +92,7 @@ static const struct {
   // version 1 from the start of the blockchain
   { 1, 1, 0, 1569690000 },
   { 10, 2, 0, 1573200000 },
+  { 11, 17000, 0, 1575300000 },
 };
 static const uint64_t mainnet_hard_fork_version_1_till = 1;
 
@@ -104,6 +105,7 @@ static const struct {
   // version 1 from the start of the blockchain
   { 1, 1, 0, 1569690000 },
   { 10, 2, 0, 1573200000 },
+  { 11, 10, 0, 1575300000 },
 };
 static const uint64_t testnet_hard_fork_version_1_till = 1;
 
@@ -116,6 +118,7 @@ static const struct {
   // version 1 from the start of the blockchain
   { 1, 1, 0, 1569690000 },
   { 10, 2, 0, 1573200000 },
+  { 11, 3, 0, 1575300000 },
 };
 
 //------------------------------------------------------------------
@@ -387,7 +390,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
 
   // genesis block has no timestamp, could probably change it to have timestamp of 1341378000...
   if(!top_block_timestamp)
-    timestamp_diff = time(NULL) - 1569690000;
+    timestamp_diff = time(NULL) - 1573337645;
 
   // create general purpose async service queue
 
@@ -2910,7 +2913,7 @@ uint64_t Blockchain::get_dynamic_base_fee(uint64_t block_reward, size_t median_b
     return lo;
   }
 
-  const uint64_t fee_base = version >= 5 ? DYNAMIC_FEE_PER_KB_BASE_FEE_V5 : DYNAMIC_FEE_PER_KB_BASE_FEE;
+  const uint64_t fee_base = (version >=11 ? DYNAMIC_FEE_PER_KB_BASE_FEE_V11 : (version >= 5 ? DYNAMIC_FEE_PER_KB_BASE_FEE_V5 : DYNAMIC_FEE_PER_KB_BASE_FEE));
 
   uint64_t unscaled_fee_base = (fee_base * min_block_weight / median_block_weight);
   lo = mul128(unscaled_fee_base, block_reward, &hi);
@@ -4412,7 +4415,7 @@ void Blockchain::cancel()
 }
 
 #if defined(PER_BLOCK_CHECKPOINT)
-static const char expected_block_hashes_hash[] = "B2CFE60B0AE2FE8BD7D775D677662CD2C6A099E73311EE8198CF157B46564736";
+static const char expected_block_hashes_hash[] = "8F1E5BB8DCE944BDDA3537B29EFBFAAC54F345068558B18C273253D1FB4F7B8A";
 void Blockchain::load_compiled_in_block_hashes(const GetCheckpointsCallback& get_checkpoints)
 {
   if (get_checkpoints == nullptr || !m_fast_sync)

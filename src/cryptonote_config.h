@@ -70,14 +70,14 @@
 // COIN - number of smallest units in one coin
 #define COIN                                            ((uint64_t)1000000000000) // pow(10, 12)
 
-#define FEE_PER_KB_OLD                                  ((uint64_t)100000) // pow(10, 10)
-#define FEE_PER_KB                                      ((uint64_t)20000) // 2 * pow(10,9)
-#define FEE_PER_BYTE                                    ((uint64_t)30000)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)20000) // 2 * pow(10,9)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)20000) // 2 * pow(10,9)
-#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)1000000) // 10 * pow(10,12)
+#define FEE_PER_KB_OLD                                  ((uint64_t)10000000000) // pow(10, 10)
+#define FEE_PER_KB                                      ((uint64_t)4000000000)
+#define FEE_PER_BYTE                                    ((uint64_t)300000)
+#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)2000000000) // 2 * pow(10,9)
+#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)2000000000) // 2 * pow(10,9)
+#define DYNAMIC_FEE_PER_KB_BASE_FEE_V11                 ((uint64_t)250000000) // 2.5 * pow(10,8)
+#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)10000000000000) // 10 * pow(10,12)
 #define DYNAMIC_FEE_REFERENCE_TRANSACTION_WEIGHT        ((uint64_t)2000)
-
 #define ORPHANED_BLOCKS_MAX_COUNT                       100
 
 #define DIFFICULTY_TARGET                               60   //seconds
@@ -145,7 +145,7 @@
 #define HF_VERSION_MIN_MIXIN_6                  7
 #define HF_VERSION_MIN_MIXIN_10                 8
 #define HF_VERSION_ENFORCE_RCT                  6
-#define HF_VERSION_PER_BYTE_FEE                 12 // unnecessary
+#define HF_VERSION_PER_BYTE_FEE                 11 // unnecessary
 
 #define PER_KB_FEE_QUANTIZATION_DECIMALS        8
 
