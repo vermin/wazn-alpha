@@ -186,27 +186,9 @@ void HardFork::init()
   else
     height = 1;
 
-  bool populate = false;
-  try
-  {
-    db.get_hard_fork_version(0);
-  }
-  catch (...) { populate = true; }
-  if (populate) {
-    MINFO("The DB has no hard fork info, reparsing from start");
-    height = 1;
-  }
-  MDEBUG("reorganizing from " << height);
-  if (populate) {
-    reorganize_from_chain_height(height);
-    // reorg will not touch the genesis block, use this as a flag for populating done
-    db.set_hard_fork_version(0, original_version);
-  }
-  else {
   rescan_from_chain_height(height);
+  MDEBUG("init done");
   }
-  MDEBUG("reorganization done");
-}
 
 uint8_t HardFork::get_block_version(uint64_t height) const
 {
@@ -306,11 +288,36 @@ bool HardFork::rescan_from_chain_height(uint64_t height)
   return rescan_from_block_height(height - 1);
 }
 
+void HardFork::on_block_popped(uint64_t nblocks)
+{
+  CHECK_AND_ASSERT_THROW_MES(nblocks > 0, "nblocks must be greater than 0");
+
+  CRITICAL_REGION_LOCAL(lock);
+
+  const uint64_t new_chain_height = db.height();
+  const uint64_t old_chain_height = new_chain_height + nblocks;
+  uint8_t version;
+  for (uint64_t height = old_chain_height - 1; height >= new_chain_height; --height)
+  {
+    version = versions.back();
+    last_versions[version]--;
+    versions.pop_back();
+    version = db.get_hard_fork_version(height);
+    versions.push_front(version);
+    last_versions[version]++;
+  }
+
+  // does not take voting into account
+  for (current_fork_index = heights.size() - 1; current_fork_index > 0; --current_fork_index)
+    if (new_chain_height >= heights[current_fork_index].height)
+      break;
+}
+
 int HardFork::get_voted_fork_index(uint64_t height) const
 {
   CRITICAL_REGION_LOCAL(lock);
   uint32_t accumulated_votes = 0;
-  for (unsigned int n = heights.size() - 1; n > current_fork_index; --n) {
+  for (int n = heights.size() - 1; n >= 0; --n) {
     uint8_t v = heights[n].version;
     accumulated_votes += last_versions[v];
     uint32_t threshold = (window_size * heights[n].threshold + 99) / 100;
