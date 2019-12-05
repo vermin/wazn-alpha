@@ -24,13 +24,13 @@ WAZN
 
 ## Development resources
 
+- Web: [wazn.io](https://wazn.io)
 - GitHub: [github.com/vermin/wazn](https://github.com/vermin/wazn)
 - Mail: [dev@wazn.io](mailto:dev@wazn.io)
-- Web: [wazn.io](https://wazn.io)
 
 ## Announcements
 
-- Subscribe to our Reddit for important announcements regarding WAZN (https://www.reddit.com/r/WAZN/)
+- Subscribe to our Reddit for important announcements regarding WAZN future (https://www.reddit.com/r/WAZN/)
 
 ## Introduction
 
@@ -46,18 +46,18 @@ WAZN is a private, secure, untraceable, decentralized digital currency. You are 
 
 These builds are from latest release branch and available for download:
 
-* **Sweet Chestnut CLI** [wazn-v1.0.1-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-linux64.tar.gz)  
-* **Sweet Chestnut CLI** [wazn-v1.0.1-win64.zip](https://github.com/project-wazn/wazn/releases/download/v1.0.1/wazn-v1.0.1-win64.zip)
+* **Sweet Chestnut CLI** [wazn-v1.1.0-linux64.tar.gz](https://github.com/project-wazn/wazn/releases/download/v1.1.0/wazn-v1.1.0-linux64.tar.gz)  
+* **Sweet Chestnut CLI** [wazn-v1.1.0-win64.zip](https://github.com/project-wazn/wazn/releases/download/vv1.1.0/wazn-v1.1.0-win64.zip)
 
 | Operating System      | Processor | Status |
 |-----------------------|-----------|--------|
 | Win10 (MSYS2/MinGW)   |    amd64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
-| Win10 (MSYS2/MinGW)   |    IA-32    | [![Build](https://img.shields.io/badge/failed-red)](https://github.com/project-wazn/wazn/releases)
+| Win10 (MSYS2/MinGW)   |    IA-32    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
 | macOS 10.13           |    amd64    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
 | macOS 10.14           |    IA-32    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
 | Ubuntu 18.04          |    amd64    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
-| Ubuntu 18.04          |    IA-32    | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
-| Ubuntu 18.04          |  ARMv8 x64  | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
+| Ubuntu 18.04          |    IA-32    | [![Build](https://img.shields.io/badge/unknown-lightgrey)](https://github.com/project-wazn/wazn/releases)
+| Ubuntu 18.04          |  ARMv8 x64  | [![Build](https://img.shields.io/badge/passing-brightgreen)](https://github.com/project-wazn/wazn/releases)
 | Raspbian 9 Stretch    |  ARMv8 x64  | [![Build](https://img.shields.io/badge/failed-red)](https://github.com/project-wazn/wazn/releases)
 
 ## About this project
