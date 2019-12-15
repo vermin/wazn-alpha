@@ -28,6 +28,9 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 list(INSERT CMAKE_MODULE_PATH 0
   "${CMAKE_SOURCE_DIR}/cmake")
 include(CheckCCompilerFlag)
@@ -35,6 +38,7 @@ include(CheckCXXCompilerFlag)
 include(CheckLinkerFlag)
 include(CheckLibraryExists)
 include(CheckFunctionExists)
+include(FindPythonInterp)
 
 if (IOS)
     INCLUDE(CmakeLists_IOS.txt)
@@ -44,6 +48,8 @@ cmake_minimum_required(VERSION 2.8.7)
 message(STATUS "CMake version ${CMAKE_VERSION}")
 
 project(wazn)
+
+enable_language(C ASM)
 
 function (die msg)
   if (NOT WIN32)
@@ -113,10 +119,15 @@ string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LOWER)
 # when ARCH is not set to an explicit identifier, cmake's builtin is used
 # to identify the target architecture, to direct logic in this cmake script.
 # Since ARCH is a cached variable, it will not be set on first cmake invocation.
+if (NOT ARCH_ID)
 if (NOT ARCH OR ARCH STREQUAL "" OR ARCH STREQUAL "native" OR ARCH STREQUAL "default")
+  if(CMAKE_SYSTEM_PROCESSOR STREQUAL "")
+    set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR})
+  endif()
   set(ARCH_ID "${CMAKE_SYSTEM_PROCESSOR}")
 else()
   set(ARCH_ID "${ARCH}")
+endif()
 endif()
 string(TOLOWER "${ARCH_ID}" ARM_ID)
 string(SUBSTRING "${ARM_ID}" 0 3 ARM_TEST)
@@ -141,7 +152,6 @@ if(ARCH_ID STREQUAL "ppc64le")
   set(PPC64LE 1)
   set(PPC64   0)
   set(PPC     0)
-
 endif()
 
 if(ARCH_ID STREQUAL "powerpc64" OR ARCH_ID STREQUAL "ppc64")
@@ -150,7 +160,7 @@ if(ARCH_ID STREQUAL "powerpc64" OR ARCH_ID STREQUAL "ppc64")
   set(PPC     0)
 endif()
 
-if(ARCH_ID STREQUAL "powerpc")
+if(ARCH_ID STREQUAL "powerpc" OR ARCH_ID STREQUAL "ppc")
   set(PPC64LE 0)
   set(PPC64   0)
   set(PPC     1)
@@ -184,7 +194,7 @@ if(NOT MANUAL_SUBMODULES)
     if (upToDate)
       message(STATUS "Submodule '${relative_path}' is up-to-date")
     else()
-      message(FATAL_ERROR "Submodule '${relative_path}' is not up-to-date. Please update with\ngit submodule update --init --force ${relative_path}\nor run cmake with -DMANUAL_SUBMODULES=1")
+        message(FATAL_ERROR "Submodule '${relative_path}' is not up-to-date. Please update all submodules with\ngit submodule update --init --force\nor run cmake with -DMANUAL_SUBMODULES=1\n")
     endif()
   endfunction ()
 
@@ -242,6 +252,12 @@ enable_testing()
 
 option(BUILD_DOCUMENTATION "Build the Doxygen documentation." ON)
 option(BUILD_TESTS "Build tests." OFF)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(DEFAULT_BUILD_DEBUG_UTILITIES ON)
+else()
+  set(DEFAULT_BUILD_DEBUG_UTILITIES OFF)
+endif()
+option(BUILD_DEBUG_UTILITIES "Build debug utilities." DEFAULT_BUILD_DEBUG_UTILITIES)
 
 # Check whether we're on a 32-bit or 64-bit system
 if(CMAKE_SIZEOF_VOID_P EQUAL "8")
@@ -346,54 +362,9 @@ endif()
 # memory was the default in Cryptonote before WAZN implemented LMDB, it still works but is unnecessary.
 # set(DATABASE memory)
 set(DATABASE lmdb)
-
-if (DEFINED ENV{DATABASE})
-  set(DATABASE $ENV{DATABASE})
-  message(STATUS "DATABASE set: ${DATABASE}")
-else()
-  message(STATUS "Could not find DATABASE in env (not required unless you want to change database type from default: ${DATABASE})")
-endif()
-
-set(BERKELEY_DB_OVERRIDE 0)
-if (DEFINED ENV{BERKELEY_DB})
-  set(BERKELEY_DB_OVERRIDE 1)
-  set(BERKELEY_DB $ENV{BERKELEY_DB})
-elseif()
-  set(BERKELEY_DB 0)
-endif()
-
-if (DATABASE STREQUAL "lmdb")
   message(STATUS "Using LMDB as default DB type")
   set(BLOCKCHAIN_DB DB_LMDB)
   add_definitions("-DDEFAULT_DB_TYPE=\"lmdb\"")
-elseif (DATABASE STREQUAL "berkeleydb")
-  find_package(BerkeleyDB)
-  if(NOT BERKELEY_DB)
-      die("Found BerkeleyDB includes, but could not find BerkeleyDB library. Please make sure you have installed libdb and libdb-dev / libdb++-dev or the equivalent.")
-  else()
-    message(STATUS "Found BerkeleyDB include (db.h) in ${BERKELEY_DB_INCLUDE_DIR}")
-    if(BERKELEY_DB_LIBRARIES)
-      message(STATUS "Found BerkeleyDB shared library")
-      set(BDB_STATIC false CACHE BOOL "BDB Static flag")
-      set(BDB_INCLUDE ${BERKELEY_DB_INCLUDE_DIR} CACHE STRING "BDB include path")
-      set(BDB_LIBRARY ${BERKELEY_DB_LIBRARIES} CACHE STRING "BDB library name")
-      set(BDB_LIBRARY_DIRS "" CACHE STRING "BDB Library dirs")
-      set(BERKELEY_DB 1)
-    else()
-      die("Found BerkeleyDB includes, but could not find BerkeleyDB library. Please make sure you have installed libdb and libdb-dev / libdb++-dev or the equivalent.")
-    endif()
-  endif()
-
-  message(STATUS "Using Berkeley DB as default DB type")
-  add_definitions("-DDEFAULT_DB_TYPE=\"berkeley\"")
-else()
-  die("Invalid database type: ${DATABASE}")
-endif()
-
-if(BERKELEY_DB)
-  add_definitions("-DBERKELEY_DB")
-endif()
-
 add_definitions("-DBLOCKCHAIN_DB=${BLOCKCHAIN_DB}")
 
 # Can't install hook in static build on OSX, because OSX linker does not support --wrap
@@ -445,7 +416,7 @@ if (CMAKE_SYSTEM_NAME MATCHES "(SunOS|Solaris)")
 endif ()
 
 if (APPLE AND NOT IOS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -fvisibility=default")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -fvisibility=default -std=c++11")
   if (NOT OpenSSL_DIR)
       EXECUTE_PROCESS(COMMAND brew --prefix openssl
         OUTPUT_VARIABLE OPENSSL_ROOT_DIR
@@ -495,11 +466,6 @@ link_directories(${EASYLOGGING_LIBRARY_DIRS})
 # Final setup for liblmdb
 include_directories(${LMDB_INCLUDE})
 
-# Final setup for Berkeley DB
-if (BERKELEY_DB)
-  include_directories(${BDB_INCLUDE})
-endif()
-
 # Final setup for libunwind
 include_directories(${LIBUNWIND_INCLUDE})
 link_directories(${LIBUNWIND_LIBRARY_DIRS})
@@ -526,11 +492,9 @@ if(MSVC)
   include_directories(SYSTEM src/platform/msc)
 else()
   include(TestCXXAcceptsFlag)
-  if (NOT ARM6)
-    if(NOT DEPENDS OR DEPENDS AND NOT ARM)
+  if (NOT ARCH)
       set(ARCH native CACHE STRING "CPU to build for: -march value or 'default' to not pass -march at all")
     endif()
-  endif()
   message(STATUS "Building on ${CMAKE_SYSTEM_PROCESSOR} for ${ARCH}")
   if(ARCH STREQUAL "default")
     set(ARCH_FLAG "")
@@ -592,9 +556,6 @@ else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCH_FLAG}")
 
   set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-error=extra -Wno-error=deprecated-declarations -Wno-unused-parameter -Wno-unused-variable -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized")
-  if(NOT MINGW)
-    set(WARNINGS_AS_ERRORS_FLAG "-Werror")
-  endif()
   if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
     if(ARM)
       set(WARNINGS "${WARNINGS} -Wno-error=inline-asm")
@@ -643,7 +604,7 @@ else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
 
   # if those don't work for your compiler, single it out where appropriate
-  if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT OPENBSD)
     set(C_SECURITY_FLAGS "${C_SECURITY_FLAGS} -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1")
     set(CXX_SECURITY_FLAGS "${CXX_SECURITY_FLAGS} -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1")
   endif()
@@ -655,7 +616,7 @@ else()
   add_cxx_flag_if_supported(-Wformat-security CXX_SECURITY_FLAGS)
 
   # -fstack-protector
-  if (NOT WIN32)
+  if (NOT OPENBSD AND NOT (WIN32 AND (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_LESS 9.1)))
     add_c_flag_if_supported(-fstack-protector C_SECURITY_FLAGS)
     add_cxx_flag_if_supported(-fstack-protector CXX_SECURITY_FLAGS)
     add_c_flag_if_supported(-fstack-protector-strong C_SECURITY_FLAGS)
@@ -663,19 +624,24 @@ else()
   endif()
 
   # New in GCC 8.2
-  if (NOT WIN32)
+  if (NOT OPENBSD AND NOT (WIN32 AND (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_LESS 9.1)))
     add_c_flag_if_supported(-fcf-protection=full C_SECURITY_FLAGS)
     add_cxx_flag_if_supported(-fcf-protection=full CXX_SECURITY_FLAGS)
+  endif()
+  if (NOT WIN32 AND NOT OPENBSD)
     add_c_flag_if_supported(-fstack-clash-protection C_SECURITY_FLAGS)
     add_cxx_flag_if_supported(-fstack-clash-protection CXX_SECURITY_FLAGS)
   endif()
 
+  # Removed in GCC 9.1 (or before ?), but still accepted, so spams the output
+  if (NOT (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND NOT CMAKE_C_COMPILER_VERSION VERSION_LESS 9.1))
     add_c_flag_if_supported(-mmitigate-rop C_SECURITY_FLAGS)
     add_cxx_flag_if_supported(-mmitigate-rop CXX_SECURITY_FLAGS)
+  endif()
 
   # linker
-  if (NOT WIN32)
-    # Windows binaries die on startup with PIE
+  if (NOT (WIN32 AND (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_LESS 9.1)))
+    # Windows binaries die on startup with PIE when compiled with GCC <9.x
     add_linker_flag_if_supported(-pie LD_SECURITY_FLAGS)
   endif()
   add_linker_flag_if_supported(-Wl,-z,relro LD_SECURITY_FLAGS)
@@ -699,6 +665,7 @@ else()
   if (WIN32)
     add_linker_flag_if_supported(-Wl,--dynamicbase LD_SECURITY_FLAGS)
     add_linker_flag_if_supported(-Wl,--nxcompat LD_SECURITY_FLAGS)
+    add_linker_flag_if_supported(-Wl,--high-entropy-va LD_SECURITY_FLAGS)
   endif()
 
   message(STATUS "Using C security hardening flags: ${C_SECURITY_FLAGS}")
@@ -815,6 +782,9 @@ else()
     set(DEBUG_FLAGS "${DEBUG_FLAGS} -O0 ")
   endif()
 
+  # At least some CLANGs default to not enough for WAZN
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=900")
+
   if(NOT DEFINED USE_LTO_DEFAULT)
     set(USE_LTO_DEFAULT false)
   endif()
@@ -870,6 +840,7 @@ if (${BOOST_IGNORE_SYSTEM_PATHS} STREQUAL "ON")
 endif()
 
 set(OLD_LIB_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+set(Boost_NO_BOOST_CMAKE ON)
 if(STATIC)
   if(MINGW)
     set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
@@ -882,24 +853,30 @@ find_package(Boost 1.58 QUIET REQUIRED COMPONENTS system filesystem thread date_
 
 set(CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_LIB_SUFFIXES})
 if(NOT Boost_FOUND)
-  die("Could not find Boost libraries, please make sure you have installed Boost or libboost-all-dev (1.58) or the equivalent")
+  die("Could not find Boost libraries, please make sure you have installed Boost or libboost-all-dev (>=1.58) or the equivalent")
 elseif(Boost_FOUND)
   message(STATUS "Found Boost Version: ${Boost_VERSION}")
-  if (Boost_VERSION VERSION_LESS 106200 AND NOT (OPENSSL_VERSION VERSION_LESS 1.1))
-      message(FATAL_ERROR "Boost older than 1.62 is too old to link with OpenSSL 1.1 or newer. "
+  if (Boost_VERSION VERSION_LESS 10 AND Boost_VERSION VERSION_LESS 1.62.0 AND NOT (OPENSSL_VERSION VERSION_LESS 1.1))
+    set(BOOST_BEFORE_1_62 true)
+  endif()
+  if (NOT Boost_VERSION VERSION_LESS 10 AND Boost_VERSION VERSION_LESS 106200 AND NOT (OPENSSL_VERSION VERSION_LESS 1.1))
+    set(BOOST_BEFORE_1_62 true)
+  endif()
+  if (BOOST_BEFORE_1_62)
+      message(FATAL_ERROR "Boost ${Boost_VERSION} (older than 1.62) is too old to link with OpenSSL ${OPENSSL_VERSION} (1.1 or newer) found at ${OPENSSL_INCLUDE_DIR} and ${OPENSSL_LIBRARIES}. "
                           "Update Boost or install OpenSSL 1.0 and set path to it when running cmake: "
-                          "cmake -DOPENSSL_ROOT_DIR='/usr/include/openssl-1.0;/usr/lib/openssl-1.0'")
+                          "cmake -DOPENSSL_ROOT_DIR='/usr/include/openssl-1.0'")
   endif()
 endif()
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 if(MINGW)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wa,-mbig-obj")
-  set(EXTRA_LIBRARIES mswsock;ws2_32;iphlpapi;crypt32)
+  set(EXTRA_LIBRARIES mswsock;ws2_32;iphlpapi;crypt32;bcrypt)
   if(DEPENDS)
-    set(ICU_LIBRARIES ${Boost_LOCALE_LIBRARY} sicuio sicuin sicuuc sicudt sicutu iconv)
+    set(ICU_LIBRARIES icuio icui18n icuuc icudata icutu iconv)
   else()
-    set(ICU_LIBRARIES ${Boost_LOCALE_LIBRARY} icuio icuin icuuc icudt icutu iconv)
+    set(ICU_LIBRARIES icuio icuin icuuc icudt icutu iconv)
   endif()
 elseif(APPLE OR OPENBSD OR ANDROID)
   set(EXTRA_LIBRARIES "")
@@ -917,7 +894,7 @@ endif()
 
 list(APPEND EXTRA_LIBRARIES ${CMAKE_DL_LIBS})
 
-if (HIDAPI_FOUND)
+if (HIDAPI_FOUND OR LibUSB_COMPILE_TEST_PASSED)
   if (APPLE)
     if(DEPENDS)
       list(APPEND EXTRA_LIBRARIES "-framework Foundation -framework IOKit")
@@ -934,7 +911,7 @@ if (HIDAPI_FOUND)
 endif()
 
 option(USE_READLINE "Build with GNU readline support." ON)
-if(USE_READLINE)
+if(USE_READLINE AND NOT DEPENDS)
   find_package(Readline)
   if(READLINE_FOUND AND GNU_READLINE_FOUND)
     add_definitions(-DHAVE_READLINE)
@@ -944,6 +921,14 @@ if(USE_READLINE)
   else()
     message(STATUS "Could not find GNU readline library so building without readline support")
   endif()
+elseif(USE_READLINE AND DEPENDS AND NOT MINGW)
+  find_path(Readline_INCLUDE_PATH readline/readline.h)
+  find_library(Readline_LIBRARY readline)
+  find_library(Terminfo_LIBRARY tinfo)
+  set(Readline_LIBRARY "${Readline_LIBRARY};${Terminfo_LIBRARY}")
+  set(GNU_READLINE_LIBRARY ${Readline_LIBRARY})
+  add_definitions(-DHAVE_READLINE)
+  set(EPEE_READLINE epee_readline)
 endif()
 
 if(ANDROID)
@@ -952,17 +937,20 @@ if(ANDROID)
 endif()
 if(CMAKE_C_COMPILER_ID STREQUAL "Clang" AND ARCH_WIDTH EQUAL "32" AND NOT IOS AND NOT FREEBSD)
   find_library(ATOMIC atomic)
+  if (ATOMIC_FOUND)
     list(APPEND EXTRA_LIBRARIES ${ATOMIC})
   endif()
+endif()
 
-find_path(ZMQ_INCLUDE_PATH zmq.hpp)
+find_path(ZMQ_INCLUDE_PATH zmq.h)
 find_library(ZMQ_LIB zmq)
 find_library(PGM_LIBRARY pgm)
 find_library(NORM_LIBRARY norm)
+find_library(PROTOLIB_LIBRARY protolib)
 find_library(SODIUM_LIBRARY sodium)
 
 if(NOT ZMQ_INCLUDE_PATH)
-  message(FATAL_ERROR "Could not find required header zmq.hpp")
+  message(FATAL_ERROR "Could not find required header zmq.h")
 endif()
 if(NOT ZMQ_LIB)
   message(FATAL_ERROR "Could not find required libzmq")
@@ -973,6 +961,9 @@ endif()
 if(NORM_LIBRARY)
   set(ZMQ_LIB "${ZMQ_LIB};${NORM_LIBRARY}")
 endif()
+if(PROTOLIB_LIBRARY)
+  set(ZMQ_LIB "${ZMQ_LIB};${PROTOLIB_LIBRARY}")
+endif()
 if(SODIUM_LIBRARY)
   set(ZMQ_LIB "${ZMQ_LIB};${SODIUM_LIBRARY}")
 endif()
@@ -980,8 +971,18 @@ endif()
 add_subdirectory(contrib)
 add_subdirectory(src)
 
+find_package(PythonInterp)
 if(BUILD_TESTS)
+  message(STATUS "Building tests")
   add_subdirectory(tests)
+else()
+  message(STATUS "Not building tests")
+endif()
+
+if(BUILD_DEBUG_UTILITIES)
+  message(STATUS "Building debug utilities")
+else()
+  message(STATUS "Not building debug utilities")
 endif()
 
 if(BUILD_DOCUMENTATION)
@@ -1015,3 +1016,13 @@ option(INSTALL_VENDORED_LIBUNBOUND "Install libunbound binary built from source 
 
 
 CHECK_C_COMPILER_FLAG(-std=c11 HAVE_C11)
+
+find_package(PythonInterp)
+find_program(iwyu_tool_path NAMES iwyu_tool.py iwyu_tool)
+if (iwyu_tool_path AND PYTHONINTERP_FOUND)
+  add_custom_target(iwyu
+    COMMAND "${PYTHON_EXECUTABLE}" "${iwyu_tool_path}" -p "${CMAKE_BINARY_DIR}" -- --no_fwd_decls
+    COMMENT "Running include-what-you-use tool"
+    VERBATIM
+  )
+endif()
