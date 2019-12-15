@@ -1,4 +1,4 @@
-sudo: enabled
+sudo: required
 dist: xenial
 os: linux
 language: minimal
