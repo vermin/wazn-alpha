@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: cmake
+      run: cmake -DMANUAL_SUBMODULES=1
     - name: make
       run: make
     - name: make check
