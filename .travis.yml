@@ -1,3 +1,4 @@
+sudo: enabled
 dist: xenial
 os: linux
 language: minimal
