@@ -52,6 +52,7 @@ jobs:
         - make -j2 -C contrib/depends HOST=$HOST NO_QT=1
         - export CMAKE_OPTS="-DCMAKE_TOOLCHAIN_FILE=$TRAVIS_BUILD_DIR/contrib/depends/$HOST/share/toolchain.cmake"
         - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/contrib/depends/$HOST/lib
+        - chmod +x build.sh
   fast_finish: true
   allow_failures:
       - name: "Windows cross-compile"
