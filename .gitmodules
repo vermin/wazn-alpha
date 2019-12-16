@@ -1,0 +1,12 @@
+[submodule "external/rapidjson"]
+	path = external/rapidjson
+	url = https://github.com/vermin/rapidjson
+	branch = wazn
+[submodule "external/miniupnp"]
+	path = external/miniupnp
+	url = https://github.com/vermin/miniupnp
+	branch = wazn
+[submodule "external/unbound"]
+	path = external/unbound
+	url = https://github.com/vermin/unbound
+	branch = wazn
