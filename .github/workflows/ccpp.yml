@@ -5,10 +5,12 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
+    - name: cmake
+      run: cmake -DMANUAL_SUBMODULES=1
     - name: make
       run: USE_SINGLE_BUILDDIR=1 make release
     - name: make check
