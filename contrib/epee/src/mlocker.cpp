@@ -40,6 +40,15 @@
 #include "syncobj.h"
 #include "mlocker.h"
 
+#include <atomic>
+
+#undef WAZN_DEFAULT_LOG_CATEGORY
+#define WAZN_DEFAULT_LOG_CATEGORY "mlocker"
+
+// did an mlock operation previously fail? we only
+// want to log an error once and be done with it
+static std::atomic<bool> previously_failed{ false };
+
 static size_t query_page_size()
 {
 #if defined HAVE_MLOCK
@@ -49,7 +58,6 @@ static size_t query_page_size()
     MERROR("Failed to determine page size");
     return 0;
   }
-  //MINFO("Page size: " << ret);
   return ret;
 #else
 #warning Missing query_page_size implementation
@@ -61,8 +69,8 @@ static void do_lock(void *ptr, size_t len)
 {
 #if defined HAVE_MLOCK
   int ret = mlock(ptr, len);
-  if (ret < 0)
-    MERROR("Error locking page at " << ptr << ": " << strerror(errno));
+  if (ret < 0 && !previously_failed.exchange(true))
+    MERROR("Error locking page at " << ptr << ": " << strerror(errno) << ", subsequent mlock errors will be silenced");
 #else
 #warning Missing do_lock implementation
 #endif
@@ -72,7 +80,10 @@ static void do_unlock(void *ptr, size_t len)
 {
 #if defined HAVE_MLOCK
   int ret = munlock(ptr, len);
-  if (ret < 0)
+  // check whether we previously failed, but don't set it, this is just
+  // to pacify the errors of mlock()ing failed, in which case unlocking
+  // is also not going to work of course
+  if (ret < 0 && !previously_failed.load())
     MERROR("Error unlocking page at " << ptr << ": " << strerror(errno));
 #else
 #warning Missing implementation of page size detection
@@ -110,11 +121,14 @@ namespace epee
 
   mlocker::~mlocker()
   {
-    unlock(ptr, len);
+    try { unlock(ptr, len); }
+    catch (...) { /* ignore and do not propagate through the dtor */ }
   }
 
   void mlocker::lock(void *ptr, size_t len)
   {
+    TRY_ENTRY();
+
     size_t page_size = get_page_size();
     if (page_size == 0)
       return;
@@ -125,10 +139,14 @@ namespace epee
     for (size_t page = first; page <= last; ++page)
       lock_page(page);
     ++num_locked_objects;
+
+    CATCH_ENTRY_L1("mlocker::lock", void());
   }
 
   void mlocker::unlock(void *ptr, size_t len)
   {
+    TRY_ENTRY();
+
     size_t page_size = get_page_size();
     if (page_size == 0)
       return;
@@ -138,6 +156,8 @@ namespace epee
     for (size_t page = first; page <= last; ++page)
       unlock_page(page);
     --num_locked_objects;
+
+    CATCH_ENTRY_L1("mlocker::lock", void());
   }
 
   size_t mlocker::get_num_locked_pages()
