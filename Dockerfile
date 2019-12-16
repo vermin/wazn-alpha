@@ -190,14 +190,15 @@ COPY --from=builder /src/build/release/bin /usr/local/bin/
 
 # Create wazn user
 RUN adduser --system --group --disabled-password wazn && \
-	mkdir -p /wallet /home/wazn/.blockwazn && \
-	chown -R wazn:wazn /home/wazn/.blockwazn && \
+	mkdir -p /wallet /home/wazn/.wazn && \
+	chown -R wazn:wazn /home/wazn/.wazn && \
 	chown -R wazn:wazn /wallet
 
 # Contains the blockchain
-VOLUME /home/wazn/.blockwazn
+VOLUME /home/wazn/.wazn
 
-# Generate your wallet via accessing the container and run:
+# Generate your wallet via accessing the container and r
+un:
 # cd /wallet
 # wazn-wallet-cli
 VOLUME /wallet
