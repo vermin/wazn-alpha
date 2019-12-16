@@ -306,19 +306,43 @@ namespace cryptonote
     uint64_t max_block_height = std::max(hshd.current_height,m_core.get_current_blockchain_height());
     uint64_t last_block_v1 = m_core.get_nettype() == TESTNET ? 25 : m_core.get_nettype() == MAINNET ? 99999 : (uint64_t)-1;
     uint64_t diff_v2 = max_block_height > last_block_v1 ? std::min(abs_diff, max_block_height - last_block_v1) : 0;
-    MCLOG(is_inital ? el::Level::Info : el::Level::Debug, "global", context <<  "Sync data returned a new top block candidate: " << m_core.get_current_blockchain_height() << " -> " << hshd.current_height
+    MCLOG(is_inital ? el::Level::Info : el::Level::Debug, "global", el::Color::Yellow, context <<  "Sync data returned a new top block candidate: " << m_core.get_current_blockchain_height() << " -> " << hshd.current_height
       << " [Your node is " << abs_diff << " blocks (" << ((abs_diff - diff_v2) / (24 * 60 * 60 / DIFFICULTY_TARGET_V1)) + (diff_v2 / (24 * 60 * 60 / DIFFICULTY_TARGET_V2)) << " days) "
       << (0 <= diff ? std::string("behind") : std::string("ahead"))
       << "] " << ENDL << "SYNCHRONIZATION started");
       if (hshd.current_height >= m_core.get_current_blockchain_height() + 5) // don't switch to unsafe mode just for a few blocks
+      {
         m_core.safesyncmode(false);
     }
-    LOG_PRINT_L1("Remote blockchain height: " << hshd.current_height << ", id: " << hshd.top_id);
+      if (m_core.get_target_blockchain_height() == 0) // only when sync starts
+      {
+        m_sync_timer.resume();
+        m_sync_timer.reset();
+        m_add_timer.pause();
+        m_add_timer.reset();
+        m_last_add_end_time = 0;
+        m_sync_spans_downloaded = 0;
+        m_sync_old_spans_downloaded = 0;
+        m_sync_bad_spans_downloaded = 0;
+        m_sync_download_chain_size = 0;
+        m_sync_download_objects_size = 0;
+      }
+    m_core.set_target_blockchain_height((hshd.current_height));
+    }
+    MINFO(context << "Remote blockchain height: " << hshd.current_height << ", id: " << hshd.top_id);
+
+    if (m_no_sync)
+    {
+      context.m_state = cryptonote_connection_context::state_normal;
+      return true;
+    }
+
     context.m_state = cryptonote_connection_context::state_synchronizing;
     //let the socket to send response to handshake, but request callback, to let send request data after response
     LOG_PRINT_CCONTEXT_L2("requesting callback");
     ++context.m_callback_request_count;
     m_p2p->request_callback(context);
+    MLOG_PEER_STATE("requesting callback");
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
