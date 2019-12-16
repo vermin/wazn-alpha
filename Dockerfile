@@ -197,8 +197,7 @@ RUN adduser --system --group --disabled-password wazn && \
 # Contains the blockchain
 VOLUME /home/wazn/.wazn
 
-# Generate your wallet via accessing the container and r
-un:
+# Generate your wallet via accessing the container and run:
 # cd /wallet
 # wazn-wallet-cli
 VOLUME /wallet
