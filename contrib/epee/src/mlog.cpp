@@ -40,7 +40,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include "string_tools.h"
-#include "misc_os_dependent.h"
 #include "misc_log_ex.h"
 
 #undef WAZN_DEFAULT_LOG_CATEGORY
@@ -59,7 +58,12 @@ static std::string generate_log_filename(const char *base)
   char tmp[200];
   struct tm tm;
   time_t now = time(NULL);
-  if (!epee::misc_utils::get_gmt_time(now, tm))
+  if
+#ifdef WIN32
+  (!gmtime_s(&tm, &now))
+#else
+  (!gmtime_r(&now, &tm))
+#endif
     snprintf(tmp, sizeof(tmp), "part-%u", ++fallback_counter);
   else
     strftime(tmp, sizeof(tmp), "%Y-%m-%d-%H-%M-%S", &tm);
@@ -100,7 +104,7 @@ static const char *get_default_categories(int level)
   switch (level)
   {
     case 0:
-      categories = "*:WARNING,net:FATAL,net.http:FATAL,net.ssl:FATAL,net.p2p:FATAL,net.cn:FATAL,global:INFO,verify:FATAL,serialization:FATAL,daemon.rpc.payment:ERROR,stacktrace:INFO,logging:INFO,msgwriter:INFO";
+      categories = "*:WARNING,net:FATAL,net.http:FATAL,net.ssl:FATAL,net.p2p:FATAL,net.cn:FATAL,global:INFO,verify:FATAL,serialization:FATAL,logging:INFO,msgwriter:INFO";
       break;
     case 1:
       categories = "*:INFO,global:INFO,stacktrace:INFO,logging:INFO,msgwriter:INFO,perf.*:DEBUG";
@@ -109,7 +113,7 @@ static const char *get_default_categories(int level)
       categories = "*:DEBUG";
       break;
     case 3:
-      categories = "*:TRACE,*.dump:DEBUG";
+      categories = "*:TRACE";
       break;
     case 4:
       categories = "*:TRACE";
@@ -471,55 +475,5 @@ void reset_console_color() {
 }
 
 }
-
-static bool mlog(el::Level level, const char *category, const char *format, va_list ap) noexcept
-{
-  int size = 0;
-  char *p = NULL;
-  va_list apc;
-  bool ret = true;
-
-  /* Determine required size */
-  va_copy(apc, ap);
-  size = vsnprintf(p, size, format, apc);
-  va_end(apc);
-  if (size < 0)
-    return false;
-
-  size++;             /* For '\0' */
-  p = (char*)malloc(size);
-  if (p == NULL)
-    return false;
-
-  size = vsnprintf(p, size, format, ap);
-  if (size < 0)
-  {
-    free(p);
-    return false;
-  }
-
-  try
-  {
-    MCLOG(level, category, el::Color::Default, p);
-  }
-  catch(...)
-  {
-    ret = false;
-  }
-  free(p);
-
-  return ret;
-}
-
-#define DEFLOG(fun,lev) \
-  bool m##fun(const char *category, const char *fmt, ...) { va_list ap; va_start(ap, fmt); bool ret = mlog(el::Level::lev, category, fmt, ap); va_end(ap); return ret; }
-
-DEFLOG(error, Error)
-DEFLOG(warning, Warning)
-DEFLOG(info, Info)
-DEFLOG(debug, Debug)
-DEFLOG(trace, Trace)
-
-#undef DEFLOG
 
 #endif //_MLOG_H_
