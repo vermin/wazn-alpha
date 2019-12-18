@@ -6,3 +6,7 @@
 	path = external/unbound
 	url = https://github.com/vermin/unbound
 	branch = wazn
+[submodule "external/miniupnp"]
+	path = external/miniupnp
+	url = https://github.com/vermin/miniupnp
+	branch = wazn
