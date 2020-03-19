@@ -41,6 +41,8 @@ WAZN is a private, secure, untraceable, decentralized digital currency. You are 
 
 **Untraceability:** By taking advantage of ring signatures, a special property of a certain type of cryptography, WAZN is able to ensure that transactions are not only untraceable, but have an optional measure of ambiguity that ensures that transactions cannot easily be tied back to an individual user or computer.
 
+<img src="https://wazn.io/downloads/img/cli1.jpg">
+
 ## Build Status
 
 These builds are from latest release branch and available for download:
