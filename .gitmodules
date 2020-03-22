@@ -1,0 +1,9 @@
+[submodule "external/unbound"]
+	path = external/unbound
+	url = https://github.com/vermin/unbound
+[submodule "external/miniupnp"]
+	path = external/miniupnp
+	url = https://github.com/vermin/miniupnp
+[submodule "external/rapidjson"]
+	path = external/rapidjson
+	url = https://github.com/vermin/rapidjson
