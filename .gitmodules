@@ -1,1 +1,10 @@
 
+[submodule "unbound"]
+	path = unbound
+	url = https://github.com/vermin/unbound
+[submodule "rapidjson"]
+	path = rapidjson
+	url = https://github.com/vermin/rapidjson
+[submodule "miniupnp"]
+	path = miniupnp
+	url = https://github.com/vermin/miniupnp
