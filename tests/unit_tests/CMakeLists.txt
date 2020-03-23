@@ -83,7 +83,8 @@ set(unit_tests_sources
   ringdb.cpp
   wipeable_string.cpp
   is_hdd.cpp
-  aligned.cpp)
+  aligned.cpp
+  zmq_rpc.cpp)
 
 set(unit_tests_headers
   unit_tests_utils.h)
@@ -106,7 +107,8 @@ target_link_libraries(unit_tests
     ${Boost_THREAD_LIBRARY}
     ${GTEST_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+    ${EXTRA_LIBRARIES}
+    ${ZMQ_LIB})
 set_property(TARGET unit_tests
   PROPERTY
     FOLDER "tests")
@@ -125,3 +127,7 @@ SET_PROPERTY(SOURCE memwipe.cpp PROPERTY COMPILE_FLAGS -Ofast)
 add_test(
   NAME    unit_tests
   COMMAND unit_tests --data-dir "${TEST_DATA_DIR}")
+
+add_executable(test_notifier test_notifier.cpp)
+target_link_libraries(test_notifier ${EXTRA_LIBRARIES})
+set_property(TARGET test_notifier PROPERTY FOLDER "tests")
