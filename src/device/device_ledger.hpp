@@ -35,7 +35,11 @@
 #include <cstddef>
 #include <string>
 #include "device.hpp"
+#ifndef HAVE_WAZNIYA
 #include "device_io_hid.hpp"
+#else
+#include "device_io_wazniya.hpp"
+#endif
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 
@@ -86,7 +90,11 @@ namespace hw {
         mutable boost::mutex   command_locker;
 
         //IO
+        #ifndef HAVE_WAZNIYA
         hw::io::device_io_hid hw_device;
+        #else
+                hw::io::device_io_wazniya hw_device;
+        #endif
         std::string   full_name;
         unsigned int  length_send;
         unsigned char buffer_send[BUFFER_SEND_SIZE];

@@ -178,7 +178,11 @@ namespace hw {
     #define INS_GET_RESPONSE                    0xc0
 
 
+    #ifndef HAVE_WAZNIYA
     device_ledger::device_ledger(): hw_device(0x0101, 0x05, 64, 120000) {
+    #else
+        device_ledger::device_ledger() {
+    #endif
       this->id = device_id++;
       this->reset_buffer();
       this->mode = NONE;
@@ -342,6 +346,9 @@ namespace hw {
 
     bool device_ledger::connect(void) {
       this->disconnect();
+      #ifndef HAVE_WAZNIYA
+      hw_device.connect(0x2c97,0x0001, 0, 0xffa0, hw_device.OR_SELECT);
+      #endif
       hw_device.connect(0x2c97,0x0001, 0, 0xffa0, hw_device.OR_SELECT);
       this->reset();
       #ifdef DEBUG_HWDEVICE
