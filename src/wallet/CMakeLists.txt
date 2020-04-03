@@ -104,7 +104,6 @@ set_property(TARGET wallet_rpc_server
   PROPERTY
     OUTPUT_NAME "wazn-wallet-rpc")
 install(TARGETS wallet_rpc_server DESTINATION bin)
-endif()
 
 
 # build and install libwallet_merged only if we building for GUI
