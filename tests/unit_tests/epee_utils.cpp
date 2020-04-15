@@ -29,6 +29,7 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <array>
+#include <boost/predef/other/endian.h>
 #include <boost/endian/conversion.hpp>
 #include <boost/range/algorithm/equal.hpp>
 #include <boost/range/algorithm_ext/iota.hpp>
@@ -45,12 +46,15 @@
 
 #include "boost/archive/portable_binary_iarchive.hpp"
 #include "boost/archive/portable_binary_oarchive.hpp"
+#include "byte_slice.h"
 #include "hex.h"
 #include "net/net_utils_base.h"
 #include "net/local_ip.h"
+#include "net/buffer.h"
 #include "p2p/net_peerlist_boost_serialization.h"
 #include "span.h"
 #include "string_tools.h"
+#include "storages/parserse_base_utils.h"
 
 namespace
 {
@@ -135,7 +139,7 @@ namespace
     EXPECT_FALSE( lhs >= rhs );  \
     EXPECT_TRUE( rhs >= lhs )
 
-  #ifdef BOOST_LITTLE_ENDIAN
+  #if BOOST_ENDIAN_LITTLE_BYTE
     #define CHECK_LESS_ENDIAN(lhs, rhs) CHECK_LESS( rhs , lhs )
   #else
     #define CHECK_LESS_ENDIAN(lhs, rhs) CHECK_LESS( lhs , rhs )
@@ -374,6 +378,438 @@ TEST(Span, ToMutSpan)
   EXPECT_EQ((std::vector<unsigned>{1, 2, 3, 4}), mut);
 }
 
+TEST(ByteSlice, Construction)
+{
+  EXPECT_TRUE(std::is_default_constructible<epee::byte_slice>());
+  EXPECT_TRUE(std::is_move_constructible<epee::byte_slice>());
+  EXPECT_FALSE(std::is_copy_constructible<epee::byte_slice>());
+  EXPECT_TRUE(std::is_move_assignable<epee::byte_slice>());
+  EXPECT_FALSE(std::is_copy_assignable<epee::byte_slice>());
+}
+
+TEST(ByteSlice, NoExcept)
+{
+  EXPECT_TRUE(std::is_nothrow_default_constructible<epee::byte_slice>());
+  EXPECT_TRUE(std::is_nothrow_move_constructible<epee::byte_slice>());
+  EXPECT_TRUE(std::is_nothrow_move_assignable<epee::byte_slice>());
+
+  epee::byte_slice lvalue{};
+  const epee::byte_slice clvalue{};
+
+  EXPECT_TRUE(noexcept(lvalue.clone()));
+  EXPECT_TRUE(noexcept(clvalue.clone()));
+
+  EXPECT_TRUE(noexcept(lvalue.begin()));
+  EXPECT_TRUE(noexcept(clvalue.begin()));
+  EXPECT_TRUE(noexcept(lvalue.end()));
+  EXPECT_TRUE(noexcept(clvalue.end()));
+
+  EXPECT_TRUE(noexcept(lvalue.cbegin()));
+  EXPECT_TRUE(noexcept(clvalue.cbegin()));
+  EXPECT_TRUE(noexcept(lvalue.cend()));
+  EXPECT_TRUE(noexcept(clvalue.cend()));
+
+  EXPECT_TRUE(noexcept(lvalue.empty()));
+  EXPECT_TRUE(noexcept(clvalue.empty()));
+
+  EXPECT_TRUE(noexcept(lvalue.data()));
+  EXPECT_TRUE(noexcept(clvalue.data()));
+  EXPECT_TRUE(noexcept(lvalue.size()));
+  EXPECT_TRUE(noexcept(clvalue.size()));
+
+  EXPECT_TRUE(noexcept(lvalue.remove_prefix(0)));
+  EXPECT_TRUE(noexcept(lvalue.take_slice(0)));
+}
+
+TEST(ByteSlice, Empty)
+{
+  epee::byte_slice slice{};
+
+  EXPECT_EQ(slice.begin(), slice.end());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_TRUE(slice.empty());
+  EXPECT_EQ(0u, slice.size());
+  EXPECT_EQ(slice.begin(), slice.data());
+
+  EXPECT_EQ(0u, slice.get_slice(0, 0).size());
+  EXPECT_THROW(slice.get_slice(0, 1), std::out_of_range);
+  EXPECT_EQ(0u, slice.remove_prefix(1));
+  EXPECT_EQ(0u, slice.take_slice(1).size());
+}
+
+TEST(ByteSlice, CopySpans)
+{
+  const epee::span<const std::uint8_t> part1 = epee::as_byte_span("this is part1");
+  const epee::span<const std::uint8_t> part2 = epee::as_byte_span("then part2");
+  const epee::span<const std::uint8_t> part3 = epee::as_byte_span("finally part3");
+
+  const epee::byte_slice slice{part1, part2, part3};
+
+  EXPECT_NE(nullptr, slice.begin());
+  EXPECT_NE(nullptr, slice.end());
+  EXPECT_NE(slice.begin(), slice.end());
+  EXPECT_NE(slice.cbegin(), slice.cend());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(slice.end(), slice.cend());
+  ASSERT_EQ(slice.size(), std::size_t(slice.end() - slice.begin()));
+
+  EXPECT_FALSE(slice.empty());
+  EXPECT_EQ(slice.begin(), slice.data());
+  ASSERT_EQ(part1.size() + part2.size() + part3.size(), slice.size());
+  EXPECT_TRUE(
+    boost::range::equal(
+      part1, boost::make_iterator_range(slice.begin(), slice.begin() + part1.size())
+    )
+  );
+  EXPECT_TRUE(
+    boost::range::equal(
+      part2, boost::make_iterator_range(slice.begin() + part1.size(), slice.end() - part3.size())
+    )
+  );
+  EXPECT_TRUE(
+    boost::range::equal(
+      part3, boost::make_iterator_range(slice.end() - part3.size(), slice.end())
+    )
+  );
+}
+
+TEST(ByteSlice, AdaptString)
+{
+  static constexpr const char base_string[] = "this is an example message";
+  std::string adapted = base_string;
+
+  const epee::span<const uint8_t> original = epee::to_byte_span(epee::to_span(adapted));
+  const epee::byte_slice slice{std::move(adapted)};
+
+  EXPECT_EQ(original.begin(), slice.begin());
+  EXPECT_EQ(original.cbegin(), slice.cbegin());
+  EXPECT_EQ(original.end(), slice.end());
+  EXPECT_EQ(original.cend(), slice.cend());
+
+  EXPECT_FALSE(slice.empty());
+  EXPECT_EQ(original.data(), slice.data());
+  EXPECT_EQ(original.size(), slice.size());
+  EXPECT_TRUE(boost::range::equal(boost::string_ref{base_string}, slice));
+}
+
+TEST(ByteSlice, EmptyAdaptString)
+{
+  epee::byte_slice slice{std::string{}};
+
+  EXPECT_EQ(slice.begin(), slice.end());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_TRUE(slice.empty());
+  EXPECT_EQ(0u, slice.size());
+  EXPECT_EQ(slice.begin(), slice.data());
+
+  EXPECT_EQ(0u, slice.get_slice(0, 0).size());
+  EXPECT_THROW(slice.get_slice(0, 1), std::out_of_range);
+  EXPECT_EQ(0u, slice.remove_prefix(1));
+  EXPECT_EQ(0u, slice.take_slice(1).size());
+}
+
+TEST(ByteSlice, AdaptVector)
+{
+  static constexpr const char base_string[] = "this is an example message";
+  std::vector<std::uint8_t> adapted(sizeof(base_string));
+
+  ASSERT_EQ(sizeof(base_string), adapted.size());
+  std::memcpy(adapted.data(), base_string, sizeof(base_string));
+
+  const epee::span<const uint8_t> original = epee::to_span(adapted);
+  const epee::byte_slice slice{std::move(adapted)};
+
+  EXPECT_EQ(sizeof(base_string), original.size());
+
+  EXPECT_EQ(original.begin(), slice.begin());
+  EXPECT_EQ(original.cbegin(), slice.cbegin());
+  EXPECT_EQ(original.end(), slice.end());
+  EXPECT_EQ(original.cend(), slice.cend());
+
+  EXPECT_FALSE(slice.empty());
+  EXPECT_EQ(original.data(), slice.data());
+  EXPECT_EQ(original.size(), slice.size());
+  EXPECT_TRUE(boost::range::equal(base_string, slice));
+}
+
+TEST(ByteSlice, EmptyAdaptVector)
+{
+  epee::byte_slice slice{std::vector<std::uint8_t>{}};
+
+  EXPECT_EQ(slice.begin(), slice.end());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_TRUE(slice.empty());
+  EXPECT_EQ(0u, slice.size());
+  EXPECT_EQ(slice.begin(), slice.data());
+
+  EXPECT_EQ(0u, slice.get_slice(0, 0).size());
+  EXPECT_THROW(slice.get_slice(0, 1), std::out_of_range);
+  EXPECT_EQ(0u, slice.remove_prefix(1));
+  EXPECT_EQ(0u, slice.take_slice(1).size());
+}
+
+TEST(ByteSlice, Move)
+{
+  static constexpr const char base_string[] = "another example message";
+
+  epee::byte_slice slice{epee::as_byte_span(base_string)};
+  EXPECT_TRUE(boost::range::equal(base_string, slice));
+
+  const epee::span<const std::uint8_t> original = epee::to_span(slice);
+  epee::byte_slice moved{std::move(slice)};
+  EXPECT_TRUE(boost::range::equal(base_string, moved));
+
+  EXPECT_EQ(slice.begin(), slice.end());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_EQ(original.begin(), moved.begin());
+  EXPECT_EQ(moved.begin(), moved.cbegin());
+  EXPECT_EQ(original.end(), moved.end());
+  EXPECT_EQ(moved.end(), moved.cend());
+
+  EXPECT_TRUE(slice.empty());
+  EXPECT_EQ(slice.begin(), slice.data());
+  EXPECT_EQ(0u, slice.size());
+
+  EXPECT_FALSE(moved.empty());
+  EXPECT_EQ(moved.begin(), moved.data());
+  EXPECT_EQ(original.size(), moved.size());
+
+  slice = std::move(moved);
+  EXPECT_TRUE(boost::range::equal(base_string, slice));
+
+  EXPECT_EQ(original.begin(), slice.begin());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(original.end(), slice.end());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_FALSE(slice.empty());
+  EXPECT_EQ(slice.begin(), slice.data());
+  EXPECT_EQ(original.size(), slice.size());
+
+  EXPECT_TRUE(moved.empty());
+  EXPECT_EQ(moved.begin(), moved.data());
+  EXPECT_EQ(0u, moved.size());
+}
+
+TEST(ByteSlice, Clone)
+{
+  static constexpr const char base_string[] = "another example message";
+
+  const epee::byte_slice slice{epee::as_byte_span(base_string)};
+  EXPECT_TRUE(boost::range::equal(base_string, slice));
+
+  const epee::byte_slice clone{slice.clone()};
+  EXPECT_TRUE(boost::range::equal(base_string, clone));
+
+  EXPECT_EQ(slice.begin(), clone.begin());
+  EXPECT_EQ(slice.cbegin(), clone.cbegin());
+  EXPECT_EQ(slice.end(), clone.end());
+  EXPECT_EQ(slice.cend(), clone.cend());
+
+  EXPECT_FALSE(slice.empty());
+  EXPECT_FALSE(clone.empty());
+  EXPECT_EQ(slice.cbegin(), slice.data());
+  EXPECT_EQ(slice.data(), clone.data());
+  EXPECT_EQ(sizeof(base_string), slice.size());
+  EXPECT_EQ(slice.size(), clone.size());
+}
+
+TEST(ByteSlice, RemovePrefix)
+{
+  static constexpr const char base_string[] = "another example message";
+  static constexpr std::size_t remove_size = sizeof("another");
+  static constexpr std::size_t remaining = sizeof(base_string) - remove_size;
+
+  epee::byte_slice slice{epee::as_byte_span(base_string)};
+  EXPECT_TRUE(boost::range::equal(base_string, slice));
+
+  const epee::span<const std::uint8_t> original = epee::to_span(slice);
+  EXPECT_EQ(remove_size, slice.remove_prefix(remove_size));
+
+  EXPECT_EQ(original.begin() + remove_size, slice.begin());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(original.end(), slice.end());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_FALSE(slice.empty());
+  EXPECT_EQ(slice.cbegin(), slice.data());
+  EXPECT_EQ(remaining, slice.size());
+
+  // touch original pointers to check "free" status
+  EXPECT_TRUE(boost::range::equal(base_string, original));
+
+  EXPECT_EQ(remaining, slice.remove_prefix(remaining + 1));
+
+  EXPECT_EQ(slice.begin(), slice.end());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_TRUE(slice.empty());
+  EXPECT_EQ(slice.cbegin(), slice.data());
+  EXPECT_EQ(0, slice.size());
+}
+
+TEST(ByteSlice, TakeSlice)
+{
+  static constexpr const char base_string[] = "another example message";
+  static constexpr std::size_t remove_size = sizeof("another");
+  static constexpr std::size_t remaining = sizeof(base_string) - remove_size;
+
+  epee::byte_slice slice{epee::as_byte_span(base_string)};
+  EXPECT_TRUE(boost::range::equal(base_string, slice));
+
+  const epee::span<const std::uint8_t> original = epee::to_span(slice);
+  const epee::byte_slice slice2 = slice.take_slice(remove_size);
+
+  EXPECT_EQ(original.begin() + remove_size, slice.begin());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(original.end(), slice.end());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_EQ(original.begin(), slice2.begin());
+  EXPECT_EQ(slice2.begin(), slice2.cbegin());
+  EXPECT_EQ(original.begin() + remove_size, slice2.end());
+  EXPECT_EQ(slice2.end(), slice2.cend());
+
+  EXPECT_FALSE(slice.empty());
+  EXPECT_EQ(slice.cbegin(), slice.data());
+  EXPECT_EQ(remaining, slice.size());
+
+  EXPECT_FALSE(slice2.empty());
+  EXPECT_EQ(slice2.cbegin(), slice2.data());
+  EXPECT_EQ(remove_size, slice2.size());
+
+  // touch original pointers to check "free" status
+  EXPECT_TRUE(boost::range::equal(base_string, original));
+
+  const epee::byte_slice slice3 = slice.take_slice(remaining + 1);
+
+  EXPECT_EQ(slice.begin(), slice.end());
+  EXPECT_EQ(slice.begin(), slice.cbegin());
+  EXPECT_EQ(slice.end(), slice.cend());
+
+  EXPECT_EQ(original.begin(), slice2.begin());
+  EXPECT_EQ(slice2.begin(), slice2.cbegin());
+  EXPECT_EQ(original.begin() + remove_size, slice2.end());
+  EXPECT_EQ(slice2.end(), slice2.cend());
+
+  EXPECT_EQ(slice2.end(), slice3.begin());
+  EXPECT_EQ(slice3.begin(), slice3.cbegin());
+  EXPECT_EQ(original.end(), slice3.end());
+  EXPECT_EQ(slice3.end(), slice3.cend());
+
+  EXPECT_TRUE(slice.empty());
+  EXPECT_EQ(slice.cbegin(), slice.data());
+  EXPECT_EQ(0, slice.size());
+
+  EXPECT_FALSE(slice2.empty());
+  EXPECT_EQ(slice2.cbegin(), slice2.data());
+  EXPECT_EQ(remove_size, slice2.size());
+
+  EXPECT_FALSE(slice3.empty());
+  EXPECT_EQ(slice3.cbegin(), slice3.data());
+  EXPECT_EQ(remaining, slice3.size());
+
+  // touch original pointers to check "free" status
+  slice = nullptr;
+  EXPECT_TRUE(boost::range::equal(base_string, original));
+}
+
+TEST(ByteSlice, GetSlice)
+{
+  static constexpr const char base_string[] = "another example message";
+  static constexpr std::size_t get_size = sizeof("another");
+  static constexpr std::size_t get2_size = sizeof(base_string) - get_size;
+
+  epee::span<const std::uint8_t> original{};
+  epee::byte_slice slice2{};
+  epee::byte_slice slice3{};
+
+  // make sure get_slice increments ref count
+  {
+    const epee::byte_slice slice{epee::as_byte_span(base_string)};
+    EXPECT_TRUE(boost::range::equal(base_string, slice));
+
+    original = epee::to_span(slice);
+    slice2 = slice.get_slice(0, get_size);
+
+    EXPECT_EQ(original.begin(), slice.begin());
+    EXPECT_EQ(slice.begin(), slice.cbegin());
+    EXPECT_EQ(original.end(), slice.end());
+    EXPECT_EQ(slice.end(), slice.cend());
+
+    EXPECT_EQ(original.begin(), slice2.begin());
+    EXPECT_EQ(slice2.begin(), slice2.cbegin());
+    EXPECT_EQ(original.begin() + get_size, slice2.end());
+    EXPECT_EQ(slice2.end(), slice2.cend());
+
+    EXPECT_FALSE(slice.empty());
+    EXPECT_EQ(slice.cbegin(), slice.data());
+    EXPECT_EQ(original.size(), slice.size());
+
+    EXPECT_FALSE(slice2.empty());
+    EXPECT_EQ(slice2.cbegin(), slice2.data());
+    EXPECT_EQ(get_size, slice2.size());
+
+    // touch original pointers to check "free" status
+    EXPECT_TRUE(boost::range::equal(base_string, original));
+
+    slice3 = slice.get_slice(get_size, sizeof(base_string));
+
+    EXPECT_EQ(original.begin(), slice.begin());
+    EXPECT_EQ(slice.begin(), slice.cbegin());
+    EXPECT_EQ(original.end(), slice.end());
+    EXPECT_EQ(slice.end(), slice.cend());
+
+    EXPECT_EQ(original.begin(), slice2.begin());
+    EXPECT_EQ(slice2.begin(), slice2.cbegin());
+    EXPECT_EQ(original.begin() + get_size, slice2.end());
+    EXPECT_EQ(slice2.end(), slice2.cend());
+
+    EXPECT_EQ(slice2.end(), slice3.begin());
+    EXPECT_EQ(slice3.begin(), slice3.cbegin());
+    EXPECT_EQ(original.end(), slice3.end());
+    EXPECT_EQ(slice3.end(), slice3.cend());
+
+    EXPECT_FALSE(slice.empty());
+    EXPECT_EQ(slice.cbegin(), slice.data());
+    EXPECT_EQ(original.size(), slice.size());
+
+    EXPECT_FALSE(slice2.empty());
+    EXPECT_EQ(slice2.cbegin(), slice2.data());
+    EXPECT_EQ(get_size, slice2.size());
+
+    EXPECT_FALSE(slice3.empty());
+    EXPECT_EQ(slice3.cbegin(), slice3.data());
+    EXPECT_EQ(get2_size, slice3.size());
+
+    EXPECT_THROW(slice.get_slice(1, 0), std::out_of_range);
+    EXPECT_THROW(slice.get_slice(0, sizeof(base_string) + 1), std::out_of_range);
+    EXPECT_THROW(slice.get_slice(sizeof(base_string) + 1, sizeof(base_string) + 1), std::out_of_range);
+    EXPECT_TRUE(slice.get_slice(sizeof(base_string), sizeof(base_string)).empty());
+
+    EXPECT_EQ(original.begin(), slice.begin());
+    EXPECT_EQ(slice.begin(), slice.cbegin());
+    EXPECT_EQ(original.end(), slice.end());
+    EXPECT_EQ(slice.end(), slice.cend());
+
+    EXPECT_FALSE(slice.empty());
+    EXPECT_EQ(slice.cbegin(), slice.data());
+    EXPECT_EQ(original.size(), slice.size());
+  }
+
+  // touch original pointers to check "free" status
+  EXPECT_TRUE(boost::range::equal(base_string, original));
+}
+
 TEST(ToHex, String)
 {
   EXPECT_TRUE(epee::to_hex::string(nullptr).empty());
@@ -387,6 +823,25 @@ TEST(ToHex, String)
     std_to_hex(all_bytes), epee::to_hex::string(epee::to_span(all_bytes))
   );
 
+}
+
+TEST(FromHex, String)
+{
+    // the source data to encode and decode
+    std::vector<uint8_t> source{{ 0x00, 0xFF, 0x0F, 0xF0 }};
+
+    // encode and decode the data
+    auto hex = epee::to_hex::string({ source.data(), source.size() });
+    auto decoded = epee::from_hex::vector(hex);
+
+    // encoded should be twice the size and should decode to the exact same data
+    EXPECT_EQ(source.size() * 2, hex.size());
+    EXPECT_EQ(source, decoded);
+
+    // we will now create a padded hex string, we want to explicitly allow
+    // decoding it this way also, ignoring spaces and colons between the numbers
+    hex.assign("00:ff 0f:f0");
+    EXPECT_EQ(source, epee::from_hex::vector(hex));
 }
 
 TEST(ToHex, Array)
@@ -458,6 +913,35 @@ TEST(StringTools, PodToHex)
   );
 }
 
+TEST(StringTools, ParseHex)
+{
+  static const char data[] = "a10b68c2";
+  for (size_t i = 0; i < sizeof(data); i += 2)
+  {
+    std::string res;
+    ASSERT_TRUE(epee::string_tools::parse_hexstr_to_binbuff(std::string(data, i), res));
+    std::string hex = epee::string_tools::buff_to_hex_nodelimer(res);
+    ASSERT_EQ(hex.size(), i);
+    ASSERT_EQ(memcmp(data, hex.data(), i), 0);
+  }
+}
+
+TEST(StringTools, ParseNotHex)
+{
+  std::string res;
+  for (size_t i = 0; i < 256; ++i)
+  {
+    std::string inputHexString = std::string(2, static_cast<char>(i));
+    if ((i >= '0' && i <= '9') || (i >= 'A' && i <= 'F') || (i >= 'a' && i <= 'f')) {
+      ASSERT_TRUE(epee::string_tools::parse_hexstr_to_binbuff(inputHexString, res));
+    } else {
+      ASSERT_FALSE(epee::string_tools::parse_hexstr_to_binbuff(inputHexString, res));
+    }
+  }
+
+  ASSERT_FALSE(epee::string_tools::parse_hexstr_to_binbuff(std::string("a"), res));
+}
+
 TEST(StringTools, GetIpString)
 {
   EXPECT_EQ(
@@ -516,6 +1000,8 @@ TEST(StringTools, GetIpInt32)
 
 TEST(NetUtils, IPv4NetworkAddress)
 {
+  static_assert(epee::net_utils::ipv4_network_address::get_type_id() == epee::net_utils::address_type::ipv4, "bad ipv4 type id");
+
   const auto ip1 = boost::endian::native_to_big(0x330012FFu);
   const auto ip_loopback = boost::endian::native_to_big(0x7F000001u);
   const auto ip_local = boost::endian::native_to_big(0x0A000000u);
@@ -526,7 +1012,7 @@ TEST(NetUtils, IPv4NetworkAddress)
   EXPECT_STREQ("51.0.18.255", address1.host_str().c_str());
   EXPECT_FALSE(address1.is_loopback());
   EXPECT_FALSE(address1.is_local());
-  EXPECT_EQ(epee::net_utils::ipv4_network_address::ID, address1.get_type_id());
+  EXPECT_EQ(epee::net_utils::ipv4_network_address::get_type_id(), address1.get_type_id());
   EXPECT_EQ(ip1, address1.ip());
   EXPECT_EQ(65535, address1.port());
   EXPECT_TRUE(epee::net_utils::ipv4_network_address{std::move(address1)} == address1);
@@ -539,7 +1025,7 @@ TEST(NetUtils, IPv4NetworkAddress)
   EXPECT_STREQ("127.0.0.1", loopback.host_str().c_str());
   EXPECT_TRUE(loopback.is_loopback());
   EXPECT_FALSE(loopback.is_local());
-  EXPECT_EQ(epee::net_utils::ipv4_network_address::ID, address1.get_type_id());
+  EXPECT_EQ(epee::net_utils::ipv4_network_address::get_type_id(), address1.get_type_id());
   EXPECT_EQ(ip_loopback, loopback.ip());
   EXPECT_EQ(0, loopback.port());
 
@@ -595,7 +1081,9 @@ TEST(NetUtils, NetworkAddress)
     constexpr static bool is_local() noexcept { return false; }
     static std::string str() { return {}; }
     static std::string host_str() { return {}; }
-    constexpr static uint8_t get_type_id() noexcept { return uint8_t(-1); }
+    constexpr static epee::net_utils::address_type get_type_id() noexcept { return epee::net_utils::address_type(-1); }
+    constexpr static epee::net_utils::zone get_zone() noexcept { return epee::net_utils::zone::invalid; }
+    constexpr static bool is_blockable() noexcept { return false; }
   };
 
   const epee::net_utils::network_address empty;
@@ -605,7 +1093,9 @@ TEST(NetUtils, NetworkAddress)
   EXPECT_STREQ("<none>", empty.host_str().c_str());
   EXPECT_FALSE(empty.is_loopback());
   EXPECT_FALSE(empty.is_local());
-  EXPECT_EQ(0, empty.get_type_id());
+  EXPECT_EQ(epee::net_utils::address_type::invalid, empty.get_type_id());
+  EXPECT_EQ(epee::net_utils::zone::invalid, empty.get_zone());
+  EXPECT_FALSE(empty.is_blockable());
   EXPECT_THROW(empty.as<custom_address>(), std::bad_cast);
 
   epee::net_utils::network_address address1{
@@ -621,7 +1111,9 @@ TEST(NetUtils, NetworkAddress)
   EXPECT_STREQ("51.0.18.255", address1.host_str().c_str());
   EXPECT_FALSE(address1.is_loopback());
   EXPECT_FALSE(address1.is_local());
-  EXPECT_EQ(epee::net_utils::ipv4_network_address::ID, address1.get_type_id());
+  EXPECT_EQ(epee::net_utils::ipv4_network_address::get_type_id(), address1.get_type_id());
+  EXPECT_EQ(epee::net_utils::zone::public_, address1.get_zone());
+  EXPECT_TRUE(address1.is_blockable());
   EXPECT_NO_THROW(address1.as<epee::net_utils::ipv4_network_address>());
   EXPECT_THROW(address1.as<custom_address>(), std::bad_cast);
 
@@ -638,7 +1130,9 @@ TEST(NetUtils, NetworkAddress)
   EXPECT_STREQ("127.0.0.1", loopback.host_str().c_str());
   EXPECT_TRUE(loopback.is_loopback());
   EXPECT_FALSE(loopback.is_local());
-  EXPECT_EQ(epee::net_utils::ipv4_network_address::ID, address1.get_type_id());
+  EXPECT_EQ(epee::net_utils::ipv4_network_address::get_type_id(), address1.get_type_id());
+  EXPECT_EQ(epee::net_utils::zone::public_, address1.get_zone());
+  EXPECT_EQ(epee::net_utils::ipv4_network_address::get_type_id(), address1.get_type_id());
 
   const epee::net_utils::network_address local{
     epee::net_utils::ipv4_network_address{ip_local, 8080}
@@ -736,4 +1230,172 @@ TEST(NetUtils, PrivateRanges)
   ASSERT_EQ(is_local("0.0.168.192"), false);
   ASSERT_EQ(is_local("0.0.30.172"), false);
   ASSERT_EQ(is_local("0.0.30.127"), false);
+}
+
+TEST(net_buffer, basic)
+{
+  epee::net_utils::buffer buf;
+
+  ASSERT_EQ(buf.size(), 0);
+  EXPECT_THROW(buf.span(1), std::runtime_error);
+  buf.append("a", 1);
+  epee::span<const uint8_t> span = buf.span(1);
+  ASSERT_EQ(span.size(), 1);
+  ASSERT_EQ(span.data()[0], 'a');
+  EXPECT_THROW(buf.span(2), std::runtime_error);
+  buf.append("bc", 2);
+  buf.erase(1);
+  EXPECT_THROW(buf.span(3), std::runtime_error);
+  span = buf.span(2);
+  ASSERT_EQ(span.size(), 2);
+  ASSERT_EQ(span.data()[0], 'b');
+  ASSERT_EQ(span.data()[1], 'c');
+  buf.erase(1);
+  EXPECT_THROW(buf.span(2), std::runtime_error);
+  span = buf.span(1);
+  ASSERT_EQ(span.size(), 1);
+  ASSERT_EQ(span.data()[0], 'c');
+  EXPECT_THROW(buf.erase(2), std::runtime_error);
+  buf.erase(1);
+  EXPECT_EQ(buf.size(), 0);
+  EXPECT_THROW(buf.span(1), std::runtime_error);
+}
+
+TEST(net_buffer, existing_capacity)
+{
+  epee::net_utils::buffer buf;
+
+  buf.append("123456789", 9);
+  buf.erase(9);
+  buf.append("abc", 3);
+  buf.append("def", 3);
+  ASSERT_EQ(buf.size(), 6);
+  epee::span<const uint8_t> span = buf.span(6);
+  ASSERT_TRUE(!memcmp(span.data(), "abcdef", 6));
+}
+
+TEST(net_buffer, reallocate)
+{
+  epee::net_utils::buffer buf;
+
+  buf.append(std::string(4000, ' ').c_str(), 4000);
+  buf.append(std::string(8000, '0').c_str(), 8000);
+  ASSERT_EQ(buf.size(), 12000);
+  epee::span<const uint8_t> span = buf.span(12000);
+  ASSERT_TRUE(!memcmp(span.data(), std::string(4000, ' ').c_str(), 4000));
+  ASSERT_TRUE(!memcmp(span.data() + 4000, std::string(8000, '0').c_str(), 8000));
+}
+
+TEST(net_buffer, move)
+{
+  epee::net_utils::buffer buf;
+
+  buf.append(std::string(400, ' ').c_str(), 400);
+  buf.erase(399);
+  buf.append(std::string(4000, '0').c_str(), 4000);
+  ASSERT_EQ(buf.size(), 4001);
+  epee::span<const uint8_t> span = buf.span(4001);
+  ASSERT_TRUE(!memcmp(span.data(), std::string(1, ' ').c_str(), 1));
+  ASSERT_TRUE(!memcmp(span.data() + 1, std::string(4000, '0').c_str(), 4000));
+}
+
+TEST(parsing, isspace)
+{
+  ASSERT_FALSE(epee::misc_utils::parse::isspace(0));
+  for (int c = 1; c < 256; ++c)
+  {
+    ASSERT_EQ(epee::misc_utils::parse::isspace(c), strchr("\r\n\t\f\v ", c) != NULL);
+  }
+}
+
+TEST(parsing, isdigit)
+{
+  ASSERT_FALSE(epee::misc_utils::parse::isdigit(0));
+  for (int c = 1; c < 256; ++c)
+  {
+    ASSERT_EQ(epee::misc_utils::parse::isdigit(c), strchr("0123456789", c) != NULL);
+  }
+}
+
+TEST(parsing, number)
+{
+  boost::string_ref val;
+  std::string s;
+  std::string::const_iterator i;
+
+  // the parser expects another character to end the number, and accepts things
+  // that aren't numbers, as it's meant as a pre-filter for strto* functions,
+  // so we just check that numbers get accepted, but don't test non numbers
+
+  s = "0 ";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "0");
+
+  s = "000 ";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "000");
+
+  s = "10x";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "10");
+
+  s = "10.09/";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "10.09");
+
+  s = "-1.r";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "-1.");
+
+  s = "-49.;";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "-49.");
+
+  s = "0.78/";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "0.78");
+
+  s = "33E9$";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "33E9");
+
+  s = ".34e2=";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, ".34e2");
+
+  s = "-9.34e-2=";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "-9.34e-2");
+
+  s = "+9.34e+03=";
+  i = s.begin();
+  epee::misc_utils::parse::match_number(i, s.end(), val);
+  ASSERT_EQ(val, "+9.34e+03");
+}
+
+TEST(parsing, unicode)
+{
+  std::string bs;
+  std::string s;
+  std::string::const_iterator si;
+
+  s = "\"\""; si = s.begin(); ASSERT_TRUE(epee::misc_utils::parse::match_string(si, s.end(), bs)); ASSERT_EQ(bs, "");
+  s = "\"\\u0000\""; si = s.begin(); ASSERT_TRUE(epee::misc_utils::parse::match_string(si, s.end(), bs)); ASSERT_EQ(bs, std::string(1, '\0'));
+  s = "\"\\u0020\""; si = s.begin(); ASSERT_TRUE(epee::misc_utils::parse::match_string(si, s.end(), bs)); ASSERT_EQ(bs, " ");
+  s = "\"\\u1\""; si = s.begin(); ASSERT_FALSE(epee::misc_utils::parse::match_string(si, s.end(), bs));
+  s = "\"\\u12\""; si = s.begin(); ASSERT_FALSE(epee::misc_utils::parse::match_string(si, s.end(), bs));
+  s = "\"\\u123\""; si = s.begin(); ASSERT_FALSE(epee::misc_utils::parse::match_string(si, s.end(), bs));
+  s = "\"\\u1234\""; si = s.begin(); ASSERT_TRUE(epee::misc_utils::parse::match_string(si, s.end(), bs)); ASSERT_EQ(bs, "ሴ");
+  s = "\"foo\\u1234bar\""; si = s.begin(); ASSERT_TRUE(epee::misc_utils::parse::match_string(si, s.end(), bs)); ASSERT_EQ(bs, "fooሴbar");
+  s = "\"\\u3042\\u307e\\u3084\\u304b\\u3059\""; si = s.begin(); ASSERT_TRUE(epee::misc_utils::parse::match_string(si, s.end(), bs)); ASSERT_EQ(bs, "あまやかす");
 }
