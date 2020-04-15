@@ -31,8 +31,6 @@
 #include <algorithm>
 #include <boost/utility/string_ref.hpp>
 
-#include "misc_log_ex.h"
-
 #undef WAZN_DEFAULT_LOG_CATEGORY
 #define WAZN_DEFAULT_LOG_CATEGORY "serialization"
 
