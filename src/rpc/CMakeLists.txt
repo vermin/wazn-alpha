@@ -28,11 +28,14 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+include_directories(SYSTEM ${ZMQ_INCLUDE_PATH})
+
 set(rpc_base_sources
   rpc_args.cpp)
 
 set(rpc_sources
   core_rpc_server.cpp
+  rpc_handler.cpp
   instanciations)
 
 set(daemon_messages_sources
@@ -47,7 +50,8 @@ set(daemon_rpc_server_sources
 set(rpc_base_headers
   rpc_args.h)
 
-set(rpc_headers)
+set(rpc_headers
+  rpc_handler.h)
 
 set(daemon_rpc_server_headers)
 
@@ -65,7 +69,6 @@ set(daemon_rpc_server_private_headers
   message.h
   daemon_messages.h
   daemon_handler.h
-  rpc_handler.h
   zmq_server.h)
 
 
@@ -113,6 +116,7 @@ target_link_libraries(rpc
     common
     cryptonote_core
     cryptonote_protocol
+    net
     ${Boost_REGEX_LIBRARY}
     ${Boost_THREAD_LIBRARY}
   PRIVATE

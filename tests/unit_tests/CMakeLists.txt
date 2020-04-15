@@ -63,6 +63,7 @@ set(unit_tests_sources
   mul_div.cpp
   multiexp.cpp
   multisig.cpp
+  net.cpp
   parse_amount.cpp
   random.cpp
   serialization.cpp
@@ -84,7 +85,6 @@ set(unit_tests_sources
   wipeable_string.cpp
   is_hdd.cpp
   aligned.cpp
-  zmq_rpc.cpp)
 
 set(unit_tests_headers
   unit_tests_utils.h)
@@ -99,6 +99,7 @@ target_link_libraries(unit_tests
     cryptonote_core
     blockchain_db
     rpc
+    net
     serialization
     wallet
     p2p
