@@ -1,5 +1,5 @@
 // Copyright (c) 2020 WAZN Project
-// Copyright (c) 2018, The Monero Project
+// Copyright (c) 2018 The Monero Project
 //
 // All rights reserved.
 //
@@ -894,7 +894,8 @@ TEST(dandelionpp_map, empty)
 TEST(dandelionpp_map, zero_stems)
 {
     std::vector<boost::uuids::uuid> connections{6};
-    std::generate(connections.begin(), connections.end(), boost::uuids::random_generator{});
+    for (auto &c: connections)
+      c = boost::uuids::random_generator{}();
 
     net::dandelionpp::connection_map mapper{connections, 0};
     EXPECT_EQ(mapper.begin(), mapper.end());
@@ -918,7 +919,8 @@ TEST(dandelionpp_map, zero_stems)
 TEST(dandelionpp_map, dropped_connection)
 {
     std::vector<boost::uuids::uuid> connections{6};
-    std::generate(connections.begin(), connections.end(), boost::uuids::random_generator{});
+    for (auto &c: connections)
+      c = boost::uuids::random_generator{}();
     std::sort(connections.begin(), connections.end());
 
     // select 3 of 6 outgoing connections
@@ -954,7 +956,8 @@ TEST(dandelionpp_map, dropped_connection)
     }
     std::map<boost::uuids::uuid, boost::uuids::uuid> mapping;
     std::vector<boost::uuids::uuid> in_connections{9};
-    std::generate(in_connections.begin(), in_connections.end(), boost::uuids::random_generator{});
+    for (auto &c: in_connections)
+      c = boost::uuids::random_generator{}();
     {
         std::map<boost::uuids::uuid, std::size_t> used;
         std::multimap<boost::uuids::uuid, boost::uuids::uuid> inverse_mapping;
@@ -1043,7 +1046,8 @@ TEST(dandelionpp_map, dropped_connection_remapped)
     boost::uuids::random_generator random_uuid{};
 
     std::vector<boost::uuids::uuid> connections{3};
-    std::generate(connections.begin(), connections.end(), random_uuid);
+    for (auto &e: connections)
+      e = random_uuid();
     std::sort(connections.begin(), connections.end());
 
     // select 3 of 3 outgoing connections
@@ -1073,7 +1077,8 @@ TEST(dandelionpp_map, dropped_connection_remapped)
     }
     std::map<boost::uuids::uuid, boost::uuids::uuid> mapping;
     std::vector<boost::uuids::uuid> in_connections{9};
-    std::generate(in_connections.begin(), in_connections.end(), random_uuid);
+    for (auto &e: in_connections)
+      e = random_uuid();
     {
         std::map<boost::uuids::uuid, std::size_t> used;
         std::multimap<boost::uuids::uuid, boost::uuids::uuid> inverse_mapping;
@@ -1152,7 +1157,8 @@ TEST(dandelionpp_map, dropped_connection_remapped)
     }
     // map 8 new incoming connections across 3 outgoing links
     in_connections.resize(18);
-    std::generate(in_connections.begin() + 10, in_connections.end(), random_uuid);
+    for (size_t i = 10; i < in_connections.size(); ++i)
+      in_connections[i] = random_uuid();
     {
         std::map<boost::uuids::uuid, std::size_t> used;
         for (const boost::uuids::uuid& connection : in_connections)
@@ -1179,7 +1185,8 @@ TEST(dandelionpp_map, dropped_all_connections)
     boost::uuids::random_generator random_uuid{};
 
     std::vector<boost::uuids::uuid> connections{8};
-    std::generate(connections.begin(), connections.end(), random_uuid);
+    for (auto &e: connections)
+      e = random_uuid();
     std::sort(connections.begin(), connections.end());
 
     // select 3 of 8 outgoing connections
@@ -1208,7 +1215,8 @@ TEST(dandelionpp_map, dropped_all_connections)
         }
     }
     std::vector<boost::uuids::uuid> in_connections{9};
-    std::generate(in_connections.begin(), in_connections.end(), random_uuid);
+    for (auto &e: in_connections)
+      e = random_uuid();
     {
         std::map<boost::uuids::uuid, std::size_t> used;
         std::map<boost::uuids::uuid, boost::uuids::uuid> mapping;
@@ -1240,7 +1248,8 @@ TEST(dandelionpp_map, dropped_all_connections)
 
     // select 3 of 30 connections, only 7 should be remapped to new indexes (but all to new uuids)
     connections.resize(30);
-    std::generate(connections.begin(), connections.end(), random_uuid);
+    for (auto &e: connections)
+      e = random_uuid();
     EXPECT_TRUE(mapper.update(connections));
     {
         std::map<boost::uuids::uuid, std::size_t> used;
