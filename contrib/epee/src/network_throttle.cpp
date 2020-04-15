@@ -25,8 +25,7 @@ Throttling work by:
 
 
 */
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018-2019 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
