@@ -2,8 +2,7 @@
 /// @author rfree (current maintainer in monero.cc project)
 /// @brief interface for throttling of connection (count and rate-limit speed etc)
 
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -155,6 +154,7 @@ class i_network_throttle {
 
 		virtual double get_time_seconds() const =0; // a timer
         virtual void logger_handle_net(const std::string &filename, double time, size_t size)=0;
+		virtual void get_stats(uint64_t &total_packets, uint64_t &total_bytes) const =0;
 
 
 };

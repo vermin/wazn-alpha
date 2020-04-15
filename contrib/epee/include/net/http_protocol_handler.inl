@@ -32,6 +32,7 @@
 #include "string_tools.h"
 #include "file_io_utils.h"
 #include "net_parse_helpers.h"
+#include "time_helper.h"
 
 #undef WAZN_DEFAULT_LOG_CATEGORY
 #define WAZN_DEFAULT_LOG_CATEGORY "net.http"
@@ -576,6 +577,10 @@ namespace net_utils
 		if (query_info.m_http_method != http::http_method_options)
 		{
 			res = handle_request(query_info, response);
+			if (response.m_response_code == 500)
+			{
+				m_want_close = true;	// close on all "Internal server error"s
+			}
 		}
 		else
 		{
@@ -588,9 +593,10 @@ namespace net_utils
 
     LOG_PRINT_L3("HTTP_RESPONSE_HEAD: << \r\n" << response_data);
 
-		m_psnd_hndlr->do_send((void*)response_data.data(), response_data.size());
 		if ((response.m_body.size() && (query_info.m_http_method != http::http_method_head)) || (query_info.m_http_method == http::http_method_options))
-			m_psnd_hndlr->do_send((void*)response.m_body.data(), response.m_body.size());
+			response_data += response.m_body;
+
+		m_psnd_hndlr->do_send(byte_slice{std::move(response_data)});
 		m_psnd_hndlr->send_done();
 		return res;
 	}
@@ -676,7 +682,7 @@ namespace net_utils
 
 		//add additional fields, if it is
 		for(fields_list::const_iterator it = response.m_additional_fields.begin(); it!=response.m_additional_fields.end(); it++)
-			buf += it->first + ":" + it->second + "\r\n";
+			buf += it->first + ": " + it->second + "\r\n";
 
 		buf+="\r\n";
 

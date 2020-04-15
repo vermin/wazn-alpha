@@ -9,7 +9,6 @@
 // ! Working on above premise, IF this is valid in your juristdictions, then consider this code as released as:
 
 // Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -187,7 +186,7 @@ class connection_basic { // not-templated base class for rapid developmet of som
 
 		// handlers and sleep
 		void sleep_before_packet(size_t packet_size, int phase, int q_len); // execute a sleep ; phase is not really used now(?)
-		static void save_limit_to_file(int limit); ///< for dr-monero
+		static void save_limit_to_file(int limit);
 		static double get_sleep_time(size_t cb);
 };
 
