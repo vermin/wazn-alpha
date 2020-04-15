@@ -37,11 +37,15 @@
 #include <windows.h>
 #else
 #include <sys/wait.h>
+#include <signal.h>
 #endif
 
 #include "misc_log_ex.h"
 #include "util.h"
 #include "spawn.h"
+
+#undef WAZN_DEFAULT_LOG_CATEGORY
+#define WAZN_DEFAULT_LOG_CATEGORY "spawn"
 
 namespace tools
 {
