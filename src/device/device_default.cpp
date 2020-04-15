@@ -33,7 +33,7 @@
 
 
 #include "device_default.hpp"
-#include "common/int-util.h"
+#include "int-util.h"
 #include "cryptonote_basic/account.h"
 #include "cryptonote_basic/subaddress_index.h"
 #include "ringct/rctOps.h"

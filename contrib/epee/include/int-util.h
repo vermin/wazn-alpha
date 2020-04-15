@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -131,29 +130,32 @@ static inline uint32_t div128_32(uint64_t dividend_hi, uint64_t dividend_lo, uin
   return remainder;
 }
 
-static inline uint64_t int_log2(uint64_t x)
+// Long divisor with 2^64 base
+void div128_64(uint64_t dividend_hi, uint64_t dividend_lo, uint64_t divisor, uint64_t* quotient_hi, uint64_t *quotient_lo, uint64_t *remainder_hi, uint64_t *remainder_lo);
+
+static inline void add64clamp(uint64_t *value, uint64_t add)
 {
-  assert(x != 0);
-  assert((x & (x - 1)) == 0);
-  uint64_t r = 0;
-  while (true)
+  static const uint64_t maxval = (uint64_t)-1;
+  if (*value > maxval - add)
+    *value = maxval;
+  else
+    *value += add;
+}
+
+static inline void sub64clamp(uint64_t *value, uint64_t sub)
   {
-    x >>= 1;
-    if (x == 0)
-      break;
-    ++r;
+  if (*value < sub)
+    *value = 0;
+  else
+    *value -= sub;
   }
-  return r;
-}
- static inline uint64_t rational_ceil(uint64_t numerator, uint64_t denominator) {
-  assert(denominator != 0);
-  return numerator / denominator + !!(numerator % denominator);
-}
 
-
+#define IDENT16(x) ((uint16_t) (x))
 #define IDENT32(x) ((uint32_t) (x))
 #define IDENT64(x) ((uint64_t) (x))
 
+#define SWAP16(x) ((((uint16_t) (x) & 0x00ff) << 8) | \
+  (((uint16_t) (x) & 0xff00) >> 8))
 #define SWAP32(x) ((((uint32_t) (x) & 0x000000ff) << 24) | \
   (((uint32_t) (x) & 0x0000ff00) <<  8) | \
   (((uint32_t) (x) & 0x00ff0000) >>  8) | \
@@ -167,10 +169,18 @@ static inline uint64_t int_log2(uint64_t x)
   (((uint64_t) (x) & 0x00ff000000000000) >> 40) | \
   (((uint64_t) (x) & 0xff00000000000000) >> 56))
 
+static inline uint16_t ident16(uint16_t x) { return x; }
 static inline uint32_t ident32(uint32_t x) { return x; }
 static inline uint64_t ident64(uint64_t x) { return x; }
 
 #ifndef __OpenBSD__
+#  if defined(__ANDROID__) && defined(__swap16) && !defined(swap16)
+#      define swap16 __swap16
+#  elif !defined(swap16)
+static inline uint16_t swap16(uint16_t x) {
+  return ((x & 0x00ff) << 8) | ((x & 0xff00) >> 8);
+}
+#  endif
 #  if defined(__ANDROID__) && defined(__swap32) && !defined(swap32)
 #      define swap32 __swap32
 #  elif !defined(swap32)
@@ -198,6 +208,12 @@ static inline uint64_t swap64(uint64_t x) {
 static inline void mem_inplace_ident(void *mem UNUSED, size_t n UNUSED) { }
 #undef UNUSED
 
+static inline void mem_inplace_swap16(void *mem, size_t n) {
+  size_t i;
+  for (i = 0; i < n; i++) {
+    ((uint16_t *) mem)[i] = swap16(((const uint16_t *) mem)[i]);
+  }
+}
 static inline void mem_inplace_swap32(void *mem, size_t n) {
   size_t i;
   for (i = 0; i < n; i++) {
@@ -211,6 +227,9 @@ static inline void mem_inplace_swap64(void *mem, size_t n) {
   }
 }
 
+static inline void memcpy_ident16(void *dst, const void *src, size_t n) {
+  memcpy(dst, src, 2 * n);
+}
 static inline void memcpy_ident32(void *dst, const void *src, size_t n) {
   memcpy(dst, src, 4 * n);
 }
@@ -218,6 +237,12 @@ static inline void memcpy_ident64(void *dst, const void *src, size_t n) {
   memcpy(dst, src, 8 * n);
 }
 
+static inline void memcpy_swap16(void *dst, const void *src, size_t n) {
+  size_t i;
+  for (i = 0; i < n; i++) {
+    ((uint16_t *) dst)[i] = swap16(((const uint16_t *) src)[i]);
+  }
+}
 static inline void memcpy_swap32(void *dst, const void *src, size_t n) {
   size_t i;
   for (i = 0; i < n; i++) {
@@ -242,6 +267,14 @@ static_assert(false, "BYTE_ORDER is undefined. Perhaps, GNU extensions are not e
 #endif
 
 #if BYTE_ORDER == LITTLE_ENDIAN
+#define SWAP16LE IDENT16
+#define SWAP16BE SWAP16
+#define swap16le ident16
+#define swap16be swap16
+#define mem_inplace_swap16le mem_inplace_ident
+#define mem_inplace_swap16be mem_inplace_swap16
+#define memcpy_swap16le memcpy_ident16
+#define memcpy_swap16be memcpy_swap16
 #define SWAP32LE IDENT32
 #define SWAP32BE SWAP32
 #define swap32le ident32
@@ -261,6 +294,14 @@ static_assert(false, "BYTE_ORDER is undefined. Perhaps, GNU extensions are not e
 #endif
 
 #if BYTE_ORDER == BIG_ENDIAN
+#define SWAP16BE IDENT16
+#define SWAP16LE SWAP16
+#define swap16be ident16
+#define swap16le swap16
+#define mem_inplace_swap16be mem_inplace_ident
+#define mem_inplace_swap16le mem_inplace_swap16
+#define memcpy_swap16be memcpy_ident16
+#define memcpy_swap16le memcpy_swap16
 #define SWAP32BE IDENT32
 #define SWAP32LE SWAP32
 #define swap32be ident32
