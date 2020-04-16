@@ -1,5 +1,5 @@
-// Copyright (c) 2018, WAZN Project
-// Copyright (c) 2018, The Monero Project
+// Copyright (c) 2019-2020 WAZN Project
+// Copyright (c) 2018 The Monero Project
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -39,7 +39,7 @@ class Notify
 public:
   Notify(const char *spec);
 
-  int notify(const char *parameter);
+  int notify(const char *tag, const char *s, ...);
 
 private:
   std::string filename;
