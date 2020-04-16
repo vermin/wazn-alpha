@@ -1,5 +1,4 @@
-# Copyright (c) 2019 WAZN Project
-# Copyright (c) 2018 uPlexa Team
+# Copyright (c) 2019-2020 WAZN Project
 # Copyright (c) 2014-2018 The Monero Project
 #
 # All rights reserved.
@@ -42,6 +41,7 @@ target_link_libraries(p2p
   PUBLIC
     version
     cryptonote_core
+    net
     ${UPNP_LIBRARIES}
     ${Boost_CHRONO_LIBRARY}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
