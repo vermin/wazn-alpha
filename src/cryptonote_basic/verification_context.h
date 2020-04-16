@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -50,6 +49,7 @@ namespace cryptonote
     bool m_overspend;
     bool m_fee_too_low;
     bool m_not_rct;
+    bool m_too_few_outputs;
   };
 
   struct block_verification_context
@@ -59,5 +59,6 @@ namespace cryptonote
     bool m_marked_as_orphaned;
     bool m_already_exists;
     bool m_partial_block_reward;
+    bool m_bad_pow; // if bad pow, bad peer outright for DoS protection
   };
 }
