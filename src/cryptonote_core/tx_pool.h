@@ -62,7 +62,7 @@ namespace cryptonote
   class txCompare
   {
   public:
-    bool operator()(const tx_by_fee_and_receive_time_entry& a, const tx_by_fee_and_receive_time_entry& b)
+    bool operator()(const tx_by_fee_and_receive_time_entry& a, const tx_by_fee_and_receive_time_entry& b) const
     {
       // sort by greatest first, not least
       if (a.first.first > b.first.first) return true;
@@ -108,7 +108,7 @@ namespace cryptonote
      * @param id the transaction's hash
      * @param tx_weight the transaction's weight
      */
-    bool add_tx(transaction &tx, const crypto::hash &id, size_t tx_weight, tx_verification_context& tvc, bool kept_by_block, bool relayed, bool do_not_relay, uint8_t version);
+    bool add_tx(transaction &tx, const crypto::hash &id, const cryptonote::blobdata &blob, size_t tx_weight, tx_verification_context& tvc, bool kept_by_block, bool relayed, bool do_not_relay, uint8_t version);
 
     /**
      * @brief add a transaction to the transaction pool
@@ -134,15 +134,17 @@ namespace cryptonote
      *
      * @param id the hash of the transaction
      * @param tx return-by-reference the transaction taken
+     * @param txblob return-by-reference the transaction as a blob
      * @param tx_weight return-by-reference the transaction's weight
      * @param fee the transaction fee
      * @param relayed return-by-reference was transaction relayed to us by the network?
      * @param do_not_relay return-by-reference is transaction not to be relayed to the network?
      * @param double_spend_seen return-by-reference was a double spend seen for that transaction?
+     * @param pruned return-by-reference is the tx pruned
      *
      * @return true unless the transaction cannot be found in the pool
      */
-    bool take_tx(const crypto::hash &id, transaction &tx, size_t& tx_weight, uint64_t& fee, bool &relayed, bool &do_not_relay, bool &double_spend_seen);
+    bool take_tx(const crypto::hash &id, transaction &tx, cryptonote::blobdata &txblob, size_t& tx_weight, uint64_t& fee, bool &relayed, bool &do_not_relay, bool &double_spend_seen, bool &pruned);
 
     /**
      * @brief checks if the pool has a transaction with the given hash
@@ -300,7 +302,7 @@ namespace cryptonote
      *
      * @return true
      */
-    bool check_for_key_images(const std::vector<crypto::key_image>& key_images, std::vector<bool> spent) const;
+    bool check_for_key_images(const std::vector<crypto::key_image>& key_images, std::vector<bool>& spent) const;
 
     /**
      * @brief get a specific transaction from the pool
@@ -428,6 +430,11 @@ namespace cryptonote
       bool double_spend_seen; //!< true iff another tx was seen double spending this one
     };
 
+    /**
+     * @brief get infornation about a single transaction
+     */
+    bool get_transaction_info(const crypto::hash &txid, tx_details &td) const;
+
   private:
 
     /**
@@ -435,7 +442,7 @@ namespace cryptonote
      *
      * @return true on success, false on error
      */
-    bool insert_key_images(const transaction &tx, bool kept_by_block);
+    bool insert_key_images(const transaction_prefix &tx, const crypto::hash &txid, bool kept_by_block);
 
     /**
      * @brief remove old transactions from the pool
@@ -479,10 +486,11 @@ namespace cryptonote
      * a transaction from the pool.
      *
      * @param tx the transaction
+     * @param txid the transaction's hash
      *
      * @return false if any key images to be removed cannot be found, otherwise true
      */
-    bool remove_transaction_keyimages(const transaction& tx);
+    bool remove_transaction_keyimages(const transaction_prefix& tx, const crypto::hash &txid);
 
     /**
      * @brief check if any of a transaction's spent key images are present in a given set
@@ -492,7 +500,7 @@ namespace cryptonote
      *
      * @return true if any key images present in the set, otherwise false
      */
-    static bool have_key_images(const std::unordered_set<crypto::key_image>& kic, const transaction& tx);
+    static bool have_key_images(const std::unordered_set<crypto::key_image>& kic, const transaction_prefix& tx);
 
     /**
      * @brief append the key images from a transaction to the given set
@@ -502,7 +510,7 @@ namespace cryptonote
      *
      * @return false if any append fails, otherwise true
      */
-    static bool append_key_images(std::unordered_set<crypto::key_image>& kic, const transaction& tx);
+    static bool append_key_images(std::unordered_set<crypto::key_image>& kic, const transaction_prefix& tx);
 
     /**
      * @brief check if a transaction is a valid candidate for inclusion in a block
@@ -514,7 +522,7 @@ namespace cryptonote
      *
      * @return true if the transaction is good to go, otherwise false
      */
-    bool is_transaction_ready_to_go(txpool_tx_meta_t& txd, const crypto::hash &txid, const cryptonote::blobdata &txblob, transaction &tx) const;
+    bool is_transaction_ready_to_go(txpool_tx_meta_t& txd, const crypto::hash &txid, const cryptonote::blobdata &txblob, transaction&tx) const;
 
     /**
      * @brief mark all transactions double spending the one passed
@@ -584,6 +592,8 @@ private:
     size_t m_txpool_weight;
 
     mutable std::unordered_map<crypto::hash, std::tuple<bool, tx_verification_context, uint64_t, crypto::hash>> m_input_cache;
+
+    std::unordered_map<crypto::hash, transaction> m_parsed_tx_cache;
   };
 }
 
