@@ -1,5 +1,5 @@
-// Copyright (c) 2019-2020 WAZN Project
-// Copyright (c) 2017-2018 The Monero Project
+// Copyright (c) 2020 WAZN Project
+// Copyright (c) 2017-2019 The Monero Project
 //
 // All rights reserved.
 //
@@ -28,30 +28,64 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#include "debug_link.hpp"
+
+namespace hw{
+namespace trezor{
+
+  DebugLink::DebugLink(){
+
+  }
+
+  DebugLink::~DebugLink(){
+    if (m_transport){
+      close();
+    }
+  }
+
+  void DebugLink::init(std::shared_ptr<Transport> & transport){
+    CHECK_AND_ASSERT_THROW_MES(!m_transport, "Already initialized");
+    m_transport = transport;
+    m_transport->open();
+  }
+
+  void DebugLink::close(){
+    CHECK_AND_ASSERT_THROW_MES(m_transport, "Not initialized");
+    if (m_transport) m_transport->close();
+  }
+
+  std::shared_ptr<messages::debug::DebugLinkState> DebugLink::state(){
+    return call<messages::debug::DebugLinkState>(
+        messages::debug::DebugLinkGetState(),
+        boost::make_optional(messages::MessageType_DebugLinkGetState));
+  }
+
+  void DebugLink::input_word(const std::string & word){
+    messages::debug::DebugLinkDecision decision;
+    decision.set_input(word);
+    call(decision, boost::none, true);
+  }
+
+  void DebugLink::input_button(bool button){
+    messages::debug::DebugLinkDecision decision;
+    decision.set_yes_no(button);
+    call(decision, boost::none, true);
+  }
+
+  void DebugLink::input_swipe(bool swipe){
+    messages::debug::DebugLinkDecision decision;
+    decision.set_up_down(swipe);
+    call(decision, boost::none, true);
+  }
+
+  void DebugLink::stop(){
+    messages::debug::DebugLinkStop msg;
+    call(msg, boost::none, true);
+  }
 
 
 
-#pragma once
 
 
-namespace hw {
-  namespace io {
-
-    class device_io {
-
-    public:
-
-      device_io()   {};
-      ~device_io() {};
-
-      virtual void init()  = 0;
-      virtual void release() = 0;
-
-      virtual void connect(void *parms) = 0;
-      virtual void disconnect() = 0;
-      virtual bool connected() const = 0;
-
-      virtual int  exchange(unsigned char *command, unsigned int cmd_len, unsigned char *response, unsigned int max_resp_len, bool user_input) = 0;
-    };
-  };
-};
+}
+}

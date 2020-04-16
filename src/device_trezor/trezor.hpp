@@ -1,5 +1,5 @@
-// Copyright (c) 2019-2020 WAZN Project
-// Copyright (c) 2017-2018 The Monero Project
+// Copyright (c) 2020 WAZN Project
+// Copyright (c) 2017-2019 The Monero Project
 //
 // All rights reserved.
 //
@@ -28,30 +28,18 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#ifndef WAZN_TREZOR_HPP
+#define WAZN_TREZOR_HPP
 
+#include "trezor/trezor_defs.hpp"
 
+#ifdef WITH_DEVICE_TREZOR
+#include "trezor/transport.hpp"
+#include "trezor/messages/messages.pb.h"
+#include "trezor/messages/messages-common.pb.h"
+#include "trezor/messages/messages-management.pb.h"
+#include "trezor/messages/messages-wazn.pb.h"
+#include "trezor/protocol.hpp"
+#endif
 
-#pragma once
-
-
-namespace hw {
-  namespace io {
-
-    class device_io {
-
-    public:
-
-      device_io()   {};
-      ~device_io() {};
-
-      virtual void init()  = 0;
-      virtual void release() = 0;
-
-      virtual void connect(void *parms) = 0;
-      virtual void disconnect() = 0;
-      virtual bool connected() const = 0;
-
-      virtual int  exchange(unsigned char *command, unsigned int cmd_len, unsigned char *response, unsigned int max_resp_len, bool user_input) = 0;
-    };
-  };
-};
+#endif //WAZN_TREZOR_HPP

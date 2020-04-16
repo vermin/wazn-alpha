@@ -1,5 +1,5 @@
-// Copyright (c) 2019-2020 WAZN Project
-// Copyright (c) 2017-2018 The Monero Project
+// Copyright (c) 2020 WAZN Project
+// Copyright (c) 2017-2019 The Monero Project
 //
 // All rights reserved.
 //
@@ -28,30 +28,49 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#ifndef USE_DEVICE_TREZOR
+#define USE_DEVICE_TREZOR 1
+#endif
 
+// HAVE_TREZOR_READY set by cmake after protobuf messages
+// were generated successfully and all minimal dependencies are met.
+#ifndef DEVICE_TREZOR_READY
+#undef  USE_DEVICE_TREZOR
+#define USE_DEVICE_TREZOR 0
+#endif
 
+#if USE_DEVICE_TREZOR
+#define WITH_DEVICE_TREZOR 1
+#endif
 
-#pragma once
+#ifndef WITH_DEVICE_TREZOR
+#undef WITH_DEVICE_TREZOR_LITE
+#endif
 
+#if defined(HAVE_TREZOR_LIBUSB) && USE_DEVICE_TREZOR
+#define WITH_DEVICE_TREZOR_WEBUSB 1
+#endif
 
-namespace hw {
-  namespace io {
+// Enable / disable UDP in the enumeration
+#ifndef USE_DEVICE_TREZOR_UDP
+#define USE_DEVICE_TREZOR_UDP 1
+#endif
 
-    class device_io {
+// Enable / disable UDP in the enumeration for release
+#ifndef USE_DEVICE_TREZOR_UDP_RELEASE
+#define USE_DEVICE_TREZOR_UDP_RELEASE 0
+#endif
 
-    public:
+#if USE_DEVICE_TREZOR_UDP && (USE_DEVICE_TREZOR_UDP_RELEASE || defined(TREZOR_DEBUG))
+#define WITH_DEVICE_TREZOR_UDP 1
+#endif
 
-      device_io()   {};
-      ~device_io() {};
+// Avoids protobuf undefined macro warning
+#ifndef PROTOBUF_INLINE_NOT_IN_HEADERS
+#define PROTOBUF_INLINE_NOT_IN_HEADERS 0
+#endif
 
-      virtual void init()  = 0;
-      virtual void release() = 0;
-
-      virtual void connect(void *parms) = 0;
-      virtual void disconnect() = 0;
-      virtual bool connected() const = 0;
-
-      virtual int  exchange(unsigned char *command, unsigned int cmd_len, unsigned char *response, unsigned int max_resp_len, bool user_input) = 0;
-    };
-  };
-};
+// Fixes gcc7 problem with minor macro defined clashing with minor() field.
+#ifdef minor
+#undef minor
+#endif
