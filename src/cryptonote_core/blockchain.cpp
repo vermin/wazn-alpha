@@ -1707,6 +1707,21 @@ bool Blockchain::handle_alternative_block(const block& b, const crypto::hash& id
     crypto::hash proof_of_work;
     memset(proof_of_work.data, 0xff, sizeof(proof_of_work.data));
     {
+      crypto::hash seedhash = null_hash;
+      uint64_t seedheight = (const uint64_t height);
+      // seedblock is on the alt chain somewhere
+      if (alt_chain.size() && alt_chain.front().height <= seedheight)
+      {
+        for (auto it=alt_chain.begin(); it != alt_chain.end(); it++)
+        {
+          if (it->height == seedheight+1)
+          {
+            seedhash = it->bl.prev_id;
+            break;
+          }
+        }
+      } else
+      {
       seedhash = get_block_id_by_height(seedheight);
     }
       get_altblock_longhash(bei.bl, proof_of_work, get_current_blockchain_height(), bei.height, seedheight, seedhash);
