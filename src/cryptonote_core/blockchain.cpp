@@ -1708,7 +1708,7 @@ bool Blockchain::handle_alternative_block(const block& b, const crypto::hash& id
     memset(proof_of_work.data, 0xff, sizeof(proof_of_work.data));
     {
       crypto::hash seedhash = null_hash;
-      uint64_t seedheight = (const uint64_t height);
+      uint64_t seedheight = height;
       // seedblock is on the alt chain somewhere
       if (alt_chain.size() && alt_chain.front().height <= seedheight)
       {
@@ -1765,7 +1765,7 @@ bool Blockchain::handle_alternative_block(const block& b, const crypto::hash& id
     {
       cryptonote::tx_memory_pool::tx_details td;
       cryptonote::blobdata blob;
-      if (m_tx_pool.have_tx(txid))
+      if (m_tx_pool.have_tx(txid, relay_category::legacy))
       {
         if (m_tx_pool.get_transaction_info(txid, td))
         {
