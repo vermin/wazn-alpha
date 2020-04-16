@@ -1,5 +1,4 @@
-# Copyright (c) 2019 WAZN Project
-# Copyright (c) 2018 uPlexa Team
+# Copyright (c) 2019-2020 WAZN Project
 # Copyright (c) 2014-2018 The Monero Project
 #
 # All rights reserved.
@@ -111,7 +110,10 @@ add_subdirectory(ringct)
 add_subdirectory(checkpoints)
 add_subdirectory(cryptonote_basic)
 add_subdirectory(cryptonote_core)
+add_subdirectory(lmdb)
 add_subdirectory(multisig)
+add_subdirectory(net)
+add_subdirectory(hardforks)
 if(NOT IOS)
   add_subdirectory(blockchain_db)
 endif()
@@ -128,12 +130,13 @@ add_subdirectory(cryptonote_protocol)
 if(NOT IOS)
   add_subdirectory(simplewallet)
   add_subdirectory(gen_multisig)
+  add_subdirectory(gen_ssl_cert)
   add_subdirectory(daemonizer)
   add_subdirectory(daemon)
   add_subdirectory(blockchain_utilities)
 endif()
 
-if(CMAKE_BUILD_TYPE STREQUAL Debug)
+if(BUILD_DEBUG_UTILITIES)
   add_subdirectory(debug_utilities)
 endif()
 
@@ -142,3 +145,4 @@ if(PER_BLOCK_CHECKPOINT)
 endif()
 
 add_subdirectory(device)
+add_subdirectory(device_trezor)

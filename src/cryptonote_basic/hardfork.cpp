@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -58,12 +57,13 @@ static uint8_t get_block_version(const cryptonote::block &b)
 
 HardFork::HardFork(cryptonote::BlockchainDB &db, uint8_t original_version, uint64_t original_version_till_height, time_t forked_time, time_t update_time, uint64_t window_size, uint8_t default_threshold_percent):
   db(db),
-  original_version(original_version),
-  original_version_till_height(original_version_till_height),
   forked_time(forked_time),
   update_time(update_time),
   window_size(window_size),
-  default_threshold_percent(default_threshold_percent)
+  default_threshold_percent(default_threshold_percent),
+  original_version(original_version),
+  original_version_till_height(original_version_till_height),
+  current_fork_index(0)
 {
   if (window_size == 0)
     throw "window_size needs to be strictly positive";
@@ -88,7 +88,7 @@ bool HardFork::add_fork(uint8_t version, uint64_t height, uint8_t threshold, tim
   }
   if (threshold > 100)
     return false;
-  heights.push_back(Params(version, height, threshold, time));
+  heights.push_back(hardfork_t(version, height, threshold, time));
   return true;
 }
 
@@ -172,7 +172,7 @@ void HardFork::init()
 
   // add a placeholder for the default version, to avoid special cases
   if (heights.empty())
-    heights.push_back(Params(original_version, 0, 0, 0));
+    heights.push_back(hardfork_t(original_version, 0, 0, 0));
 
   versions.clear();
   for (size_t n = 0; n < 256; ++n)
@@ -249,11 +249,9 @@ bool HardFork::reorganize_from_chain_height(uint64_t height)
 bool HardFork::rescan_from_block_height(uint64_t height)
 {
   CRITICAL_REGION_LOCAL(lock);
-  db.block_txn_start(true);
-  if (height >= db.height()) {
-    db.block_txn_stop();
+  db_rtxn_guard rtxn_guard(&db);
+  if (height >= db.height())
     return false;
-  }
 
   versions.clear();
 
@@ -275,8 +273,6 @@ bool HardFork::rescan_from_block_height(uint64_t height)
   if (voted > current_fork_index) {
     current_fork_index = voted;
   }
-
-  db.block_txn_stop();
 
   return true;
 }

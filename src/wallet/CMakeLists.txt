@@ -1,5 +1,4 @@
 # Copyright (c) 2019 WAZN Project
-# Copyright (c) 2018 uPlexa Team
 # Copyright (c) 2014-2018 The Monero Project
 #
 # All rights reserved.
@@ -36,7 +35,11 @@ set(wallet_sources
   wallet2.cpp
   wallet_args.cpp
   ringdb.cpp
-  node_rpc_proxy.cpp)
+  node_rpc_proxy.cpp
+  message_store.cpp
+  message_transporter.cpp
+  wallet_rpc_payments.cpp
+)
 
 set(wallet_private_headers
   wallet2.h
@@ -46,7 +49,10 @@ set(wallet_private_headers
   wallet_rpc_server_commands_defs.h
   wallet_rpc_server_error_codes.h
   ringdb.h
-  node_rpc_proxy.h)
+  node_rpc_proxy.h
+  message_store.h
+  message_transporter.h
+  wallet_rpc_helpers.h)
 
 wazn_private_headers(wallet
   ${wallet_private_headers})
@@ -55,10 +61,13 @@ wazn_add_library(wallet
   ${wallet_private_headers})
 target_link_libraries(wallet
   PUBLIC
+    rpc_base
     multisig
     common
     cryptonote_core
     mnemonics
+    device_trezor
+    net
     ${LMDB_LIBRARY}
     ${Boost_CHRONO_LIBRARY}
     ${Boost_SERIALIZATION_LIBRARY}
@@ -111,17 +120,22 @@ if (BUILD_GUI_DEPS)
     set(libs_to_merge
             wallet_api
             wallet
+            rpc_base
             multisig
+            blockchain_db
             cryptonote_core
             cryptonote_basic
             mnemonics
             common
             cncrypto
             device
+            hardforks
             ringct
             ringct_basic
             checkpoints
-            version)
+            version
+            net
+            device_trezor)
 
     foreach(lib ${libs_to_merge})
         list(APPEND objlibs $<TARGET_OBJECTS:obj_${lib}>) # matches naming convention in src/CMakeLists.txt
@@ -134,6 +148,12 @@ if (BUILD_GUI_DEPS)
     endif()
     install(TARGETS wallet_merged
         ARCHIVE DESTINATION ${lib_folder})
+
+    install(FILES ${TREZOR_DEP_LIBS}
+            DESTINATION ${lib_folder})
+    file(WRITE "trezor_link_flags.txt" ${TREZOR_DEP_LINKER})
+    install(FILES "trezor_link_flags.txt"
+            DESTINATION ${lib_folder})
 endif()
 
 add_subdirectory(api)
