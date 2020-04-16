@@ -91,7 +91,7 @@ namespace cryptonote {
   bool get_block_reward(size_t median_weight, size_t current_block_weight, uint64_t already_generated_coins, uint64_t &reward, uint8_t version) {
     const int target = version < 10 ? DIFFICULTY_TARGET_V1 : DIFFICULTY_TARGET_V2;
     const int target_minutes = target / 60;
-    const int emission_speed_factor = EMISSION_SPEED_FACTOR_PER_MINUTE - int_log2(target_minutes);
+    const int emission_speed_factor = EMISSION_SPEED_FACTOR_PER_MINUTE - (target_minutes);
 
     uint64_t full_reward_zone = get_min_block_weight(version);
 
@@ -329,13 +329,13 @@ namespace cryptonote {
 }
 
 //--------------------------------------------------------------------------------
-bool parse_hash256(const std::string str_hash, crypto::hash& hash)
+bool parse_hash256(const std::string &str_hash, crypto::hash& hash)
 {
   std::string buf;
   bool res = epee::string_tools::parse_hexstr_to_binbuff(str_hash, buf);
   if (!res || buf.size() != sizeof(crypto::hash))
   {
-    std::cout << "invalid hash format: <" << str_hash << '>' << std::endl;
+    MERROR("invalid hash format: " << str_hash);
     return false;
   }
   else
