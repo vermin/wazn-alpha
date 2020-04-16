@@ -1,5 +1,4 @@
-# Copyright (c) 2019 WAZN Project
-# Copyright (c) 2018 uPlexa Team
+# Copyright (c) 2019-2020 WAZN Project
 # Copyright (c) 2014-2018 The Monero Project
 #
 # All rights reserved.
@@ -41,6 +40,7 @@ set(crypto_sources
   hash-extra-jh.c
   hash-extra-skein.c
   hash.c
+  hmac-keccak.c
   jh.c
   keccak.c
   oaes_lib.c
@@ -48,6 +48,12 @@ set(crypto_sources
   skein.c
   slow-hash.c
   tree-hash.c)
+
+if(ARCH_ID STREQUAL "i386" OR ARCH_ID STREQUAL "x86_64" OR ARCH_ID STREQUAL "x86-64" OR ARCH_ID STREQUAL "amd64")
+list(APPEND crypto_sources CryptonightR_template.S)
+endif()
+
+include_directories(${RANDOMX_INCLUDE})
 
 set(crypto_headers)
 

@@ -42,6 +42,8 @@
 #include "oaes_lib.h"
 #include "variant2_int_sqrt.h"
 
+#include <errno.h>
+
 #define MEMORY         (1 << 21) // 2MB scratchpad
 //#define ITER() (variant >= 2 ? (1 << 15) : (1 << 18)) // 2^18 = 262,144, 2^15 = 32,768
 #define ITER() (variant >= 2 ? (1 << 15) : (variant == 1 ? (1 << 18) : (1 << 20))) // 2^18 = 262,144, 2^15 = 32,768
