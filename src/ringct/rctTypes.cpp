@@ -1,8 +1,8 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2017-2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2017-2018 The Monero Project
 //
 // Author: Shen Noether <shen.noether@gmx.com>
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -32,6 +32,7 @@
 #include "misc_log_ex.h"
 #include "cryptonote_config.h"
 #include "rctTypes.h"
+#include "int-util.h"
 using namespace crypto;
 using namespace std;
 
@@ -119,40 +120,22 @@ namespace rct {
     //uint long long to 32 byte key
     void d2h(key & amounth, const wazn_amount in) {
         sc_0(amounth.bytes);
-        wazn_amount val = in;
-        int i = 0;
-        while (val != 0) {
-            amounth[i] = (unsigned char)(val & 0xFF);
-            i++;
-            val /= (wazn_amount)256;
+        memcpy_swap64le(amounth.bytes, &in, 1);
         }
-    }
 
     //uint long long to 32 byte key
     key d2h(const wazn_amount in) {
         key amounth;
-        sc_0(amounth.bytes);
-        wazn_amount val = in;
-        int i = 0;
-        while (val != 0) {
-            amounth[i] = (unsigned char)(val & 0xFF);
-            i++;
-            val /= (wazn_amount)256;
-        }
+        d2h(amounth, in);
         return amounth;
     }
 
     //uint long long to int[64]
     void d2b(bits  amountb, wazn_amount val) {
         int i = 0;
-        while (val != 0) {
-            amountb[i] = val & 1;
-            i++;
-            val >>= 1;
-        }
         while (i < 64) {
-            amountb[i] = 0;
-            i++;
+            amountb[i++] = val & 1;
+            val >>= 1;
         }
     }
 
@@ -173,25 +156,19 @@ namespace rct {
         int val = 0, i = 0, j = 0;
         for (j = 0; j < 8; j++) {
             val = (unsigned char)test.bytes[j];
-            i = 8 * j;
-            while (val != 0) {
-                amountb2[i] = val & 1;
-                i++;
+            i = 0;
+            while (i < 8) {
+                amountb2[j*8+i++] = val & 1;
                 val >>= 1;
             }
-            while (i < 8 * (j + 1)) {
-                amountb2[i] = 0;
-                i++;
             }
         }
-    }
 
     //int[64] to 32 byte key
     void b2h(key & amountdh, const bits amountb2) {
         int byte, i, j;
         for (j = 0; j < 8; j++) {
             byte = 0;
-            i = 8 * j;
             for (i = 7; i > -1; i--) {
                 byte = byte * 2 + amountb2[8 * j + i];
             }
@@ -218,6 +195,7 @@ namespace rct {
         {
             case RCTTypeSimple:
             case RCTTypeBulletproof:
+            case RCTTypeBulletproof2:
                 return true;
             default:
                 return false;
@@ -229,6 +207,7 @@ namespace rct {
         switch (type)
         {
             case RCTTypeBulletproof:
+            case RCTTypeBulletproof2:
                 return true;
             default:
                 return false;
