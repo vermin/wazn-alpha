@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -147,7 +146,7 @@ namespace tools
   bool create_directories_if_necessary(const std::string& path);
   /*! \brief std::rename wrapper for nix and something strange for windows.
    */
-  std::error_code replace_file(const std::string& replacement_name, const std::string& replaced_name);
+  std::error_code replace_file(const std::string& old_name, const std::string& new_name);
 
   bool sanitize_locale();
 
@@ -223,6 +222,8 @@ namespace tools
 
   void set_strict_default_file_permissions(bool strict);
 
+  ssize_t get_lockable_memory();
+
   void set_max_concurrency(unsigned n);
   unsigned get_max_concurrency();
 
@@ -232,6 +233,8 @@ namespace tools
   bool sha256sum(const uint8_t *data, size_t len, crypto::hash &hash);
   bool sha256sum(const std::string &filename, crypto::hash &hash);
 
+  boost::optional<bool> is_hdd(const char *path);
+
   boost::optional<std::pair<uint32_t, uint32_t>> parse_subaddress_lookahead(const std::string& str);
 
   std::string glob_to_regex(const std::string &val);
@@ -240,4 +243,14 @@ namespace tools
 #endif
 
   void closefrom(int fd);
+
+  std::string get_human_readable_timestamp(uint64_t ts);
+
+  std::string get_human_readable_timespan(uint64_t seconds);
+
+  std::string get_human_readable_bytes(uint64_t bytes);
+
+  void clear_screen();
+
+  std::vector<std::pair<std::string, size_t>> split_string_by_width(const std::string &s, size_t columns);
 }

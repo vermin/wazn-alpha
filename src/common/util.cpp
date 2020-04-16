@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -32,6 +31,7 @@
 
 #include <unistd.h>
 #include <cstdio>
+#include <wchar.h>
 
 #ifdef __GLIBC__
 #include <gnu/libc-version.h>
@@ -48,6 +48,7 @@
 #include <string>
 #endif
 
+//tools::is_hdd
 #ifdef __GLIBC__
   #include <sstream>
   #include <sys/sysmacros.h>
@@ -59,6 +60,7 @@
 #include "include_base_utils.h"
 #include "file_io_utils.h"
 #include "wipeable_string.h"
+#include "misc_os_dependent.h"
 using namespace epee;
 
 #include "crypto/crypto.h"
@@ -67,8 +69,12 @@ using namespace epee;
 #include "memwipe.h"
 #include "cryptonote_config.h"
 #include "net/http_client.h"                        // epee::net_utils::...
+#include "readline_buffer.h"
 
 #ifdef WIN32
+#ifndef STRSAFE_NO_DEPRECATE
+#define STRSAFE_NO_DEPRECATE
+#endif
   #include <windows.h>
   #include <shlobj.h>
   #include <strsafe.h>
@@ -80,7 +86,34 @@ using namespace epee;
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/asio.hpp>
+#include <boost/format.hpp>
 #include <openssl/sha.h>
+
+#undef WAZN_DEFAULT_LOG_CATEGORY
+#define WAZN_DEFAULT_LOG_CATEGORY "util"
+
+namespace
+{
+
+#ifndef _WIN32
+static int flock_exnb(int fd)
+{
+  struct flock fl;
+  int ret;
+
+  memset(&fl, 0, sizeof(fl));
+  fl.l_type = F_WRLCK;
+  fl.l_whence = SEEK_SET;
+  fl.l_start = 0;
+  fl.l_len = 0;
+  ret = fcntl(fd, F_SETLK, &fl);
+  if (ret < 0)
+    MERROR("Error locking fd " << fd << ": " << errno << " (" << strerror(errno) << ")");
+  return ret;
+}
+#endif
+
+}
 
 namespace tools
 {
@@ -182,7 +215,7 @@ namespace tools
         struct stat wstats = {};
         if (fstat(fdw, std::addressof(wstats)) == 0 &&
             rstats.st_dev == wstats.st_dev && rstats.st_ino == wstats.st_ino &&
-            flock(fdw, (LOCK_EX | LOCK_NB)) == 0 && ftruncate(fdw, 0) == 0)
+            flock_exnb(fdw) == 0 && ftruncate(fdw, 0) == 0)
         {
           std::FILE* file = fdopen(fdw, "w");
           if (file) return {file, std::move(name)};
@@ -235,10 +268,10 @@ namespace tools
       MERROR("Failed to open " << filename << ": " << std::error_code(GetLastError(), std::system_category()));
     }
 #else
-    m_fd = open(filename.c_str(), O_RDONLY | O_CREAT | O_CLOEXEC, 0666);
+    m_fd = open(filename.c_str(), O_RDWR | O_CREAT | O_CLOEXEC, 0666);
     if (m_fd != -1)
     {
-      if (flock(m_fd, LOCK_EX | LOCK_NB) == -1)
+      if (flock_exnb(m_fd) == -1)
       {
         MERROR("Failed to lock " << filename << ": " << std::strerror(errno));
         close(m_fd);
@@ -309,10 +342,19 @@ namespace tools
       StringCchCopy(pszOS, BUFSIZE, TEXT("Microsoft "));
 
       // Test for the specific product.
+      if ( osvi.dwMajorVersion == 10 )
+      {
+        if ( osvi.dwMinorVersion == 0 )
+        {
+          if( osvi.wProductType == VER_NT_WORKSTATION )
+            StringCchCat(pszOS, BUFSIZE, TEXT("Windows 10 "));
+          else StringCchCat(pszOS, BUFSIZE, TEXT("Windows Server 2016 " ));
+        }
+      }
 
       if ( osvi.dwMajorVersion == 6 )
       {
-        if( osvi.dwMinorVersion == 0 )
+        if ( osvi.dwMinorVersion == 0 )
         {
           if( osvi.wProductType == VER_NT_WORKSTATION )
             StringCchCat(pszOS, BUFSIZE, TEXT("Windows Vista "));
@@ -324,6 +366,20 @@ namespace tools
           if( osvi.wProductType == VER_NT_WORKSTATION )
             StringCchCat(pszOS, BUFSIZE, TEXT("Windows 7 "));
           else StringCchCat(pszOS, BUFSIZE, TEXT("Windows Server 2008 R2 " ));
+        }
+
+        if ( osvi.dwMinorVersion == 2 )
+        {
+          if( osvi.wProductType == VER_NT_WORKSTATION )
+            StringCchCat(pszOS, BUFSIZE, TEXT("Windows 8 "));
+          else StringCchCat(pszOS, BUFSIZE, TEXT("Windows Server 2012 " ));
+        }
+
+        if ( osvi.dwMinorVersion == 3 )
+        {
+          if( osvi.wProductType == VER_NT_WORKSTATION )
+            StringCchCat(pszOS, BUFSIZE, TEXT("Windows 8.1 "));
+          else StringCchCat(pszOS, BUFSIZE, TEXT("Windows Server 2012 R2 " ));
         }
 
         pGPI = (PGPI) GetProcAddress(
@@ -591,16 +647,16 @@ std::string get_nix_version_display_string()
     return res;
   }
 
-  std::error_code replace_file(const std::string& replacement_name, const std::string& replaced_name)
+  std::error_code replace_file(const std::string& old_name, const std::string& new_name)
   {
     int code;
 #if defined(WIN32)
     // Maximizing chances for success
     std::wstring wide_replacement_name;
-    try { wide_replacement_name = string_tools::utf8_to_utf16(replacement_name); }
+    try { wide_replacement_name = string_tools::utf8_to_utf16(old_name); }
     catch (...) { return std::error_code(GetLastError(), std::system_category()); }
     std::wstring wide_replaced_name;
-    try { wide_replaced_name = string_tools::utf8_to_utf16(replaced_name); }
+    try { wide_replaced_name = string_tools::utf8_to_utf16(new_name); }
     catch (...) { return std::error_code(GetLastError(), std::system_category()); }
 
     DWORD attributes = ::GetFileAttributesW(wide_replaced_name.c_str());
@@ -612,7 +668,7 @@ std::string get_nix_version_display_string()
     bool ok = 0 != ::MoveFileExW(wide_replacement_name.c_str(), wide_replaced_name.c_str(), MOVEFILE_REPLACE_EXISTING);
     code = ok ? 0 : static_cast<int>(::GetLastError());
 #else
-    bool ok = 0 == std::rename(replacement_name.c_str(), replaced_name.c_str());
+    bool ok = 0 == std::rename(old_name.c_str(), new_name.c_str());
     code = ok ? 0 : errno;
 #endif
     return std::error_code(code, std::system_category());
@@ -706,6 +762,21 @@ std::string get_nix_version_display_string()
     return true;
   }
 
+  ssize_t get_lockable_memory()
+  {
+#ifdef __GLIBC__
+    struct rlimit rlim;
+    if (getrlimit(RLIMIT_MEMLOCK, &rlim) < 0)
+    {
+      MERROR("Failed to determine the lockable memory limit");
+      return -1;
+    }
+    return rlim.rlim_cur;
+#else
+    return -1;
+#endif
+  }
+
   bool on_startup()
   {
     mlog_configure("", true);
@@ -738,6 +809,44 @@ std::string get_nix_version_display_string()
 #else
     mode_t mode = strict ? 077 : 0;
     umask(mode);
+#endif
+  }
+
+  boost::optional<bool> is_hdd(const char *file_path)
+  {
+#ifdef __GLIBC__
+    struct stat st;
+    std::string prefix;
+    if(stat(file_path, &st) == 0)
+    {
+      std::ostringstream s;
+      s << "/sys/dev/block/" << major(st.st_dev) << ":" << minor(st.st_dev);
+      prefix = s.str();
+    }
+    else
+    {
+      return boost::none;
+    }
+    std::string attr_path = prefix + "/queue/rotational";
+    std::ifstream f(attr_path, std::ios_base::in);
+    if(not f.is_open())
+    {
+      attr_path = prefix + "/../queue/rotational";
+      f.open(attr_path, std::ios_base::in);
+      if(not f.is_open())
+      {
+          return boost::none;
+      }
+    }
+    unsigned short val = 0xdead;
+    f >> val;
+    if(not f.fail())
+    {
+      return (val == 1);
+    }
+    return boost::none;
+#else
+    return boost::none;
 #endif
   }
 
@@ -948,6 +1057,227 @@ std::string get_nix_version_display_string()
       ++fd;
     }
 #endif
+  }
+
+  std::string get_human_readable_timestamp(uint64_t ts)
+  {
+    char buffer[64];
+    if (ts < 1234567890)
+      return "<unknown>";
+    time_t tt = ts;
+    struct tm tm;
+    misc_utils::get_gmt_time(tt, tm);
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &tm);
+    return std::string(buffer);
+}
+
+  std::string get_human_readable_timespan(uint64_t seconds)
+  {
+    if (seconds < 60)
+      return std::to_string(seconds) + " seconds";
+    if (seconds < 3600)
+      return std::to_string((uint64_t)(seconds / 60)) + " minutes";
+    if (seconds < 3600 * 24)
+      return std::to_string((uint64_t)(seconds / 3600)) + " hours";
+    if (seconds < 3600 * 24 * 30.5)
+      return std::to_string((uint64_t)(seconds / (3600 * 24))) + " days";
+    if (seconds < 3600 * 24 * 365.25)
+      return std::to_string((uint64_t)(seconds / (3600 * 24 * 30.5))) + " months";
+    if (seconds < 3600 * 24 * 365.25 * 100)
+      return std::to_string((uint64_t)(seconds / (3600 * 24 * 30.5 * 365.25))) + " years";
+    return "a long time";
+  }
+
+  std::string get_human_readable_bytes(uint64_t bytes)
+  {
+    // Use 1024 for "kilo", 1024*1024 for "mega" and so on instead of the more modern and standard-conforming
+    // 1000, 1000*1000 and so on, to be consistent with other WAZN code that also uses base 2 units
+    struct byte_map
+    {
+        const char* const format;
+        const std::uint64_t bytes;
+    };
+
+    static constexpr const byte_map sizes[] =
+    {
+        {"%.0f B", 1024},
+        {"%.2f KB", 1024 * 1024},
+        {"%.2f MB", std::uint64_t(1024) * 1024 * 1024},
+        {"%.2f GB", std::uint64_t(1024) * 1024 * 1024 * 1024},
+        {"%.2f TB", std::uint64_t(1024) * 1024 * 1024 * 1024 * 1024}
+    };
+
+    struct bytes_less
+    {
+        bool operator()(const byte_map& lhs, const byte_map& rhs) const noexcept
+        {
+            return lhs.bytes < rhs.bytes;
+        }
+    };
+
+    const auto size = std::upper_bound(
+        std::begin(sizes), std::end(sizes) - 1, byte_map{"", bytes}, bytes_less{}
+    );
+    const std::uint64_t divisor = size->bytes / 1024;
+    return (boost::format(size->format) % (double(bytes) / divisor)).str();
+  }
+
+  void clear_screen()
+  {
+    std::cout << "\033[2K" << std::flush; // clear whole line
+    std::cout << "\033c" << std::flush; // clear current screen and scrollback
+    std::cout << "\033[2J" << std::flush; // clear current screen only, scrollback is still around
+    std::cout << "\033[3J" << std::flush; // does nothing, should clear current screen and scrollback
+    std::cout << "\033[1;1H" << std::flush; // move cursor top/left
+    std::cout << "\r                                                \r" << std::flush; // erase odd chars if the ANSI codes were printed raw
+#ifdef _WIN32
+    COORD coord{0, 0};
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (GetConsoleScreenBufferInfo(h, &csbi))
+    {
+      DWORD cbConSize = csbi.dwSize.X * csbi.dwSize.Y, w;
+      FillConsoleOutputCharacter(h, (TCHAR)' ', cbConSize, coord, &w);
+      if (GetConsoleScreenBufferInfo(h, &csbi))
+        FillConsoleOutputAttribute(h, csbi.wAttributes, cbConSize, coord, &w);
+      SetConsoleCursorPosition(h, coord);
+    }
+#endif
+  }
+
+  std::pair<std::string, size_t> get_string_prefix_by_width(const std::string &s, size_t columns)
+  {
+    std::string sc = "";
+    size_t avail = s.size();
+    const char *ptr = s.data();
+    wint_t cp = 0;
+    int bytes = 1;
+    size_t sw = 0;
+    char wbuf[8], *wptr;
+    while (avail--)
+    {
+      if ((*ptr & 0x80) == 0)
+      {
+        cp = *ptr++;
+        bytes = 1;
+      }
+      else if ((*ptr & 0xe0) == 0xc0)
+      {
+        if (avail < 1)
+        {
+          MERROR("Invalid UTF-8");
+          return std::make_pair(s, s.size());
+        }
+        cp = (*ptr++ & 0x1f) << 6;
+        cp |= *ptr++ & 0x3f;
+        --avail;
+        bytes = 2;
+      }
+      else if ((*ptr & 0xf0) == 0xe0)
+      {
+        if (avail < 2)
+        {
+          MERROR("Invalid UTF-8");
+          return std::make_pair(s, s.size());
+        }
+        cp = (*ptr++ & 0xf) << 12;
+        cp |= (*ptr++ & 0x3f) << 6;
+        cp |= *ptr++ & 0x3f;
+        avail -= 2;
+        bytes = 3;
+      }
+      else if ((*ptr & 0xf8) == 0xf0)
+      {
+        if (avail < 3)
+        {
+          MERROR("Invalid UTF-8");
+          return std::make_pair(s, s.size());
+        }
+        cp = (*ptr++ & 0x7) << 18;
+        cp |= (*ptr++ & 0x3f) << 12;
+        cp |= (*ptr++ & 0x3f) << 6;
+        cp |= *ptr++ & 0x3f;
+        avail -= 3;
+        bytes = 4;
+      }
+      else
+      {
+        MERROR("Invalid UTF-8");
+        return std::make_pair(s, s.size());
+      }
+
+      wptr = wbuf;
+      switch (bytes)
+      {
+        case 1: *wptr++ = cp; break;
+        case 2: *wptr++ = 0xc0 | (cp >> 6); *wptr++ = 0x80 | (cp & 0x3f); break;
+        case 3: *wptr++ = 0xe0 | (cp >> 12); *wptr++ = 0x80 | ((cp >> 6) & 0x3f); *wptr++ = 0x80 | (cp & 0x3f); break;
+        case 4: *wptr++ = 0xf0 | (cp >> 18); *wptr++ = 0x80 | ((cp >> 12) & 0x3f); *wptr++ = 0x80 | ((cp >> 6) & 0x3f); *wptr++ = 0x80 | (cp & 0x3f); break;
+        default: MERROR("Invalid UTF-8"); return std::make_pair(s, s.size());
+      }
+      *wptr = 0;
+      sc += std::string(wbuf, bytes);
+#ifdef _WIN32
+      int cpw = 1; // Guess who does not implement wcwidth
+#else
+      int cpw = wcwidth(cp);
+#endif
+      if (cpw > 0)
+      {
+        if (cpw > (int)columns)
+          break;
+        columns -= cpw;
+        sw += cpw;
+      }
+      cp = 0;
+      bytes = 1;
+    }
+    return std::make_pair(sc, sw);
+  }
+
+  size_t get_string_width(const std::string &s)
+  {
+    return get_string_prefix_by_width(s, 999999999).second;
+  };
+
+  std::vector<std::pair<std::string, size_t>> split_string_by_width(const std::string &s, size_t columns)
+  {
+    std::vector<std::string> words;
+    std::vector<std::pair<std::string, size_t>> lines;
+    boost::split(words, s, boost::is_any_of(" "), boost::token_compress_on);
+    // split large "words"
+    for (size_t i = 0; i < words.size(); ++i)
+    {
+      for (;;)
+      {
+        std::string prefix = get_string_prefix_by_width(words[i], columns).first;
+        if (prefix == words[i])
+          break;
+        words[i] = words[i].substr(prefix.size());
+        words.insert(words.begin() + i, prefix);
+      }
+    }
+
+    lines.push_back(std::make_pair("", 0));
+    while (!words.empty())
+    {
+      const size_t word_len = get_string_width(words.front());
+      size_t line_len = get_string_width(lines.back().first);
+      if (line_len > 0 && line_len + 1 + word_len > columns)
+      {
+        lines.push_back(std::make_pair("", 0));
+        line_len = 0;
+      }
+      if (line_len > 0)
+      {
+        lines.back().first += " ";
+        lines.back().second++;
+      }
+      lines.back().first += words.front();
+      lines.back().second += word_len;
+      words.erase(words.begin());
+    }
+    return lines;
   }
 
 }
