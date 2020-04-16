@@ -1,5 +1,4 @@
-# Copyright (c) 2019 WAZN Project
-# Copyright (c) 2018 uPlexa Team
+# Copyright (c) 2019-2020 WAZN Project
 # Copyright (c) 2014-2018 The Monero Project
 #
 # All rights reserved.
@@ -45,7 +44,7 @@ set(cryptonote_core_private_headers
   tx_sanity_check.h
   cryptonote_tx_utils.h)
 
-monero_private_headers(cryptonote_core
+wazn_private_headers(cryptonote_core
   ${cryptonote_core_private_headers})
 wazn_add_library(cryptonote_core
   ${cryptonote_core_sources}
