@@ -1,4 +1,4 @@
-// Copyright (c) 2019-20 WAZN Project
+// Copyright (c) 2019-2020 WAZN Project
 //
 // All rights reserved.
 //
@@ -150,6 +150,11 @@
 #define HF_VERSION_SMALLER_BP                   10
 #define HF_VERSION_LONG_TERM_BLOCK_WEIGHT       10
 #define HF_VERSION_MIN_2_OUTPUTS                12
+#define HF_VERSION_MIN_V2_COINBASE_TX           12
+#define HF_VERSION_SAME_MIXIN                   12
+#define HF_VERSION_REJECT_SIGS_IN_COINBASE      12
+#define HF_VERSION_ENFORCE_MIN_AGE              12
+#define HF_VERSION_EFFECTIVE_SHORT_TERM_MEDIAN_IN_PENALTY 12
 
 #define PER_KB_FEE_QUANTIZATION_DECIMALS        8
 
