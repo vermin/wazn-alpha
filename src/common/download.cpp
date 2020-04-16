@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -7,7 +6,7 @@
 // Redistribution and use in source and binary forms, with or without modification, are
 // permitted provided that the following conditions are met:
 //
-// 1. Redistributions of source code must retain the above copyright notice, this list of
+// 1. Red*istributions of source code must retain the above copyright notice, this list of
 //    conditions and the following disclaimer.
 //
 // 2. Redistributions in binary form must reproduce the above copyright notice, this list
@@ -31,10 +30,7 @@
 #include <string>
 #include <atomic>
 #include <boost/filesystem.hpp>
-#include <boost/asio.hpp>
 #include <boost/thread/thread.hpp>
-#include "cryptonote_config.h"
-#include "include_base_utils.h"
 #include "file_io_utils.h"
 #include "net/http_client.h"
 #include "download.h"
@@ -184,8 +180,8 @@ namespace tools
 
       lock.unlock();
 
-      bool ssl = u_c.schema == "https";
-      uint16_t port = u_c.port ? u_c.port : ssl ? 443 : 80;
+      epee::net_utils::ssl_support_t ssl = u_c.schema == "https" ? epee::net_utils::ssl_support_t::e_ssl_support_enabled : epee::net_utils::ssl_support_t::e_ssl_support_disabled;
+      uint16_t port = u_c.port ? u_c.port : ssl == epee::net_utils::ssl_support_t::e_ssl_support_enabled ? 443 : 80;
       MDEBUG("Connecting to " << u_c.host << ":" << port);
       client.set_server(u_c.host, std::to_string(port), boost::none, ssl);
       if (!client.connect(std::chrono::seconds(30)))
