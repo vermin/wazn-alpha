@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -32,7 +31,11 @@
 
 #pragma once
 
+#include <string>
+#include "span.h"
+
 namespace cryptonote
 {
   typedef std::string blobdata;
+  typedef epee::span<const char> blobdata_ref;
 }
