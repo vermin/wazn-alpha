@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -91,6 +90,7 @@ namespace cryptonote
 
     hw::device& get_device() const  {return m_keys.get_device();}
     void set_device( hw::device &hwdev) {m_keys.set_device(hwdev);}
+    void deinit();
 
     uint64_t get_createtime() const { return m_creation_timestamp; }
     void set_createtime(uint64_t val) { m_creation_timestamp = val; }
