@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2017-2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2017-2018 The Monero Project
 //
 // All rights reserved.
@@ -40,7 +39,6 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/optional.hpp>
 using namespace epee;
-namespace bf = boost::filesystem;
 
 #undef WAZN_DEFAULT_LOG_CATEGORY
 #define WAZN_DEFAULT_LOG_CATEGORY "net.dns"

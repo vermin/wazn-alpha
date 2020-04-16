@@ -1,5 +1,4 @@
-// Copyright (c) 2019 WAZN Project
-// Copyright (c) 2018 uPlexa Team
+// Copyright (c) 2019-2020 WAZN Project
 // Copyright (c) 2014-2018 The Monero Project
 //
 // All rights reserved.
@@ -34,15 +33,11 @@
 
 #include <cstddef>
 #include <iostream>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/lock_guard.hpp>
-#include <boost/utility/value_init.hpp>
 #include <boost/optional.hpp>
 #include <type_traits>
 #include <vector>
 
 #include "common/pod-class.h"
-#include "common/util.h"
 #include "memwipe.h"
 #include "mlocker.h"
 #include "generic-ops.h"
@@ -152,6 +147,7 @@ namespace crypto {
   };
 
   void generate_random_bytes_thread_safe(size_t N, uint8_t *bytes);
+  void add_extra_entropy_thread_safe(const void *ptr, size_t bytes);
 
   /* Generate N random bytes
    */
