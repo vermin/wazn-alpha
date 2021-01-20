@@ -3,8 +3,6 @@ WAZN
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](https://opensource.org/licenses/GPL-3.0)
 
 ## Follow project in new repository here: https://github.com/vermin/wazn
-
-## License
 ```
 Licensed under the GPL-3.0
 Copyright (c) 2019 WAZN Project  
