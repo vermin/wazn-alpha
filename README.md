@@ -4,7 +4,6 @@ WAZN
 
 ## Follow project in new repository here: https://github.com/vermin/wazn
 ```
-Licensed under the GPL-3.0
 Copyright (c) 2019 WAZN Project  
 Copyright (c) 2018-2019 uPlexa  
 Copyright (c) 2014-2018 The Monero Project  
