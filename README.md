@@ -1,4 +1,4 @@
-WAZN
+WAZN - Alpha period has passed - Follow project in new repository here https://github.com/vermin/wazn
 ======================
 
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](https://opensource.org/licenses/GPL-3.0)
